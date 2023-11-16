@@ -1,0 +1,27 @@
+if (isRunAlone.toBoolean()) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
+}
+apply from: "../biz-library.gradle"
+
+android{
+    namespace rootProject.ext.namespaces.module_diagnosis
+    sourceSets {
+        main {
+            jni.srcDirs = []
+            jniLibs.srcDirs = ['libs']
+            // 单独调试与集成调试时使用不同的 AndroidManifest.xml 文件
+            if (isRunAlone.toBoolean()) {
+                manifest.srcFile 'src/main/manifest/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+            }
+        }
+    }
+    ndkVersion '21.4.7075529'
+}
+dependencies {
+    implementation project(':lib_common')
+    //implementation project(':guiNativelib')
+}

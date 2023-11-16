@@ -1,0 +1,32 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Zdyb" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <!--控制各个控件被选中时的颜色-->
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="Theme.Zdyb" parent="Base.Theme.Zdyb" />
+
+
+    <!-- 这里的parent必须是Theme.AppCompat.Dialog -->
+    <style name="FullSreenDialogTheme" parent="Theme.AppCompat.Dialog">
+        <!-- 上面说过，只要是Dialog，这两个属性必须设置 -->
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+        <!--隐藏状态栏内容和高度，适用于SDK19（4.4）及以上版本-->
+        <item name="android:windowFullscreen">true</item>
+        <!-- 对于28及以上的版本，需要指定该属性，否则对于异形屏的手机，无法让布局铺满异性区域 -->
+<!--        <item name="android:windowLayoutInDisplayCutoutMode" >shortEdges</item>-->
+        <item name="android:windowTranslucentStatus" >true</item>
+
+        <!-- 透明导航栏 -->
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+
+</resources>

@@ -1,0 +1,569 @@
+//
+// Created by kouten on 17-1-2.
+//
+
+#ifndef TESTCOM_DEBUG_H
+#define TESTCOM_DEBUG_H
+
+#include "adsStd.h"
+#include "auto_tchar.h"
+#include <algorithm>
+#include <stdio.h>
+#include <string.h>
+#include <stddef.h>
+#include  <pthread.h>
+#include "ndkhelper.h"
+
+
+extern "C" {
+#include "t_sprintf.h"
+}
+//#include "t_sprintf.h"
+
+#define LOG_TAG "DIAGLIB"
+#define LOGD(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+
+#define BUF_GUI_LEN        0x10000
+#define BUF_COM_LEN         1024
+
+
+#define _DEBUG
+#define _ANDROID
+//#define RGB(a, b, c)  0x00000000
+#define RGB(r,g,b)          ((DWORD)(((BYTE)(r)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(b))<<16)))
+
+#define SW_HIDE 0
+#ifdef _ANDROID
+#define SPLIT  '/'
+#else
+#define SPLIT    '\\'
+#endif
+/*
+ * MessageBox() Flags
+ */
+
+#define _TASKIDTYPE
+
+#define MB_OK                       0x00000000L
+#define MB_OKCANCEL                 0x00000001L
+#define MB_ABORTRETRYIGNORE         0x00000002L
+#define MB_YESNOCANCEL              0x00000003L
+#define MB_YESNO                    0x00000004L
+#define MB_RETRYCANCEL              0x00000005L
+
+typedef void *HANDLE;
+#define INVALID_HANDLE_VALUE (HANDLE)-1
+#define  WM_USER                0x400
+
+#define  WINAPI
+#define HIBYTE(w) ((BYTE)((DWORD)(w) >> 8))
+#define PAGE_NOACCESS          0x01
+#define PAGE_READONLY          0x02
+#define PAGE_READWRITE         0x04
+#define PAGE_WRITECOPY         0x08
+#define PAGE_EXECUTE           0x10
+#define PAGE_EXECUTE_READ      0x20
+#define PAGE_EXECUTE_READWRITE 0x40
+#define PAGE_EXECUTE_WRITECOPY 0x80
+#define PAGE_GUARD            0x100
+#define PAGE_NOCACHE          0x200
+#define PAGE_WRITECOMBINE     0x400
+#define MEM_COMMIT           0x1000
+#define MEM_RESERVE          0x2000
+#define MEM_DECOMMIT         0x4000
+#define MEM_RELEASE          0x8000
+#define MEM_FREE            0x10000
+#define MEM_PRIVATE         0x20000
+#define MEM_MAPPED          0x40000
+#define MEM_RESET           0x80000
+#define MEM_TOP_DOWN       0x100000
+#define MEM_4MB_PAGES    0x80000000
+#define SEC_FILE           0x800000
+#define SEC_IMAGE         0x1000000
+#define SEC_VLM           0x2000000
+#define SEC_RESERVE       0x4000000
+#define SEC_COMMIT        0x8000000
+#define SEC_NOCACHE      0x10000000
+#define MEM_IMAGE         SEC_IMAGE
+
+
+#define ERROR_ALREADY_EXISTS             183L
+
+#define SECTION_QUERY       0x0001
+#define SECTION_MAP_WRITE   0x0002
+#define SECTION_MAP_READ    0x0004
+#define SECTION_MAP_EXECUTE 0x0008
+#define SECTION_EXTEND_SIZE 0x0010
+#define SECTION_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED|SECTION_QUERY|\
+                            SECTION_MAP_WRITE |      \
+                            SECTION_MAP_READ |       \
+                            SECTION_MAP_EXECUTE |    \
+                            SECTION_EXTEND_SIZE)
+
+#define FILE_MAP_COPY       SECTION_QUERY
+#define FILE_MAP_WRITE      SECTION_MAP_WRITE
+#define FILE_MAP_READ       SECTION_MAP_READ
+#define FILE_MAP_ALL_ACCESS SECTION_ALL_ACCESS
+
+
+#define GENERIC_READ                     (0x80000000L)
+#define GENERIC_WRITE                    (0x40000000L)
+#define GENERIC_EXECUTE                  (0x20000000L)
+#define GENERIC_ALL                      (0x10000000L)
+#define CREATE_NEW          1
+#define CREATE_ALWAYS       2
+#define OPEN_EXISTING       3
+#define OPEN_ALWAYS         4
+#define TRUNCATE_EXISTING   5
+
+#define FILE_ATTRIBUTE_NORMAL               0x00000080
+#define MAXDWORD    0xffffffff
+#define WAIT_FAILED ((DWORD)0xFFFFFFFF)
+
+#define NOPARITY            0
+#define ODDPARITY           1
+#define EVENPARITY          2
+#define MARKPARITY          3
+#define SPACEPARITY         4
+
+#define ONESTOPBIT          0
+#define ONE5STOPBITS        1
+#define TWOSTOPBITS         2
+
+//
+// PURGE function flags.
+//
+#define PURGE_TXABORT       0x0001  // Kill the pending/current writes to the comm port.
+#define PURGE_RXABORT       0x0002  // Kill the pending/current reads to the comm port.
+#define PURGE_TXCLEAR       0x0004  // Kill the transmit queue if there.
+#define PURGE_RXCLEAR       0x0008  // Kill the typeahead buffer if there.
+
+#define __int32    int
+#define __int16    short
+#define  __int8     char
+#define __int64 long long
+#ifndef VOID
+#define VOID void
+typedef char CHAR;
+typedef short SHORT;
+typedef long LONG;
+#endif
+
+#ifndef DOUBLE
+typedef double DOUBLE;
+#endif
+
+#define CONST               const
+typedef unsigned long DWORD;
+typedef unsigned long DWORD32;
+typedef int BOOL;
+typedef unsigned char BYTE;
+typedef unsigned short WORD;
+typedef float FLOAT;
+typedef unsigned char byte;
+typedef unsigned long long INT64;
+
+typedef int INT;
+typedef unsigned int UINT;
+typedef unsigned int *PUINT;
+typedef FLOAT *PFLOAT;
+typedef void *LPVOID;
+typedef DWORD *LPDWORD;
+typedef CONST void *LPCVOID;
+typedef unsigned char UCHAR;
+
+typedef int INT;
+typedef unsigned int UINT;
+typedef unsigned int *PUINT;
+//
+// ANSI (Multi-byte Character) types
+//
+typedef CHAR *PCHAR;
+typedef CHAR *LPCH, *PCH;
+
+typedef CONST CHAR *LPCCH, *PCCH;
+typedef CHAR *NPSTR;
+typedef CHAR *LPSTR, *PSTR;
+typedef CONST CHAR *LPCSTR, *PCSTR;
+
+
+typedef void *HANDLE;
+#define DECLARE_HANDLE(name) struct name##__ { int unused; }; typedef struct name##__ *name
+DECLARE_HANDLE(HINSTANCE);
+typedef HANDLE HWND;
+typedef LPSTR PTSTR, LPTSTR;
+typedef HANDLE *LPHANDLE;
+
+typedef struct _SECURITY_ATTRIBUTES {
+    DWORD nLength;
+    LPVOID lpSecurityDescriptor;
+    BOOL bInheritHandle;
+} SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
+
+
+typedef UINT WPARAM;
+typedef LONG LPARAM;
+typedef LONG LRESULT;
+typedef LONG HRESULT;
+
+typedef struct _SYSTEMTIME {
+    WORD wYear;
+    WORD wMonth;
+    WORD wDayOfWeek;
+    WORD wDay;
+    WORD wHour;
+    WORD wMinute;
+    WORD wSecond;
+    WORD wMilliseconds;
+} SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
+
+typedef struct _COMMTIMEOUTS {
+    DWORD ReadIntervalTimeout;          /* Maximum time between read chars. */
+    DWORD ReadTotalTimeoutMultiplier;   /* Multiplier of characters.        */
+    DWORD ReadTotalTimeoutConstant;     /* Constant in milliseconds.        */
+    DWORD WriteTotalTimeoutMultiplier;  /* Multiplier of characters.        */
+    DWORD WriteTotalTimeoutConstant;    /* Constant in milliseconds.        */
+} COMMTIMEOUTS, *LPCOMMTIMEOUTS;
+
+
+typedef struct _DCB {
+    DWORD DCBlength;      /* sizeof(DCB)                     */
+    DWORD BaudRate;       /* Baudrate at which running       */
+    DWORD fBinary: 1;     /* Binary Mode (skip EOF check)    */
+    DWORD fParity: 1;     /* Enable parity checking          */
+    DWORD fOutxCtsFlow:1; /* CTS handshaking on output       */
+    DWORD fOutxDsrFlow:1; /* DSR handshaking on output       */
+    DWORD fDtrControl:2;  /* DTR Flow control                */
+    DWORD fDsrSensitivity:1; /* DSR Sensitivity              */
+    DWORD fTXContinueOnXoff: 1; /* Continue TX when Xoff sent */
+    DWORD fOutX: 1;       /* Enable output X-ON/X-OFF        */
+    DWORD fInX: 1;        /* Enable input X-ON/X-OFF         */
+    DWORD fErrorChar: 1;  /* Enable Err Replacement          */
+    DWORD fNull: 1;       /* Enable Null stripping           */
+    DWORD fRtsControl:2;  /* Rts Flow control                */
+    DWORD fAbortOnError:1; /* Abort all reads and writes on Error */
+    DWORD fDummy2:17;     /* Reserved                        */
+    WORD wReserved;       /* Not currently used              */
+    WORD XonLim;          /* Transmit X-ON threshold         */
+    WORD XoffLim;         /* Transmit X-OFF threshold        */
+    BYTE ByteSize;        /* Number of bits/byte, 4-8        */
+    BYTE Parity;          /* 0-4=None,Odd,Even,Mark,Space    */
+    BYTE StopBits;        /* 0,1,2 = 1, 1.5, 2               */
+    char XonChar;         /* Tx and Rx X-ON character        */
+    char XoffChar;        /* Tx and Rx X-OFF character       */
+    char ErrorChar;       /* Error replacement char          */
+    char EofChar;         /* End of Input character          */
+    char EvtChar;         /* Received Event character        */
+    WORD wReserved1;      /* Fill for now.                   */
+} DCB, *LPDCB;
+
+typedef struct _OVERLAPPED {
+    DWORD Internal;
+    DWORD InternalHigh;
+    DWORD Offset;
+    DWORD OffsetHigh;
+    HANDLE hEvent;
+} OVERLAPPED, *LPOVERLAPPED;
+
+typedef struct _COMSTAT {
+    DWORD fCtsHold : 1;
+    DWORD fDsrHold : 1;
+    DWORD fRlsdHold : 1;
+    DWORD fXoffHold : 1;
+    DWORD fXoffSent : 1;
+    DWORD fEof : 1;
+    DWORD fTxim : 1;
+    DWORD fReserved : 25;
+    DWORD cbInQue;
+    DWORD cbOutQue;
+} COMSTAT, *LPCOMSTAT;
+
+unsigned long GetTickCount();
+
+int GetModuleFileName(char *sModuleName, char *sFileName, int nSize);
+
+int guiGetCurrentPath(char *sFileName, int nSize);
+
+int OutputDebugString(const char *format, ...);
+
+int MessageBox(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType);
+
+void Sleep(long ms);
+
+int _access(const char *, int);
+
+char *strupr(char *str);
+
+HANDLE
+CreateFileMapping(
+        HANDLE hFile,
+        LPSECURITY_ATTRIBUTES lpFileMappingAttributes,
+        DWORD flProtect,
+        DWORD dwMaximumSizeHigh,
+        DWORD dwMaximumSizeLow,
+        LPCSTR lpName
+);
+
+DWORD
+GetLastError(
+        VOID
+);
+
+
+BOOL
+CloseHandle(
+        HANDLE hObject
+);
+
+LPVOID
+MapViewOfFile(
+        HANDLE hFileMappingObject,
+        DWORD dwDesiredAccess,
+        DWORD dwFileOffsetHigh,
+        DWORD dwFileOffsetLow,
+        DWORD dwNumberOfBytesToMap
+);
+
+LRESULT MsgReflashProgressAdaptee(
+        BYTE *pszMessage,BYTE bMsgLen);
+
+LRESULT SendMessage(
+        HWND hWnd,
+        UINT Msg,
+        WPARAM wParam,
+        LPARAM lParam);
+
+LRESULT PostMessage(
+        HWND hWnd,
+        UINT Msg,
+        WPARAM wParam,
+        LPARAM lParam);
+
+HWND
+FindWindow(
+        LPCSTR lpClassName,
+        LPCSTR lpWindowName);
+
+DWORD GetPrivateProfileString(
+        LPCSTR lpAppName,
+        LPCSTR lpKeyName,
+        LPCSTR lpDefault,
+        LPSTR lpReturnedString,
+        DWORD nSize,
+        LPCSTR lpFileName
+);
+
+VOID
+GetLocalTime(
+        LPSYSTEMTIME lpSystemTime
+);
+
+HANDLE
+CreateFile(
+        LPCSTR lpFileName,
+        DWORD dwDesiredAccess,
+        DWORD dwShareMode,
+        LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+        DWORD dwCreationDisposition,
+        DWORD dwFlagsAndAttributes,
+        HANDLE hTemplateFile
+);
+
+BOOL
+SetupComm(
+        HANDLE hFile,
+        DWORD dwInQueue,
+        DWORD dwOutQueue
+);
+
+BOOL
+GetCommTimeouts(
+        HANDLE hFile,
+        LPCOMMTIMEOUTS lpCommTimeouts
+);
+
+BOOL
+SetCommTimeouts(
+        HANDLE hFile,
+        LPCOMMTIMEOUTS lpCommTimeouts
+);
+
+BOOL
+GetCommState(
+        HANDLE hFile,
+        LPDCB lpDCB
+);
+
+BOOL
+SetCommState(
+        HANDLE hFile,
+        LPDCB lpDCB
+);
+
+BOOL
+PurgeComm(
+        HANDLE hFile,
+        DWORD dwFlags
+);
+
+BOOL
+ReadFile(
+        HANDLE hFile,
+        LPVOID lpBuffer,
+        DWORD nNumberOfBytesToRead,
+        LPDWORD lpNumberOfBytesRead,
+        LPOVERLAPPED lpOverlapped
+);
+
+BOOL
+WriteFile(
+        HANDLE hFile,
+        LPCVOID lpBuffer,
+        DWORD nNumberOfBytesToWrite,
+        LPDWORD lpNumberOfBytesWritten,
+        LPOVERLAPPED lpOverlapped
+);
+
+BOOL
+ClearCommError(
+        HANDLE hFile,
+        LPDWORD lpErrors,
+        LPCOMSTAT lpStat
+);
+
+
+char *strlwr(char *s);
+
+extern int min(int a, int b);
+
+
+typedef DWORD ( *LPTHREAD_START_ROUTINE)(LPVOID lpThreadParameter);
+
+HANDLE CreateThread(
+        LPSECURITY_ATTRIBUTES lpThreadAttributes,//线程安全属性
+        DWORD dwStackSize,//堆栈大小
+        LPTHREAD_START_ROUTINE lpStartAddress,//线程函数
+        LPVOID lpParameter,//线程参数
+        DWORD dwCreationFlags,//线程创建属性
+        LPDWORD lpThreadId//线程ID
+);
+
+typedef struct tagPOINT {
+    LONG x;
+    LONG y;
+} POINT;
+
+typedef struct tagMSG {
+    HWND hwnd;
+    UINT message;
+    WPARAM wParam;
+    LPARAM lParam;
+    DWORD time;
+    POINT pt;
+} MSG, *LPMSG;;
+
+#define INFINITE            0xFFFFFFFF  // Infinite timeout
+
+/*
+ * Queue status flags for GetQueueStatus() and MsgWaitForMultipleObjects()
+ */
+#define QS_KEY              0x0001
+#define QS_MOUSEMOVE        0x0002
+#define QS_MOUSEBUTTON      0x0004
+#define QS_POSTMESSAGE      0x0008
+#define QS_TIMER            0x0010
+#define QS_PAINT            0x0020
+#define QS_SENDMESSAGE      0x0040
+#define QS_HOTKEY           0x0080
+#define QS_ALLPOSTMESSAGE   0x0100
+
+#define QS_MOUSE           (QS_MOUSEMOVE     | \
+                            QS_MOUSEBUTTON)
+
+#define QS_INPUT           (QS_MOUSE         | \
+                            QS_KEY)
+
+#define QS_ALLEVENTS       (QS_INPUT         | \
+                            QS_POSTMESSAGE   | \
+                            QS_TIMER         | \
+                            QS_PAINT         | \
+                            QS_HOTKEY)
+
+#define QS_ALLINPUT        (QS_INPUT         | \
+                            QS_POSTMESSAGE   | \
+                            QS_TIMER         | \
+                            QS_PAINT         | \
+                            QS_HOTKEY        | \
+                            QS_SENDMESSAGE)
+#define STATUS_WAIT_0                    ((DWORD   )0x00000000L)
+#define WAIT_OBJECT_0       ((STATUS_WAIT_0 ) + 0 )
+#define IDNO  0x07
+DWORD MsgWaitForMultipleObjects(
+        DWORD nCount,          // 表示pHandles所指的handles数组的元素个数，最大容量是MAXIMUM_WAIT_OBJECTS
+        LPHANDLE pHandles,     // 指向一个由对象handles组成的数组，这些handles的类型不需要相同
+        BOOL fWaitAll,         // 是否等待所有的handles被激发才返回
+        DWORD dwMilliseconds,  // 超时时间
+        DWORD dwWakeMask       // 欲观察的用户输入消息类型
+);
+
+
+/*
+ * PeekMessage() Options
+ */
+#define PM_NOREMOVE         0x0000
+#define PM_REMOVE           0x0001
+#define PM_NOYIELD          0x0002
+
+BOOL PeekMessage(
+        LPMSG lpMsg,
+        HWND hWnd,
+        UINT wMsgFilterMin,
+        UINT wMsgFilterMax,
+        UINT wRemoveMsg);
+
+LONG DispatchMessage(
+        CONST MSG *lpMsg);
+
+char *itoa(int value, char *string, int radix);
+
+char *_strupr(char *src);
+
+void ZeroMemory(char value[], int size);
+void ZeroMemory(void *value, int size);
+
+void ultoa(int value, char *string, int radix);
+
+void ultoa(BYTE value, char *string, int radix);
+
+void ultoa(DWORD value, char *string, int radix);
+
+extern "C" {
+int executeCommand(char *command);
+}
+int WinExec(string command,int aaa);
+void searchdir(const char *path, vector<string> &fileList);
+
+time_t GetCurrentTime();
+
+void LoadVdiStatusCallBack(bool flag);
+
+unsigned int androidGetProductType();
+
+void lognet(bool  isRequest, const char *info, int len);
+
+//0:有线连接 1:蓝牙连接 2:未知连接
+int IsWiredOrBluetooth();
+
+/**
+ * 重写printf里面的一些方法
+ * @param out 
+ * @param string 
+ * @param width 
+ * @param pad 
+ * @return 
+ */
+/*static int t_prints(char **out, const char *string, int width, int pad);
+int t_sprintf(char *out, const char *format, ...);
+static int t_print( char **out, const char *format, va_list args );*/
+#endif //TESTCOM_DEBUG_H

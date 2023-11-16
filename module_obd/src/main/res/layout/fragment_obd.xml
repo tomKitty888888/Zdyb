@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:theme="@style/Theme.MaterialComponents.DayNight"
+    android:padding="@dimen/dp_10"
+    android:background="@color/black"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/img_result"
+            android:layout_width="@dimen/dp_160"
+            android:layout_height="@dimen/dp_140"
+            android:layout_marginStart="@dimen/dp_400"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/tv_obdResult"
+            android:minWidth="@dimen/dp_200"
+            android:textSize="@dimen/sp_18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:maxLines="1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/opinion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14"
+            android:visibility="invisible"
+            android:text="@string/obd_hint"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"
+            app:layout_constraintTop_toBottomOf="@+id/tv_obdResult"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+
+
+        <RelativeLayout
+            android:id="@+id/cartInfoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dp_100"
+            android:background="@drawable/bg_frame_radius_10"
+            android:layout_marginTop="@dimen/dp_10"
+            app:layout_constraintTop_toBottomOf="@+id/opinion">
+
+            <TextView
+                android:id="@+id/cartTitle"
+                android:layout_width="@dimen/dp_130"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_20"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:text="@string/obd_title_cart"/>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/cartInfoRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/cartTitle"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_data_info"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/obdInfoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dp_100"
+            android:background="@drawable/bg_frame_radius_10"
+            android:layout_marginTop="@dimen/dp_10"
+            app:layout_constraintTop_toBottomOf="@+id/cartInfoLayout">
+
+            <TextView
+                android:id="@+id/obdTitle"
+                android:layout_width="@dimen/dp_130"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_20"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:text="@string/obd_title_obd"/>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/obdInfoRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_toEndOf="@+id/obdTitle"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_data_info"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/odbItemLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/bg_frame_radius_10"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/obdInfoLayout"
+            app:layout_constraintBottom_toTopOf="@+id/emissionInfoLayout"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            >
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/emissionInfoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dp_100"
+            android:background="@drawable/bg_frame_radius_10"
+            android:layout_marginTop="@dimen/dp_10"
+            app:layout_constraintTop_toBottomOf="@+id/odbItemLayout">
+
+            <TextView
+                android:id="@+id/emissionTitle"
+                android:layout_width="@dimen/dp_130"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_20"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:text="@string/obd_title_emission"/>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/emissionInfoRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_toEndOf="@+id/emissionTitle"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_data_info"/>
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

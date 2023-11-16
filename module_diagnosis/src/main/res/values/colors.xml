@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="red">#FFFF0000</color>
+
+    <!-- bar的背景色值 -->
+    <color name="bar_bg_start">#4D564C</color>
+    <color name="bar_bg_end">#202621</color>
+    <color name="bar_bg_partition_line_start">#202621</color>
+    <color name="bar_bg_partition_line_end">#202621</color>
+    <color name="dialog_bar_bg_start">#FF066E06</color>
+    <color name="dialog_bar_bg_end">#FF099808</color>
+    <!-- 文字黑色色值 -->
+    <color name="text_black_colors">#FF2A322B</color>
+
+    <!-- 列表item背景色 -->
+    <color name="item_bg">#F7F3F1</color>
+    <!-- 列表滚动条色 -->
+    <color name="scrollbar_bg">#2FF430</color>
+    <!-- 按钮背景色 -->
+    <color name="button_bg">#FF36BB4C</color>
+
+</resources>

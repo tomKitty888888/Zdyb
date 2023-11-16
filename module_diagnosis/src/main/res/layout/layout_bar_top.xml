@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/appbar"
+    android:background="@drawable/bar_bg"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_25"
+    >
+    <com.zdyb.lib_common.widget.QMUIAlphaImage
+        android:id="@+id/btnSet"
+        android:layout_width="@dimen/dp_15"
+        android:layout_height="match_parent"
+        android:src="@mipmap/icon_d_set"
+        android:background="@null"
+        android:theme="@style/QMUI.Compat"
+        android:layout_marginLeft="@dimen/dp_10"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/imgBleState"
+        android:layout_width="@dimen/dp_10"
+        android:layout_height="@dimen/dp_15"
+        android:layout_marginStart="@dimen/dp_15"
+        android:src="@mipmap/icon_d_ble_state_connect"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/btnSet"
+        />
+
+    <View
+        android:id="@+id/logo"
+        android:layout_width="@dimen/dp_55"
+        android:layout_height="@dimen/dp_12"
+        android:background="@mipmap/icon_d_title_tab"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <com.zdyb.lib_common.widget.QMUIAlphaImage
+        android:id="@+id/imgScreenshot"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_13"
+        android:layout_marginEnd="@dimen/dp_15"
+        android:background="@null"
+        android:src="@mipmap/icon_d_screenshot"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/imgElectricity"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_13"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:src="@mipmap/icon_d_electricity_100"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/imgScreenshot"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

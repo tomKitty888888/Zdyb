@@ -1,0 +1,65 @@
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-parcelize'
+apply plugin: 'kotlin-kapt'
+
+
+
+android {
+    //namespace rootProject.ext.namespace //影响的组件路径地址生成
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    defaultConfig {
+        if (isRunAlone.toBoolean()) {
+            applicationId rootProject.ext.android.applicationId
+        }
+        buildConfigField "String", "BUILD_TIME", "\"${getSMBuildTime()}\""
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
+
+        manifestPlaceholders = [
+                authorities : rootProject.ext.runAlone.authorities,
+        ]
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    kapt {
+        arguments {
+            arg("AROUTER_MODULE_NAME", project.getName())
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation rootProject.ext.support.junit
+    kapt rootProject.ext.dependencies.arouter_compiler
+}
+
+static def getSMBuildTime() {
+    def createTime = new Date().format("YYYY-MM-dd HH:mm", TimeZone.getTimeZone("GMT+08:00"))
+    return createTime
+}

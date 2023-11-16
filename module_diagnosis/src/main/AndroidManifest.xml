@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Zdyb">
+        <activity
+            android:name=".activity.DiagnosisActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape">
+            <intent-filter>
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"/>
+                <action android:name="android.intent.action.Wx_UsbService"/>
+            </intent-filter>
+
+            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/device_filter"/>
+        </activity>
+
+        <service
+            android:enabled="true"
+            android:exported="true"
+            android:process=":remote"
+            android:isolatedProcess="false"
+            android:name=".service.DiagnosisService" >
+            <intent-filter>
+                <action android:name="android.intent.action.zd.DiagnosisService"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.zdyb.iTaskBinder" />
+                <action android:name="com.zdyb.iTaskCallback" />
+            </intent-filter>
+        </service>
+    </application>
+
+</manifest>

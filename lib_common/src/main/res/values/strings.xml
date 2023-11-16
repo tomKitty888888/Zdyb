@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">module_base</string>
+
+    <!--CustomException-->
+    <string name="exception_parse_failed">解析错误</string>
+    <string name="exception_network_error">网络异常</string>
+    <string name="exception_connect_error">连接异常</string>
+    <string name="exception_connect_timeout">请求超时</string>
+    <string name="exception_please_connect">请先连接您的网络</string>
+    <string name="exception_unknow_error">未知错误</string>
+    <string name="throw_server_abnormal">服务器异常，请稍后再试..</string>
+    <string name="throw_network_unavailable">网络不可用</string>
+    <string name="throw_request_time_out">请求超时,请稍后再试...</string>
+
+    <string name="md_choose_label">选择标签</string>
+    <string name="dialog_please_wait">请稍后...</string>
+
+    <!--服务类提示 -->
+    <string name="no_usb_connect">usb未连接</string>
+</resources>

@@ -1,0 +1,115 @@
+# Sets the minimum version of CMake required to build the native
+# library. You should either keep the default value or only pass a
+# value of 3.4.0 or lower.
+# by huzongyao
+
+cmake_minimum_required(VERSION 3.4.1)
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -DANDROID_NDK -fexceptions -DNDEBUG -D_REENTRANT -DENV_UNIX")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBREAK_HANDLER -DUNICODE -D_UNICODE -DUNIX_USE_WIN_FILE -fPIC")
+
+# Creates and names a library, sets it as either STATIC
+# or SHARED, and provides the relative paths to its source code.
+# You can define multiple libraries, and CMake builds it for you.
+# Gradle automatically packages shared libraries with your APK.
+#file(GLOB_RECURSE NATIVE_SRCS *.c *.cpp)
+
+include_directories(
+                    p7zip/CPP/Windows
+                    p7zip/CPP/Common
+                    p7zip/C
+                    p7zip/CPP/myWindows
+                    p7zip/CPP/
+                    p7zip/CPP/include_windows
+                    cmd/
+                    str2args/
+                    ./
+)
+
+add_library(p7zip SHARED
+        p7zip.cpp
+        str2args/str2args.cpp
+        cmd/command.cpp
+        p7zip/CPP/7zip/Archive/Common/OutStreamWithCRC.cpp
+        p7zip/CPP/7zip/Common/CreateCoder.cpp
+        p7zip/CPP/7zip/Common/FilePathAutoRename.cpp
+        p7zip/CPP/7zip/Common/FileStreams.cpp
+        p7zip/CPP/7zip/Common/FilterCoder.cpp
+        p7zip/CPP/7zip/Common/LimitedStreams.cpp
+        p7zip/CPP/7zip/Common/MethodProps.cpp
+        p7zip/CPP/7zip/Common/ProgressUtils.cpp
+        p7zip/CPP/7zip/Common/PropId.cpp
+        p7zip/CPP/7zip/Common/StreamObjects.cpp
+        p7zip/CPP/7zip/Common/StreamUtils.cpp
+        p7zip/CPP/7zip/Common/UniqBlocks.cpp
+        p7zip/CPP/7zip/Compress/CopyCoder.cpp
+        p7zip/CPP/7zip/UI/Common/ArchiveCommandLine.cpp
+        p7zip/CPP/7zip/UI/Common/ArchiveExtractCallback.cpp
+        p7zip/CPP/7zip/UI/Common/ArchiveOpenCallback.cpp
+        p7zip/CPP/7zip/UI/Common/Bench.cpp
+        p7zip/CPP/7zip/UI/Common/DefaultName.cpp
+        p7zip/CPP/7zip/UI/Common/EnumDirItems.cpp
+        p7zip/CPP/7zip/UI/Common/Extract.cpp
+        p7zip/CPP/7zip/UI/Common/ExtractingFilePath.cpp
+        p7zip/CPP/7zip/UI/Common/HashCalc.cpp
+        p7zip/CPP/7zip/UI/Common/LoadCodecs.cpp
+        p7zip/CPP/7zip/UI/Common/OpenArchive.cpp
+        p7zip/CPP/7zip/UI/Common/PropIDUtils.cpp
+        p7zip/CPP/7zip/UI/Common/SetProperties.cpp
+        p7zip/CPP/7zip/UI/Common/SortUtils.cpp
+        p7zip/CPP/7zip/UI/Common/TempFiles.cpp
+        p7zip/CPP/7zip/UI/Common/Update.cpp
+        p7zip/CPP/7zip/UI/Common/UpdateAction.cpp
+        p7zip/CPP/7zip/UI/Common/UpdateCallback.cpp
+        p7zip/CPP/7zip/UI/Common/UpdatePair.cpp
+        p7zip/CPP/7zip/UI/Common/UpdateProduce.cpp
+        p7zip/CPP/7zip/UI/Console/BenchCon.cpp
+        p7zip/CPP/7zip/UI/Console/ConsoleClose.cpp
+        p7zip/CPP/7zip/UI/Console/ExtractCallbackConsole.cpp
+        p7zip/CPP/7zip/UI/Console/HashCon.cpp
+        p7zip/CPP/7zip/UI/Console/List.cpp
+        p7zip/CPP/7zip/UI/Console/Main.cpp
+        p7zip/CPP/7zip/UI/Console/MainAr.cpp
+        p7zip/CPP/7zip/UI/Console/OpenCallbackConsole.cpp
+        p7zip/CPP/7zip/UI/Console/PercentPrinter.cpp
+        p7zip/CPP/7zip/UI/Console/UpdateCallbackConsole.cpp
+        p7zip/CPP/7zip/UI/Console/UserInputUtils.cpp
+        p7zip/CPP/Common/CRC.cpp
+        p7zip/CPP/Common/CommandLineParser.cpp
+        p7zip/CPP/Common/IntToString.cpp
+        p7zip/CPP/Common/ListFileUtils.cpp
+        p7zip/CPP/Common/MyString.cpp
+        p7zip/CPP/Common/MyVector.cpp
+        p7zip/CPP/Common/MyWindows.cpp
+        p7zip/CPP/Common/NewHandler.cpp
+        p7zip/CPP/Common/StdInStream.cpp
+        p7zip/CPP/Common/StdOutStream.cpp
+        p7zip/CPP/Common/StringConvert.cpp
+        p7zip/CPP/Common/StringToInt.cpp
+        p7zip/CPP/Common/UTFConvert.cpp
+        p7zip/CPP/Common/Wildcard.cpp
+        p7zip/CPP/Windows/DLL.cpp
+        p7zip/CPP/Windows/ErrorMsg.cpp
+        p7zip/CPP/Windows/FileDir.cpp
+        p7zip/CPP/Windows/FileFind.cpp
+        p7zip/CPP/Windows/FileIO.cpp
+        p7zip/CPP/Windows/FileName.cpp
+        p7zip/CPP/Windows/PropVariant.cpp
+        p7zip/CPP/Windows/PropVariantConv.cpp
+        p7zip/CPP/Windows/System.cpp
+        p7zip/CPP/Windows/TimeUtils.cpp
+        p7zip/CPP/myWindows/myAddExeFlag.cpp
+        p7zip/CPP/myWindows/mySplitCommandLine.cpp
+        p7zip/CPP/myWindows/wine_date_and_time.cpp
+        p7zip/C/7zCrc.c
+        p7zip/C/7zCrcOpt.c
+        p7zip/C/Alloc.c
+        p7zip/C/CpuArch.c
+        p7zip/C/Threads.c
+        )
+
+# Specifies libraries CMake should link to your target library. You
+# can link multiple libraries, such as libraries you define in the
+# build script, prebuilt third-party libraries, or system libraries.
+target_link_libraries(p7zip log)

@@ -1,0 +1,59 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    publishNonDefault true
+
+    defaultConfig {
+
+//        applicationId rootProject.ext.android.applicationId
+//        minSdk rootProject.ext.android.minSdkVersion
+//        targetSdk rootProject.ext.android.targetSdkVersion
+//        versionCode rootProject.ext.android.versionCode
+//        versionName rootProject.ext.android.versionName
+
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        compileSdkVersion rootProject.ext.android.compileSdkVersion
+        //buildToolsVersion rootProject.ext.buildToolsVersion
+//        versionCode 1
+//        versionName "1.0"
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+        externalNativeBuild {
+            cmake {
+                cppFlags "-frtti -fexceptions --std=gnu++03 -O0","-Wno-error=format-security","-w"
+                arguments '-DANDROID_PLATFORM=android-19'
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            
+            externalNativeBuild {
+                cmake {
+                    cppFlags.add('-DNATIVE_LOG')
+                }
+            }
+        }
+        release {
+            minifyEnabled false
+            proguardFiles.add(file('proguard-rules.pro'))
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+            version '3.10.2.4988404'
+        }
+    }
+    namespace 'com.hzy.libp7zip'
+    //ndkVersion '21.4.7075529'
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    implementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+}

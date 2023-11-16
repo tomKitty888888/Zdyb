@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ScanningView">
+        <attr name="img_width" format="dimension" />
+        <attr name="img_height" format="dimension" />
+        <attr name="progress_height" format="dimension" />
+        <attr name="progress_colors" format="color" />
+        <attr name="progress_icon" format="reference" />
+
+        <attr name="state_marginBottom" format="dimension" />
+        <attr name="keyPosition">
+            <enum name="left" value="0" />
+            <enum name="center" value="1" />
+            <enum name="right" value="2" />
+            <enum name="none" value="3" />
+        </attr>
+        <attr name="keyTextSize" format="float" />
+        <attr name="state_height" format="dimension" />
+        <attr name="stateColor" format="color" />
+    </declare-styleable>
+
+
+</resources>

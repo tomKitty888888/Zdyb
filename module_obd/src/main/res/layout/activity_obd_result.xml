@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.OBDResultActivity">
+
+    <include layout="@layout/common_toolbar" />
+
+    <com.zdyb.lib_common.widget.NewNestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/appbar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/img_result"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginTop="@dimen/dp_14"
+                android:layout_marginRight="@dimen/dp_35"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/tv_obdResult"
+                android:textSize="@dimen/sp_15"
+                android:layout_width="@dimen/dp_206"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:text="当前车辆排放检测系统未就绪，检测不合格!"
+                android:layout_marginTop="@dimen/dp_28"
+                android:layout_marginLeft="@dimen/dp_18"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/opinion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_13"
+                android:visibility="visible"
+                android:text="@string/obd_hint"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_marginLeft="@dimen/dp_18"
+                android:layout_marginRight="@dimen/dp_18"
+                app:layout_constraintTop_toBottomOf="@+id/tv_obdResult"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cartInfoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="@dimen/dp_100"
+                android:layout_marginTop="@dimen/dp_10"
+                app:layout_constraintTop_toBottomOf="@+id/opinion"
+                app:layout_constraintBottom_toTopOf="@+id/obdInfoLayout"
+                >
+
+                <View
+                    android:id="@+id/isolationBelt"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_10"
+                    android:background="#F7F7F7"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_alignParentTop="true"
+                    />
+
+                <View
+                    android:id="@+id/titleIcon"
+                    android:layout_width="@dimen/dp_3"
+                    android:layout_height="@dimen/dp_14"
+                    android:background="@color/green"
+                    android:layout_marginStart="@dimen/dp_18"
+                    android:layout_marginTop="@dimen/dp_15"
+                    app:layout_constraintTop_toBottomOf="@+id/isolationBelt"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+                <TextView
+                    android:id="@+id/cartTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/sp_15"
+                    android:gravity="center"
+                    android:text="@string/obd_title_cart_2"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    app:layout_constraintTop_toTopOf="@+id/titleIcon"
+                    app:layout_constraintBottom_toBottomOf="@+id/titleIcon"
+                    app:layout_constraintLeft_toRightOf="@+id/titleIcon"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/cartInfoRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginLeft="@dimen/dp_18"
+                    app:layout_constraintTop_toBottomOf="@+id/titleIcon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_data_info_2"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/obdInfoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dp_100"
+                android:layout_marginTop="@dimen/dp_10"
+                app:layout_constraintTop_toBottomOf="@+id/cartInfoLayout"
+                app:layout_constraintBottom_toTopOf="@+id/odbItemLayout"
+                >
+
+                <View
+                    android:id="@+id/isolationBelt2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_10"
+                    android:background="#F7F7F7"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <View
+                    android:id="@+id/titleIcon2"
+                    android:layout_width="@dimen/dp_3"
+                    android:layout_height="@dimen/dp_14"
+                    android:background="@color/green"
+                    android:layout_marginTop="@dimen/dp_15"
+                    android:layout_marginStart="@dimen/dp_18"
+                    app:layout_constraintTop_toBottomOf="@+id/isolationBelt2"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+                <TextView
+                    android:id="@+id/obdTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/sp_15"
+                    android:gravity="center"
+                    android:text="@string/obd_title_obd_2"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    app:layout_constraintTop_toTopOf="@+id/titleIcon2"
+                    app:layout_constraintBottom_toBottomOf="@+id/titleIcon2"
+                    app:layout_constraintLeft_toRightOf="@+id/titleIcon2"
+                    />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/obdInfoRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@+id/obdTitle"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginLeft="@dimen/dp_18"
+                    app:layout_constraintTop_toBottomOf="@+id/titleIcon2"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_data_info_2"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <LinearLayout
+                android:id="@+id/odbItemLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:background="@drawable/bg_frame_radius_10"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/obdInfoLayout"
+                app:layout_constraintBottom_toTopOf="@+id/emissionInfoLayout"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                >
+
+            </LinearLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/emissionInfoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="@dimen/dp_100"
+                android:layout_marginTop="@dimen/dp_10"
+                app:layout_constraintTop_toBottomOf="@+id/odbItemLayout">
+
+                <View
+                    android:id="@+id/isolationBelt3"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_10"
+                    android:background="#F7F7F7"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <View
+                    android:id="@+id/titleIcon3"
+                    android:layout_width="@dimen/dp_3"
+                    android:layout_height="@dimen/dp_14"
+                    android:background="@color/green"
+                    android:layout_marginTop="@dimen/dp_15"
+                    android:layout_marginStart="@dimen/dp_18"
+                    app:layout_constraintTop_toBottomOf="@+id/isolationBelt3"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
+                <TextView
+                    android:id="@+id/emissionTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/sp_15"
+                    android:gravity="center"
+                    android:text="@string/obd_title_emission_2"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    app:layout_constraintTop_toTopOf="@+id/titleIcon3"
+                    app:layout_constraintBottom_toBottomOf="@+id/titleIcon3"
+                    app:layout_constraintLeft_toRightOf="@+id/titleIcon3"
+                    />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/emissionInfoRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@+id/emissionTitle"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginLeft="@dimen/dp_18"
+                    app:layout_constraintTop_toBottomOf="@+id/titleIcon3"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_data_info_2"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.zdyb.lib_common.widget.NewNestedScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Zdyb">
+
+
+        <activity android:name=".activity.OBDHomeActivity" android:configChanges="orientation|keyboardHidden|screenSize">
+
+        </activity>
+        <activity android:name=".activity.VehicleScanningActivity" />
+        <activity android:name=".activity.OBDResultActivity" />
+        <activity android:name=".activity.OBDLoginActivity"/>
+        <activity android:name=".activity.OBDSetActivity"/>
+
+        <service
+            android:name="com.inuker.bluetooth.library.BluetoothService" />
+
+    </application>
+
+</manifest>

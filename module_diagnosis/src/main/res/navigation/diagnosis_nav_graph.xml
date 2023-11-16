@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_AutoScanDeviceListFragment"
+            app:destination="@id/AutoScanDeviceListFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_fileListFragment"
+            app:destination="@id/fileListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/AutoScanDeviceListFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.AutoScanDeviceListFragment"
+        android:label="@string/device_list_fragment_label"
+        tools:layout="@layout/fragment_auto_scan_device_list">
+        <action
+            android:id="@+id/action_AutoScanDeviceListFragment_to_menuListFragment"
+            app:destination="@id/menuListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/menuListFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.MenuListFragment"
+        android:label="MenuListFragment" >
+        <action
+            android:id="@+id/action_menuListFragment_to_VERFragment"
+            app:destination="@id/VERFragment" />
+        <action
+            android:id="@+id/action_menuListFragment_to_DTCFragment"
+            app:destination="@id/DTCFragment" />
+        <action
+            android:id="@+id/action_menuListFragment_to_CDSSelectFragment"
+            app:destination="@id/CDSSelectFragment" />
+        <action
+            android:id="@+id/action_menuListFragment_to_ACTFragment"
+            app:destination="@id/ACTFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/VERFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.VERFragment"
+        android:label="VERFragment" />
+    <fragment
+        android:id="@+id/DTCFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.DTCFragment"
+        android:label="DTCFragment" />
+    <fragment
+        android:id="@+id/CDSSelectFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.CDSSelectFragment"
+        android:label="CDSSelectFragment" >
+        <action
+            android:id="@+id/action_CDSSelectFragment_to_CDSShowFragment"
+            app:destination="@id/CDSShowFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/CDSShowFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.CDSShowFragment"
+        android:label="CDSShowFragment" />
+    <fragment
+        android:id="@+id/ACTFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.ACTFragment"
+        android:label="ACTFragment" />
+    <fragment
+        android:id="@+id/fileListFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.FileListFragment"
+        android:label="FileListFragment" >
+        <action
+            android:id="@+id/action_fileListFragment_to_fileVersionFragment"
+            app:destination="@id/fileVersionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fileVersionFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.FileVersionFragment"
+        android:label="FileVersionFragment" >
+        <action
+            android:id="@+id/action_fileVersionFragment_to_localMenuListFragment"
+            app:destination="@id/localMenuListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/localMenuListFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.LocalMenuListFragment"
+        android:label="LocalMenuListFragment" >
+        <action
+            android:id="@+id/action_localMenuListFragment_to_menuListFragment"
+            app:destination="@id/menuListFragment" />
+    </fragment>
+</navigation>

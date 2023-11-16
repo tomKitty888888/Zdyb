@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_150"
+    android:background="@drawable/bg_frame_radius_10"
+    >
+
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="@dimen/dp_130"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+    <View
+        android:id="@+id/line1"
+        android:layout_width="@dimen/dp_2"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        app:layout_constraintLeft_toRightOf="@+id/title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_2"
+        android:background="@color/black"
+        android:layout_marginTop="@dimen/dp_50"
+        app:layout_constraintLeft_toRightOf="@+id/line1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+    <View
+        android:id="@+id/line3"
+        android:layout_width="@dimen/dp_2"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        android:layout_marginLeft="@dimen/dp_150"
+        app:layout_constraintTop_toBottomOf="@+id/line2"
+        app:layout_constraintLeft_toRightOf="@+id/line1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <View
+        android:id="@+id/line4"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_2"
+        android:background="@color/black"
+        android:layout_marginTop="@dimen/dp_50"
+        app:layout_constraintLeft_toRightOf="@+id/line3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <CheckBox
+        android:id="@+id/notCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_30"
+        android:clickable="false"
+        android:text="@string/obd_fault_not"
+        android:textSize="@dimen/sp_18"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/line2"
+        app:layout_constraintLeft_toRightOf="@id/line1"
+        />
+
+    <CheckBox
+        android:id="@+id/yesCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_30"
+        android:clickable="false"
+        android:text="@string/obd_fault_yes"
+        android:textSize="@dimen/sp_18"
+        app:layout_constraintTop_toBottomOf="@+id/line2"
+        app:layout_constraintLeft_toRightOf="@id/line1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <LinearLayout
+        android:id="@+id/checkBoxLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="@+id/line2"
+        app:layout_constraintBottom_toTopOf="@+id/line4"
+        app:layout_constraintLeft_toRightOf="@id/line3"
+        app:layout_constraintRight_toRightOf="parent"
+        >
+
+
+    </LinearLayout>
+
+
+    <CheckBox
+        android:id="@+id/egrCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_30"
+        android:clickable="false"
+        android:textSize="@dimen/sp_18"
+        app:layout_constraintTop_toBottomOf="@+id/line4"
+        app:layout_constraintLeft_toRightOf="@id/line3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

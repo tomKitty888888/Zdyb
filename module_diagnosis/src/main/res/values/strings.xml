@@ -1,0 +1,101 @@
+<resources>
+    <string name="app_name">module_Diagnosis</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="device_list_fragment_label">Device List</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="lorem_ipsum">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
+        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
+        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
+        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
+        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
+        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
+        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
+        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
+        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
+        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
+        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
+        bibendum, vel congue leo egestas.\n\n
+    </string>
+
+    <string name="rescan">重新扫描</string>
+    <string name="no_file">本地文件为空,请更新下载</string>
+    <string name="allow_permission_is_required">需要允许权限，然后进行操作</string>
+
+    <!-- 首页功能模块 -->
+    <string name="action_diagnosis">智能诊断</string>
+    <string name="action_ecu_rw">ECU快速刷写</string>
+    <string name="action_post_processing_diagnostics">后处理诊断</string>
+    <string name="action_diesel_vehicle_series">柴油车系</string>
+    <string name="action_new_energy_vehicle_series">新能源车系</string>
+    <string name="action_natural_gas_vehicle_series">天然气车系</string>
+
+    <string name="action_button_help">帮助</string>
+    <string name="action_button_voltage">电压</string>
+    <string name="action_button_back">返回</string>
+    <string name="action_button_out">退出</string>
+    <string name="action_button_rescan">重新扫描</string>
+    <string name="action_button_select_look">查看</string>
+    <string name="action_button_storage">保存</string>
+    <string name="action_button_update">升级</string>
+
+    <!-- dtc故障码 -->
+    <string name="dtc_deep_analysis">深度解析</string>
+    <string name="dtc_start_load_file">开始下载文件</string>
+    <string name="loading">下载中...</string>
+    <string name="load">下载 </string>
+    <string name="succeed">成功</string>
+    <string name="fail">失败</string>
+    <string name="bit">位</string>
+    <string name="please_enter_the_content">请输入内容</string>
+
+    <!-- cds数据流 -->
+    <string name="cds_please_enter_a_search_keyword">请输入搜索关键字</string>
+    <string name="cds_my_grouping">我的分组</string>
+    <string name="cds_new_grouping">新建分组</string>
+    <string name="cds_all_data">查看全部数据</string>
+    <string name="cds_lock_data">查看数据流</string>
+    <string name="cds_grouping_add_success">添加完成</string>
+    <string name="cds_grouping_add_title_hint">提示：请输入分组名称</string>
+    <string name="cds_grouping_add_input_hint">请输入分组名称</string>
+    <string name="cds_grouping_delete_hint">确定删除分组吗？</string>
+    <string name="cds_select">搜索</string>
+    <string name="cds_save_data_to_file">保存数据流到文件</string>
+    <string name="cds_start_save_data_to_file">开始采样</string>
+    <string name="cds_end_save_data_to_file">停止采样</string>
+    <string name="cds_end_sampling">采样结束</string>
+    <string name="cds_save_data">
+        本次保存将使用实时采样保存,采样保存期间请勿进行其他操作!
+        如果需要停止采样，请点击【停止采样】按钮，是否开始采样保存?
+    </string>
+
+    <!-- act数据流 -->
+    <string name="act_out_ing">正在退出...</string>
+    <!-- ecu刷写 -->
+    <string name="ecu_risk_hint">风险提示</string>
+    <string name="ecu_read_and_write_hint">ECU刷写,标定有风险,操作需谨慎 \n(1)建议用有线模式刷写,刷写时严禁断电\n(2)车上刷写有干扰,确保连线正确\n(3)车上如刷写不成功,可拆下ECU直接刷写\n(4)支持数据读取的车型,一定要保留原车数据\n(5)刷写数据前,请确认数据正确与一致性</string>
+    <string name="ecu_load_version">本地版本</string>
+    <string name="ecu_net_version">远程版本</string>
+    <string name="ecu_version_delete_hint">长按可删除此版本</string>
+    <string name="ecu_download_hint">请在左下角 点升级，升级模块：</string>
+    <string name="ecu_dialog_folder_path">文件目录:</string>
+    <string name="ecu_dialog_file_name">文件名称:</string>
+    <string name="ecu_dialog_input_file_name_hint">请输入文件名称</string>
+
+    <string name="enter_the_system">进入系统</string>
+    <string name="ecu_dialog_illustrate1">ECU外观</string>
+    <string name="ecu_dialog_illustrate2">跳线说明</string>
+    <string name="ecu_dialog_illustrate3">诊断座说明</string>
+    <string name="ecu_dialog_illustrate4">ECU引脚定义</string>
+    <string name="ecu_dialog_illustrate5">功能表说明</string>
+
+    <!-- 公用 -->
+    <string name="confirm">确认</string>
+    <string name="cancel">取消</string>
+    <string name="hint">提示</string>
+</resources>

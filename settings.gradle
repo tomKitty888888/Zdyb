@@ -1,0 +1,30 @@
+pluginManagement {
+    repositories {
+//        google()
+//        mavenCentral()
+        maven { url "https://maven.aliyun.com/repository/public" }
+        maven { url "https://maven.aliyun.com/repository/google" }
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+//        google()
+//        mavenCentral()
+        maven { url "https://maven.aliyun.com/repository/public" }
+        maven { url "https://maven.aliyun.com/repository/google" }
+        maven { url 'https://jitpack.io' }
+    }
+}
+rootProject.name = "Zdyb"
+include ':app'
+include ':lib_common'
+//include ':module_base'
+include ':module_diagnosis'
+include ':guiNativelib'
+include ':module_obd'
+include ':lib'
+
+include ':libp7zip2'
+include ':digNativelib'
