@@ -51,7 +51,7 @@
         android:textColor="@color/white"
         android:background="@drawable/bg_frame_radius_5_c_37bb4c"
         android:text="@string/ecu_dialog_illustrate1"
-        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
         app:layout_constraintTop_toTopOf="@+id/button2"
         app:layout_constraintRight_toLeftOf="@+id/button2"
         app:layout_constraintBottom_toBottomOf="@+id/button2"

@@ -64,8 +64,21 @@ class DialogLockImgBox:BaseDialogFragment(){
         }
         println("---->onActivityCreated()")
 
+        //初始数据
+        binding.button1.isEnabled = false
+        binding.button2.isEnabled = false
+        binding.button3.isEnabled = false
+        binding.button4.isEnabled = false
+        binding.button5.isEnabled = false
+
         for (item in data){
-            //
+            when(item.name){
+                "01" -> { binding.button1.isEnabled = true}
+                "02" -> { binding.button2.isEnabled = true}
+                "03" -> { binding.button3.isEnabled = true}
+                "04" -> { binding.button4.isEnabled = true}
+                "05" -> { binding.button5.isEnabled = true}
+            }
         }
     }
 
