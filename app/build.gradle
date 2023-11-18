@@ -66,10 +66,10 @@ android {
         }
 
         zdyb {
-            keyAlias 'zdyb'
-            keyPassword 'zdyb_obd'
-            storeFile file('./jks/zdyb_obd.jks')
-            storePassword 'zdyb_obd'
+            keyAlias 'ldjc'
+            keyPassword 'zdyb_ldjc'
+            storeFile file('./jks/zdyb_ldjc.jks')
+            storePassword 'zdyb_ldjc'
         }
 
         exampleFlavor {
@@ -101,7 +101,7 @@ android {
             //dimension 'example_obd'
             signingConfig signingConfigs.zdyb
             //包名 版本信息
-            applicationId "com.zdyb.zd"
+            applicationId "com.zdyb.ldjc"
             versionCode 1
             versionName "1.0.1-flavor"
             buildConfigField "String", "ENTRANCE", "\"zdeps\""
