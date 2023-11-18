@@ -24,7 +24,7 @@ class HomeFragment: BaseNavFragment<FragmentHomeBinding, BaseViewModel>()  {
     override fun initViewModel(): BaseViewModel {
         return ViewModelProvider(requireActivity())[BaseViewModel::class.java]
     }
-
+    //
     val mDialogInputFileBox = DialogLockImgBox()
 
     override fun initViewObservable() {
