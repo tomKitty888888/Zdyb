@@ -16,14 +16,15 @@ import com.zdyb.module_diagnosis.activity.DiagnosisActivity
 import com.zdyb.module_diagnosis.bean.DeviceEntity
 import com.zdyb.module_diagnosis.databinding.DialogHintBoxBinding
 import com.zdyb.module_diagnosis.dialog.*
+import com.zdyb.module_diagnosis.model.HomeModel
 import com.zdyb.module_diagnosis.widget.BottomBarActionButton
 
-class HomeFragment: BaseNavFragment<FragmentHomeBinding, BaseViewModel>()  {
+class HomeFragment: BaseNavFragment<FragmentHomeBinding, HomeModel>()  {
 
 
 
-    override fun initViewModel(): BaseViewModel {
-        return ViewModelProvider(requireActivity())[BaseViewModel::class.java]
+    override fun initViewModel(): HomeModel {
+        return ViewModelProvider(requireActivity())[HomeModel::class.java]
     }
     //
     val mDialogInputFileBox = DialogLockImgBox()

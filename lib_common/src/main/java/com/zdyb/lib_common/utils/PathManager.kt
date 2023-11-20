@@ -20,6 +20,12 @@ object PathManager {
     fun getBasePath():String{
         return STORAGE  + getPackType() + File.separator
     }
+    /**
+     *  sd卡路径风味路径 末尾不带/
+     */
+    fun getBasePathNoSep():String{
+        return STORAGE  + getPackType()
+    }
 
     /**
      *  sd卡路径风味路径
@@ -56,10 +62,10 @@ object PathManager {
             "com.zdyb.app" -> {
                 return "zdeps"
             }
-            "com.zdyb.zd" -> { //这里是测试的包名 最后都需要更改过来
-                return "zdeps"
+            "com.zdyb.ldjc" -> { //这里是测试的包名 最后都需要更改过来
+                return "ldjc"
             }
         }
-        return ""
+        return "ldjc"
     }
 }
