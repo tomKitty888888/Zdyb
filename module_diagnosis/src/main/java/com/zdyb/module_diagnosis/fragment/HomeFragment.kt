@@ -4,27 +4,23 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import com.qmuiteam.qmui.kotlin.onClick
 import com.zdyb.lib_common.base.BaseNavFragment
-import com.zdyb.lib_common.base.BaseViewModel
 import com.zdyb.module_diagnosis.databinding.FragmentHomeBinding
 import androidx.navigation.fragment.findNavController
-import com.zdeps.gui.CMD
 import com.zdyb.lib_common.base.BaseApplication
 import com.zdyb.lib_common.base.BaseDialogFragment
+import com.zdyb.lib_common.base.BaseViewModel
 import com.zdyb.lib_common.utils.PathManager
 import com.zdyb.module_diagnosis.R
 import com.zdyb.module_diagnosis.activity.DiagnosisActivity
-import com.zdyb.module_diagnosis.bean.DeviceEntity
-import com.zdyb.module_diagnosis.databinding.DialogHintBoxBinding
 import com.zdyb.module_diagnosis.dialog.*
-import com.zdyb.module_diagnosis.model.HomeModel
 import com.zdyb.module_diagnosis.widget.BottomBarActionButton
 
-class HomeFragment: BaseNavFragment<FragmentHomeBinding, HomeModel>()  {
+class HomeFragment: BaseNavFragment<FragmentHomeBinding, BaseViewModel>()  {
 
 
 
-    override fun initViewModel(): HomeModel {
-        return ViewModelProvider(requireActivity())[HomeModel::class.java]
+    override fun initViewModel(): BaseViewModel {
+        return ViewModelProvider(requireActivity())[BaseViewModel::class.java]
     }
     //
     val mDialogInputFileBox = DialogLockImgBox()

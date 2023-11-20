@@ -62,6 +62,9 @@ object PathManager {
             "com.zdyb.app" -> {
                 return "zdeps"
             }
+            "com.zdyb.zd" -> {
+                return "zdeps"
+            }
             "com.zdyb.ldjc" -> { //这里是测试的包名 最后都需要更改过来
                 return "ldjc"
             }
