@@ -173,6 +173,12 @@ abstract class BaseNavFragment<V : ViewBinding, VM : BaseViewModel> : RxFragment
                 if (viewModel.javaClass.simpleName != "LoadDiagnosisModel"){
                     viewModel.removeRxBus()
                     viewModel.onDestroy()
+                }else{
+                    if (BaseApplication.getInstance().outDiagnosisService){
+                        viewModel.removeRxBus()
+                        viewModel.onDestroy()
+                        KLog.e("退出诊断服务=${viewModel.javaClass.simpleName}")
+                    }
                 }
 //                if (viewModel.fragment != null) {
 //                    println("fragment fragment fragment")

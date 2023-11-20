@@ -76,7 +76,6 @@ class DiagnosisService :Service(){
          * 通用的设置
          * offset 偏移量，对应具体功能：
          *          3对应弹框按键;
-         *          6对应输入String值，备注：所有的String值都以\u0000结尾;
          *          2000 输入的文件名称;
          *
          * value
@@ -89,6 +88,18 @@ class DiagnosisService :Service(){
             KLog.i("send---GUIBuf--->offset=$offset   value=${value}")
         }
 
+        /**
+         * 通用的设置
+         * offset 偏移量，对应具体功能：
+         *          6对应输入String值，备注：所有的String值都以\u0000结尾;
+         *
+         */
+        override fun setCommonValueToArray(offset: Int, value: String) {
+            val dat = value.toByteArray()
+            comJni.setGUIBuf(offset, dat, dat.size)
+            KLog.i("send---setCommonValueToArray--->offset=$offset   value=${value}")
+        }
+
         override fun getProcessPid(): Int {
             KLog.i("结束DiagnosisService进程")
             return android.os.Process.myPid()
@@ -96,4 +107,8 @@ class DiagnosisService :Service(){
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        KLog.i("DiagnosisService--->onDestroy")
+    }
 }

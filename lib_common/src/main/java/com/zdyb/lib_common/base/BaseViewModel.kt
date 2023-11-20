@@ -6,10 +6,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.ViewGroup
+import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.afollestad.materialdialogs.MaterialDialog
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog
 import com.qmuiteam.qmui.widget.textview.QMUISpanTouchFixTextView
@@ -20,6 +21,8 @@ import com.zdyb.lib_common.utils.PreferencesUtils
 import com.zdyb.lib_common.utils.SharePreferencesConstant
 import com.zdyb.lib_common.widget.DeviceLoadingDialog
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 open class BaseViewModel : ViewModel, IBaseViewModel {
     var context: Context? = null
@@ -242,7 +245,10 @@ open class BaseViewModel : ViewModel, IBaseViewModel {
             DisposeUtil.close(d)
         }
         onCleared()
+
     }
+
+
     override fun registerRxBus() {}
     override fun removeRxBus() {}
 

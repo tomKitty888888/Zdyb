@@ -19,6 +19,7 @@ interface ITaskBinder {
     void setTaskID(long taskID);
     void setMenuValue(byte value);
     void setCommonValue(int offset,byte value);
+    void setCommonValueToArray(int offset,String value); //string转byte[] inputDialog 输入使用到
 //    void run(String path);
 //    void shutDownThread(boolean flag);
 //

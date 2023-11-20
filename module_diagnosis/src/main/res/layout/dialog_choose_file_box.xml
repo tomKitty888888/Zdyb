@@ -51,7 +51,7 @@
 
     <TextView
         android:id="@+id/tv_hint"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_280"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_5"
         android:textColor="@color/black"
@@ -63,26 +63,25 @@
         app:layout_constraintRight_toRightOf="@+id/edText"
         />
 
-    <EditText
+    <TextView
         android:id="@+id/edText"
         android:layout_width="@dimen/dp_220"
         android:layout_height="@dimen/dp_30"
         android:padding="@dimen/dp_5"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_10"
-        android:hint="@string/please_enter_the_content"
-        android:inputType="text"
-        android:background="@drawable/bg_frame_radius_5_stroke_1"
-        android:gravity="center_vertical|left"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        android:text="@string/click_please_select_a_file"
+        android:background="@drawable/bg_frame_radius_5_c_37bb4c"
+        android:gravity="center"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        app:layout_constraintTop_toBottomOf="@+id/bar"
+        android:layout_marginBottom="@dimen/dp_10"
         app:layout_constraintBottom_toTopOf="@+id/placeholder"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         >
         <requestFocus/>
-    </EditText>
+    </TextView>
 
     <TextView
         android:id="@+id/tv_inputSum"

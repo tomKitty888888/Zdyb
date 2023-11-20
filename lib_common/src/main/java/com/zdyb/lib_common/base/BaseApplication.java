@@ -48,7 +48,10 @@ import kotlin.jvm.internal.Intrinsics;
 public abstract class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks {
     private static BaseApplication sInstance;
 
-
+    /**
+     * 是否退出诊断服务关闭多进程
+     */
+    private boolean isOutDiagnosisService = false;
 
     @Override
     public void onCreate() {
@@ -125,6 +128,9 @@ public abstract class BaseApplication extends Application implements Application
         }
     }
 
+
+
+
     public static UsbSerialPortService usbConn;
     private ServiceConnection mUsbConnection = new ServiceConnection() {
 
@@ -189,6 +195,21 @@ public abstract class BaseApplication extends Application implements Application
         return sInstance;
     }
 
+    /**
+     * 是否退出诊断服务关闭多进程
+     * @return
+     */
+    public void setOutDiagnosisService(boolean bo){
+        isOutDiagnosisService = bo;
+    }
+
+    /**
+     * 是否退出诊断服务关闭多进程
+     * @return
+     */
+    public boolean getOutDiagnosisService(){
+        return isOutDiagnosisService;
+    }
 
     @Override
     protected void attachBaseContext(Context base) {

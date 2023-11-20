@@ -579,6 +579,23 @@ object ComJni {
 
                 }
             }
+            CMD.PARAM_COM ->{
+                KLog.d("GUI 执行数据流----注意未实现")
+//                var dat: ByteArray? = getCOMData(3, 2)
+//                if (dat != null) {
+//                    val len = getOC16(dat, 0)
+//                    dat = getCOMData(0, len + 5)
+//                }
+            }
+            CMD.PARAM_GUI_ROOT_PATH ->{
+                KLog.d("GUI 获取root的路径")
+                //get root path
+                val dat: ByteArray = soPath
+                val sdat = ByteArray(dat.size + 1)
+                System.arraycopy(dat, 0, sdat, 0, dat.size)
+                sdat[dat.size] = 0
+                setGUIBuf(0, sdat, sdat.size)
+            }
         }
 
         return 1
@@ -661,9 +678,8 @@ object ComJni {
 
                 }
             }
-            CMD.PARAM_COM ->{
 
-            }
+
             CMD.MSG_WAIT_WINDOW_CLOSE ->{
                 KLog.d("GUI 消息窗口关闭")
                 DiagnosisService.mITaskCallback?.destroyDialog()

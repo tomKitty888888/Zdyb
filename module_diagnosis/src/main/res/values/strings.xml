@@ -87,6 +87,10 @@
     <string name="ecu_dialog_file_name">文件名称:</string>
     <string name="ecu_dialog_input_file_name_hint">请输入文件名称</string>
 
+    <string name="go_back_to_the_previous_file">返回上一级文件</string>
+    <string name="click_please_select_a_file">点击此处-选择文件</string>
+    <string name="please_select_a_file">请选择需要刷写的文件</string>
+
     <string name="enter_the_system">进入系统</string>
     <string name="ecu_dialog_illustrate1">ECU外观</string>
     <string name="ecu_dialog_illustrate2">跳线说明</string>

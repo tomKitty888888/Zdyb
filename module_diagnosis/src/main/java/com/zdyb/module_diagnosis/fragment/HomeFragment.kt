@@ -8,6 +8,7 @@ import com.zdyb.lib_common.base.BaseViewModel
 import com.zdyb.module_diagnosis.databinding.FragmentHomeBinding
 import androidx.navigation.fragment.findNavController
 import com.zdeps.gui.CMD
+import com.zdyb.lib_common.base.BaseApplication
 import com.zdyb.lib_common.base.BaseDialogFragment
 import com.zdyb.lib_common.utils.PathManager
 import com.zdyb.module_diagnosis.R
@@ -77,6 +78,8 @@ class HomeFragment: BaseNavFragment<FragmentHomeBinding, BaseViewModel>()  {
         }
 
         //addActionButton()
+        BaseApplication.getInstance().outDiagnosisService = false
+        println("初始化首页")
     }
 
     fun visibleDialog(vararg dialogs : BaseDialogFragment){

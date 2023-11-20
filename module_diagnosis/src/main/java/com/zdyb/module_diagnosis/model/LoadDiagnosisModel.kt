@@ -78,6 +78,9 @@ class LoadDiagnosisModel :BaseViewModel(){
 
         override fun onServiceDisconnected(name: ComponentName) {
             LogUtils.i("诊断服务断开--重新绑定")
+            if (BaseApplication.getInstance().outDiagnosisService){
+                return
+            }
             bingDiagnosisService()
         }
     }
@@ -438,9 +441,40 @@ class LoadDiagnosisModel :BaseViewModel(){
     fun setCommonValue(offset: Int,data: Byte){
         mITaskBinder.setCommonValue(offset,data)
     }
+    fun setCommonValueToArray(offset: Int,data: String){
+        mITaskBinder.setCommonValueToArray(offset,data)
+    }
+
     override fun onDestroy() {
         KLog.e("杀掉进程？------------->android.os.Process.killProcess(mITaskBinder.processPid)")
-        android.os.Process.killProcess(mITaskBinder.processPid)
+
+        try {
+            closeData()
+            android.os.Process.killProcess(mITaskBinder.processPid)
+            BaseApplication.getInstance().unbindService(mConnection)
+        }catch (e :Exception){
+
+        }
         super.onDestroy()
+    }
+
+
+    private fun closeData(){
+        deviceList.value = mutableListOf()
+        menuListLiveData.value = mutableListOf()
+        titleLiveData.value = ""
+        verData.clear()
+        verLiveData.value = mutableListOf()
+        dtcData.clear()
+        dtcLiveData.value = mutableListOf()
+        cdsSelectData.clear()
+        cdsSelectAllLiveData.value = mutableListOf()
+        cdsSelectLiveData.value = mutableListOf()
+        actData.clear()
+        actLiveData.value = mutableSetOf()
+        actButtonData.clear()
+        actButtonLiveData.value = mutableListOf()
+        actHint = StringBuffer()
+
     }
 }

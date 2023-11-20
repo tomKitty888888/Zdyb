@@ -1,5 +1,6 @@
 package com.zdyb.module_diagnosis.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -22,6 +23,7 @@ import com.zdyb.lib_common.utils.constant.RouteConstants
 import com.zdyb.module_diagnosis.R
 import com.zdyb.module_diagnosis.databinding.ActivityDiagnosisBinding
 import com.zdyb.module_diagnosis.dialog.NavigationBarUtil
+import com.zdyb.module_diagnosis.service.DiagnosisService
 import com.zdyb.module_diagnosis.widget.BottomBarActionButton
 import kotlin.system.exitProcess
 
@@ -57,6 +59,11 @@ class DiagnosisActivity : AppCompatActivity() {
 
 
         }
+        binding.includeBarBottom.menuHomeButton.onClick {
+            BaseApplication.getInstance().outDiagnosisService = true
+            navController.popBackStack(R.id.homeFragment,false)
+        }
+
         println("DiagnosisActivity进来了")
 
         println("获取屏幕的宽度（单位：px）=${ScreenUtils.getScreenWidth()}")
@@ -127,6 +134,7 @@ class DiagnosisActivity : AppCompatActivity() {
             .setPartitionLineVisibility(ConstraintLayout.LayoutParams.LEFT)
             .setClick {
                 BaseApplication.getInstance().unBingUsbService()
+                //stopService(Intent(this, DiagnosisService::class.java))
                 //退出
                 finish()
                 android.os.Process.killProcess(android.os.Process.myPid());
@@ -189,4 +197,5 @@ class DiagnosisActivity : AppCompatActivity() {
         binding.includeBarTop.title.text = title
         binding.includeBarTop.logo.visibility = View.GONE
     }
+
 }

@@ -22,6 +22,13 @@ object PathManager {
     }
 
     /**
+     *  sd卡路径风味路径
+     */
+    fun getBasePathNoSeparator():String{
+        return STORAGE  + getPackType()
+    }
+
+    /**
      * 刷机文件下载位置
      */
     fun getDownloadFolderPath():String{

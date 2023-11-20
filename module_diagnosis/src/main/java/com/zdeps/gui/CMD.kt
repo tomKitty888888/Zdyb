@@ -5,7 +5,7 @@ object CMD {
 
     const val PARAM_GUI = 0x10000001L //开启or关闭
     const val PARAM_COM = 0x10000002L //执行数据流
-
+    const val PARAM_GUI_ROOT_PATH = 0xFFFF0010L //获取root的路径 也是直接给了so的路径
 
     const val PARAM_GUI_TASK_ID_BEGIN = 0xFFFF0001L ///定义任务ID是否已经启动(发给VDI用来判断执行是menu.txt的菜单还是由诊断程序建立的菜单);
     const val PARAM_GUI_TASK_ID_END : Long = 0xFFFF0002L //消息来自GUI.LIB发过来的 获取VDI程序的根目录(同步);
@@ -136,7 +136,6 @@ object CMD {
     const val INPUT_MODE_VIN: Byte = 0x03 //限制只能输入作为汽车VIN使用的字符和数字;
     const val INPUT_MODE_ALL: Byte = 0x10 //无限制
     const val INPUT_VALUE_END: Char = '\u0000'
-
 
     /**
      * 消息窗口关闭

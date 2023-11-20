@@ -57,6 +57,7 @@ class AutoScanDeviceListFragment:BaseNavFragment<FragmentAutoScanDeviceListBindi
                     .setPartitionLineVisibility(ConstraintLayout.LayoutParams.LEFT)
                     .setClick {
                         //findNavController().navigateUp()
+                        viewModel.onDestroy()
                         findNavController().popBackStack()
                 },
 
@@ -96,7 +97,7 @@ class AutoScanDeviceListFragment:BaseNavFragment<FragmentAutoScanDeviceListBindi
         }
         binding.recyclerView.adapter = mAdapter
 
-        if (viewModel.deviceList.value == null){
+        if (viewModel.deviceList.value == null || viewModel.deviceList.value!!.isEmpty()){
             Handler().postDelayed({
                 viewModel.startScan()
             },200)

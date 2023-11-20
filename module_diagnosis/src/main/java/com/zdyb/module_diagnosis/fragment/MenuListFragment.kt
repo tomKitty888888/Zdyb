@@ -1,5 +1,6 @@
 package com.zdyb.module_diagnosis.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -19,6 +20,7 @@ import com.zdyb.module_diagnosis.R
 import com.zdyb.module_diagnosis.activity.DiagnosisActivity
 import com.zdyb.module_diagnosis.bean.*
 import com.zdyb.module_diagnosis.databinding.FragmentMenuListBinding
+import com.zdyb.module_diagnosis.dialog.DialogChooseFileBox
 import com.zdyb.module_diagnosis.dialog.DialogHintBox
 import com.zdyb.module_diagnosis.dialog.DialogInputBox
 import com.zdyb.module_diagnosis.dialog.DialogInputFileBox
@@ -28,9 +30,11 @@ import io.reactivex.disposables.Disposable
 
 class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisModel>() {
 
-    lateinit var mDialogHintBox : DialogHintBox
-    lateinit var mDialogInputBox: DialogInputBox
-    lateinit var mDialogInputFileBox: DialogInputFileBox
+    lateinit var mDialogHintBox : DialogHintBox //文字消息提示
+    lateinit var mDialogInputBox: DialogInputBox //内容输入
+    lateinit var mDialogInputFileBox: DialogInputFileBox //输入文件名称
+    lateinit var mDialogChooseFileBox: DialogChooseFileBox //选择文件
+
     lateinit var mDeviceEntity : DeviceEntity
     override fun initViewModel(): LoadDiagnosisModel {
         val model: LoadDiagnosisModel by activityViewModels()
@@ -55,7 +59,7 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
         mDialogInputBox.setBackResult{
             val action = if (it.result) CMD.MB_YES else CMD.MB_NO
             val value = it.value + CMD.INPUT_VALUE_END
-            viewModel.setCommonValue(CMD.ID_DIALOG_VALUE_OFFSET, value.toByteArray()[0])
+            viewModel.setCommonValueToArray(CMD.ID_DIALOG_VALUE_OFFSET, value)
             viewModel.setCommonValue(CMD.ID_DIALOG_OFFSET, action)
         }
         //文件名称输入窗口
@@ -63,9 +67,18 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
         mDialogInputFileBox.setBackResult{
             val action = if (it.result) CMD.MB_YES else CMD.MB_NO
             val value = it.value + CMD.INPUT_VALUE_END
-            viewModel.setCommonValue(CMD.ID_DIALOG_VALUE_FILE_NAME, value.toByteArray()[0])
+            viewModel.setCommonValueToArray(CMD.ID_DIALOG_VALUE_FILE_NAME, value)
             viewModel.setCommonValue(CMD.ID_DIALOG_OFFSET, action)
         }
+        //文件选择窗口
+        mDialogChooseFileBox = DialogChooseFileBox()
+        mDialogChooseFileBox.setBackResult{
+            val action = if (it.result) CMD.MB_YES else CMD.MB_NO
+            val value = it.value + CMD.INPUT_VALUE_END
+            viewModel.setCommonValueToArray(CMD.ID_DIALOG_VALUE_FILE_NAME, value)
+            viewModel.setCommonValue(CMD.ID_DIALOG_OFFSET, action)
+        }
+
     }
 
     override fun initParam() {
@@ -114,7 +127,7 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
         //
         viewModel.actHint = StringBuffer()
 
-        if (viewModel.menuListLiveData.value == null){
+        if (viewModel.menuListLiveData.value == null || viewModel.menuListLiveData.value!!.isEmpty()){
             KLog.e("启动诊断")
             viewModel.startDiagnosis(mDeviceEntity.id,iTaskCallback,mDeviceEntity.versionPath)
         }else{
@@ -123,7 +136,6 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
         }
 
     }
-
 
 
     private val mAdapter: BaseQuickAdapter<String, BaseViewHolder> =
@@ -261,9 +273,16 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
                 println("destroyDialog--->")
                 if (mDialogHintBox.isVisible){
                     mDialogHintBox.dismiss()
+                    return@runOnUiThread
                 }
                 if (mDialogInputBox.isVisible){
                     mDialogInputBox.dismiss()
+                }
+                if (mDialogChooseFileBox.isVisible){
+                    mDialogChooseFileBox.dismiss()
+                }
+                if (mDialogInputFileBox.isVisible){
+                    mDialogInputFileBox.dismiss()
                 }
             }
             return super.destroyDialog()
@@ -284,7 +303,7 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
                         if (!mDialogHintBox.isVisible && !mDialogHintBox.isShow()){
                             mDialogHintBox.setActionType(tag).setInitMsg(msg)
                             mDialogHintBox.show(childFragmentManager,"mDialogHintBox")
-                            visibleDialog(mDialogInputBox,mDialogInputFileBox)
+                            visibleDialog(mDialogInputBox,mDialogInputFileBox,mDialogChooseFileBox)
                         }else if(mDialogHintBox.isVisible){
                             mDialogHintBox.upActionType(tag)
                             mDialogHintBox.setMsg(msg)
@@ -295,7 +314,7 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
                         if (!mDialogInputBox.isVisible && !mDialogInputBox.isShow()){
                             mDialogInputBox.setActionType(type).setTitle(title).setInitMsg(msg)
                             mDialogInputBox.show(childFragmentManager,"mDialogInputBox")
-                            visibleDialog(mDialogHintBox,mDialogInputFileBox)
+                            visibleDialog(mDialogHintBox,mDialogInputFileBox,mDialogChooseFileBox)
                         }
                     }
                     CMD.FORM_FILEDIALOG ->{ //文件选择 或是 输入名称
@@ -303,11 +322,16 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
                         val dialogType = type > 0
                         if (dialogType){
                             //文件选择
+                            if (!mDialogChooseFileBox.isVisible && !mDialogChooseFileBox.isShow()){
+                                mDialogChooseFileBox.setInitPath(title,msg)
+                                mDialogChooseFileBox.show(childFragmentManager,"mDialogChooseFileBox")
+                                visibleDialog(mDialogHintBox,mDialogInputBox)
+                            }
 
                         }else{
                             //名称输入
                             if (!mDialogInputFileBox.isVisible && !mDialogInputFileBox.isShow()){
-                                mDialogInputFileBox.setInitMsg(msg)
+                                mDialogInputFileBox.setInitMsg(title)
                                 mDialogInputFileBox.show(childFragmentManager,"mDialogInputFileBox")
                                 visibleDialog(mDialogHintBox,mDialogInputBox)
                             }
@@ -333,5 +357,6 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
     override fun onPause() {
         super.onPause()
     }
+
 
 }
