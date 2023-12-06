@@ -5,15 +5,16 @@
     <color name="red">#FFFF0000</color>
 
     <!-- bar的背景色值 -->
-    <color name="bar_bg_start">#4D564C</color>
-    <color name="bar_bg_end">#202621</color>
+    <color name="bar_bg_start">#FF024A40</color>
+    <color name="bar_bg_end">#FF024A40</color>
     <color name="bar_bg_partition_line_start">#202621</color>
     <color name="bar_bg_partition_line_end">#202621</color>
-    <color name="dialog_bar_bg_start">#FF066E06</color>
-    <color name="dialog_bar_bg_end">#FF099808</color>
+    <color name="dialog_bar_bg_start">#FF024A40</color>
+    <color name="dialog_bar_bg_end">#FF33A979</color>
     <!-- 文字黑色色值 -->
     <color name="text_black_colors">#FF2A322B</color>
 
+    <color name="color_theme">#FF024A40</color>
     <!-- 列表item背景色 -->
     <color name="item_bg">#F7F3F1</color>
     <!-- 列表滚动条色 -->

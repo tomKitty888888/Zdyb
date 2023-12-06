@@ -314,6 +314,7 @@ object ComJni {
                                 val len = getOC16(data, 4)
                                 val sData = getGUIData(6, len)
                                 val pszMenu = bytes2Str(sData)
+                                KLog.d("GUI 菜单添加--$pszMenu")
                                 DiagnosisService.mITaskCallback?.addItemOne(CMD.FORM_MENU,pszMenu)
                             }
                             CMD.FORM_DATA_SHOW ->{
@@ -383,6 +384,7 @@ object ComJni {
                             CMD.FORM_DATA_INIT ->{
                                 KLog.d("GUI 菜单初始化")
                                 DiagnosisService.mITaskCallback?.dataInit(CMD.FORM_CDS_SELECT)
+                                return 0
                             }
                             CMD.FORM_DATA_ADD ->{
                                 KLog.d("GUI 菜单添加")
@@ -395,6 +397,7 @@ object ComJni {
                                 sdat = getGUIData(len + 9, slen)
                                 val pszUnit = bytes2Str(sdat)
                                 DiagnosisService.mITaskCallback?.addItemTwo(CMD.FORM_CDS_SELECT,pszName,pszUnit)
+                                return 0
                             }
                             CMD.FORM_CDS_SELECT_GET_ITEM ->{
                                 KLog.d("GUI 获取需要读取的数据流")
@@ -413,6 +416,7 @@ object ComJni {
                             CMD.FORM_DATA_SHOW ->{
                                 KLog.d("GUI 菜单显示")
                                 DiagnosisService.mITaskCallback?.dataShow(CMD.FORM_CDS_SELECT)
+                                return 0
                             }
                         }
                     }
@@ -422,6 +426,7 @@ object ComJni {
                             CMD.FORM_DATA_INIT ->{
                                 KLog.d("GUI 菜单初始化--该初始化只会调用一次，后续反复添加和show")
                                 DiagnosisService.mITaskCallback?.dataInit(CMD.FORM_CDS)
+                                return 0
                             }
                             CMD.FORM_DATA_ADD ->{
                                 KLog.d("GUI 菜单添加")
@@ -435,6 +440,7 @@ object ComJni {
                                 sdat = getGUIData(len + 9, slen)
                                 val pszUnit = bytes2Str(sdat)
                                 DiagnosisService.mITaskCallback?.addDataStream(CMD.FORM_CDS,wIndex,pszValue,pszUnit)
+                                return 0
                             }
                             CMD.FORM_DATA_ADD_CDS_ONE ->{
                                 KLog.d("GUI 菜单添加2")
@@ -450,10 +456,12 @@ object ComJni {
                                 sdat = getGUIData(len + slen + 12, sslen)
                                 val pszUnit = bytes2Str(sdat)
                                 DiagnosisService.mITaskCallback?.addItemThree(CMD.FORM_CDS,szCdsName,pszValue,pszUnit)
+                                return 0
                             }
                             CMD.FORM_DATA_SHOW ->{
                                 KLog.d("GUI 菜单显示")
                                 DiagnosisService.mITaskCallback?.dataShow(CMD.FORM_CDS)
+                                return 0
                             }
                         }
                     }
@@ -463,6 +471,7 @@ object ComJni {
                             CMD.FORM_DATA_INIT ->{
                                 KLog.d("GUI 菜单初始化")
                                 DiagnosisService.mITaskCallback?.dataInit(CMD.FORM_VER)
+                                return 0
                             }
                             CMD.FORM_DATA_ADD ->{
                                 KLog.d("GUI 菜单添加")
@@ -474,10 +483,12 @@ object ComJni {
                                 sdat = getGUIData(len + 9, slen)
                                 val pszText = bytes2Str(sdat)
                                 DiagnosisService.mITaskCallback?.addItemTwo(CMD.FORM_VER,pszName,pszText)
+                                return 0
                             }
                             CMD.FORM_DATA_SHOW ->{
                                 KLog.d("GUI 菜单显示")
                                 DiagnosisService.mITaskCallback?.dataShow(CMD.FORM_VER)
+                                return 0
                             }
                         }
                     }
@@ -487,6 +498,7 @@ object ComJni {
                             CMD.FORM_DATA_INIT ->{
                                 KLog.d("GUI 菜单初始化")
                                 DiagnosisService.mITaskCallback?.dataInit(CMD.FORM_ACT)
+                                return 0
                             }
                             CMD.FORM_DATA_ADD ->{
                                 KLog.d("GUI 菜单添加")
@@ -503,6 +515,7 @@ object ComJni {
                                 sdat = getGUIData(len + slen + 12, sslen)
                                 val pszUnit = bytes2Str(sdat)
                                 DiagnosisService.mITaskCallback?.addItemThree(CMD.FORM_ACT,pszName,pszValue,pszUnit)
+                                return 0
                             }
                             CMD.FORM_ACT_ADD_BUTTON ->{
                                 KLog.d("GUI 按钮添加")
@@ -510,6 +523,7 @@ object ComJni {
                                 val sdat = getGUIData(7, len)
                                 val butName = bytes2Str(sdat)
                                 DiagnosisService.mITaskCallback?.addButton(CMD.FORM_ACT,butName)
+                                return 0
                             }
                             CMD.FORM_ACT_ADD_PROMPT ->{
                                 KLog.d("GUI 提示信息添加")
@@ -517,10 +531,12 @@ object ComJni {
                                 val sdat = getGUIData(6, len)
                                 val pszText = bytes2Str(sdat)
                                 DiagnosisService.mITaskCallback?.addHint(CMD.FORM_ACT,pszText)
+                                return 0
                             }
                             CMD.FORM_DATA_SHOW ->{
                                 KLog.d("GUI 菜单显示")
                                 DiagnosisService.mITaskCallback?.dataShow(CMD.FORM_ACT)
+                                return 0
                             }
                         }
                     }
@@ -612,6 +628,10 @@ object ComJni {
                 val data = getGUIData(0, 8)
                 if (data.isEmpty())return 0
                 val bMode: Byte = data[3]
+                val tempPring = ByteArray(1)
+                tempPring[0] = bMode
+                val bModeString =  ConvertUtils.bytes2HexString(tempPring)
+                println("bModeString=$bModeString")
                 when(data[2]){
                     CMD.FORM_MSG ->{
                         KLog.d("GUI FORM_MSG-消息弹窗-${(bMode and 0xff.toByte())}")
@@ -639,6 +659,7 @@ object ComJni {
                             println("pszMessage=$pszMessage")
                             println("dwColor=$dwColor")
                             DiagnosisService.mITaskCallback?.showDialog(bMode,bMode,"",pszMessage,"",dwColor)
+                            Thread.sleep(200)
                         }
                     }
                     CMD.FORM_INPUT ->{

@@ -20,6 +20,15 @@ object PathManager {
     fun getBasePath():String{
         return STORAGE  + getPackType() + File.separator
     }
+
+    /**
+     *  app 私有file目录
+     */
+    fun getBasePrivatePath():String{
+
+        return BaseApplication.getInstance().getExternalFilesDir(null).toString()
+    }
+
     /**
      *  sd卡路径风味路径 末尾不带/
      */

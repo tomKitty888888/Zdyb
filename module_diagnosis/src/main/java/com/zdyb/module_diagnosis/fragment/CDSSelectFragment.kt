@@ -8,9 +8,12 @@ import android.view.Gravity
 import android.view.View
 import android.widget.CheckBox
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.core.widget.PopupWindowCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.GsonUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -19,6 +22,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import com.zdeps.gui.CMD
 import com.zdeps.gui.ITaskCallbackAdapter
 import com.zdyb.ITaskCallback
+import com.zdyb.lib_common.base.BaseApplication
 import com.zdyb.lib_common.base.BaseNavFragment
 import com.zdyb.lib_common.utils.PreferencesUtils
 import com.zdyb.lib_common.utils.SharePreferencesDiagnosis
@@ -27,9 +31,11 @@ import com.zdyb.module_diagnosis.activity.DiagnosisActivity
 import com.zdyb.module_diagnosis.bean.CDSGroupingEntity
 import com.zdyb.module_diagnosis.bean.CDSGroupingListEntity
 import com.zdyb.module_diagnosis.bean.CDSSelectEntity
+import com.zdyb.module_diagnosis.bean.DeviceEntity
 import com.zdyb.module_diagnosis.databinding.FragmentCdsSelectBinding
 import com.zdyb.module_diagnosis.dialog.DialogHintBox
 import com.zdyb.module_diagnosis.dialog.DialogInputValueBox
+import com.zdyb.module_diagnosis.help.BottomDeviceCmd
 import com.zdyb.module_diagnosis.model.LoadDiagnosisModel
 import com.zdyb.module_diagnosis.popup.GroupingPopupWindow
 import com.zdyb.module_diagnosis.widget.BottomBarActionButton
@@ -44,13 +50,19 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
 
     //val tempGroupingList = mutableListOf<CDSGroupingEntity>() //临时列表
     private var groupingListEntity = CDSGroupingListEntity() //分组
+    private var newGroupingState  = 0  //分组过程的状态，0默认未开始状态，1复选框出现；2完成选择，输入名称，
 
+    private var defaultState = true //默认状态能够点击
+    lateinit var mDeviceEntity : DeviceEntity
     override fun initViewModel(): LoadDiagnosisModel {
         val model: LoadDiagnosisModel by activityViewModels()
        return model
     }
 
-
+    override fun initParam() {
+        super.initParam()
+        mDeviceEntity = arguments?.getSerializable(DeviceEntity.tag) as DeviceEntity
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +71,12 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
         mDialogHintBox.setBackResult {
             val action = if (it) CMD.MB_YES else CMD.MB_NO
             viewModel.setCommonValue(CMD.ID_DIALOG_OFFSET, action)
+        }
+        mDialogHintBox.setHomeBackResult{
+            println("HomeBackResult--执行到")
+            BottomDeviceCmd.closeBottomDevice()
+            BaseApplication.getInstance().outDiagnosisService = true
+            findNavController().popBackStack(R.id.JCHomeFragment,false)
         }
         mPopup = GroupingPopupWindow(requireContext())
 
@@ -74,14 +92,35 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
             mActivity.addLeftActionButton(
                 BottomBarActionButton(activity).addValue(R.mipmap.icon_d_select,getString(R.string.action_button_select_look))
                     .setClick {
-                        viewModel.cdsSelectLiveData.value = mAdapter.data
-                        findNavController().navigate(R.id.action_CDSSelectFragment_to_CDSShowFragment)
+                        if (newGroupingState != 0){
+                            viewModel.showToast(getString(R.string.cds_grouping_set_hint))
+                            return@setClick
+                        }
+
+                        //遍历看看有没有选中的
+                        val tempData = mutableListOf<CDSSelectEntity>()
+                        for (item in mAdapter.data){
+                            if (item.select){
+                                tempData.add(item)
+                            }
+                        }
+                        if (tempData.isEmpty()){
+                            val bundle = bundleOf("selectType" to "0")
+                            viewModel.cdsSelectLiveData.value = mAdapter.data
+                            findNavController().navigate(R.id.action_CDSSelectFragment_to_CDSShowFragment,bundle)
+                        }else{
+                            val bundle = bundleOf("selectType" to "1")
+                            viewModel.cdsSelectLiveData.value = tempData
+                            findNavController().navigate(R.id.action_CDSSelectFragment_to_CDSShowFragment,bundle)
+                        }
+
                     }
             )
             mActivity.addRightActionButton(
                 BottomBarActionButton(activity).addValue(R.mipmap.icon_d_back,getString(R.string.action_button_back))
                     .setPartitionLineVisibility(ConstraintLayout.LayoutParams.LEFT)
                     .setClick {
+                        viewModel.titleLiveData.value = mDeviceEntity.name
                         viewModel.setDigValue(CMD.ID_MENU_BACK.toByte())
                         //mDialogHintBox.show(childFragmentManager,"mDialogHintBox")
                         findNavController().navigateUp()
@@ -96,6 +135,8 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
         }
     }
 
+
+
     override fun initViewObservable() {
         super.initViewObservable()
 
@@ -103,11 +144,25 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
             mAdapter.setList(it)
         }
 
+        mAdapter.addChildClickViewIds(R.id.checkBox)
+        mAdapter.setOnItemChildClickListener{ adapter, _, position ->
+            if (addIsShow){
+                val item = adapter.data[position] as CDSSelectEntity
+                item.isAdd = !item.isAdd
+                adapter.notifyItemChanged(position)
+            }
+        }
         mAdapter.setOnItemClickListener { adapter, _, position ->
             if (addIsShow){
                 val item = adapter.data[position] as CDSSelectEntity
                 item.isAdd = !item.isAdd
                 adapter.notifyItemChanged(position)
+            }else{
+                if (defaultState){
+                    val item = adapter.data[position] as CDSSelectEntity
+                    item.select = !item.select
+                    adapter.notifyItemChanged(position)
+                }
             }
         }
 
@@ -140,8 +195,11 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
         //搜索按钮
         binding.butSelect.onClick {
             val value = binding.selectEdit.text.toString().trim()
-            if (TextUtils.isEmpty(value)){
+            println(value)
+            if (!TextUtils.isEmpty(value)){
                 mAdapter.setList(selectValue(value))
+            }else{
+                mAdapter.setList(viewModel.cdsSelectAllLiveData.value)
             }
         }
         //新建分组
@@ -160,12 +218,15 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
                     addIsShow = false//屏蔽勾选框
                     binding.tvNew.text = getString(R.string.cds_new_grouping)
                     mAdapter.notifyDataSetChanged()
+                    newGroupingState = 0
+                    defaultState = true
                 }else{
                     //弹窗提示输入分组名称
                     val dialogInputValueBox = DialogInputValueBox()
                         .setTitle(getString(R.string.cds_grouping_add_title_hint))
                         .setInputHint(getString(R.string.cds_grouping_add_input_hint))
                         .setBackResult(Consumer {
+
                             if (it.result){
                                 //存储格式 父menu名称+分组名称进行存储，不同类型的数据流下面有不同的分组
                                 val groupingEntity = CDSGroupingEntity(it.value,newGroupingList)
@@ -176,6 +237,8 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
                                     //tempGroupingList.add(CDSGroupingEntity(it.value,newGroupingList))//临时分组
                                     mAdapter.setList(newGroupingList)
                                     binding.tvNew.text = getString(R.string.cds_new_grouping)
+                                    newGroupingState = 0
+                                    defaultState = true
                                 }
                             }
                         }).show(childFragmentManager,"DialogInputValueBox")
@@ -185,17 +248,26 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
                 //初始化添加
                 for (item in mAdapter.data){
                     item.isAdd = false
+                    item.select = false
                 }
                 binding.tvNew.text = getString(R.string.cds_grouping_add_success)
                 mAdapter.notifyDataSetChanged()
+                newGroupingState = 1
+
             }
 
+            println("newGroupingState=$newGroupingState")
         }
         //我的分组
         binding.butMyGrouping.onClick {
             if (mPopup.isShowing){
                 return@onClick
             }
+            if (newGroupingState != 0){
+                viewModel.showToast(getString(R.string.cds_grouping_set_hint))
+                return@onClick
+            }
+
             mPopup.setData(groupingListEntity)
             PopupWindowCompat.showAsDropDown(mPopup, binding.butMyGrouping, 0, 20, Gravity.START)
         }
@@ -240,10 +312,37 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
                 }
 
                 checkBox.isChecked = item.isAdd
+
+                //改变背景颜色
+                if (defaultState){
+                    if (item.select){
+                        holder.getView<ConstraintLayout>(R.id.itemLayout).setBackgroundResource(R.color.dialog_bar_bg_end)
+                    }else{
+                        //恢复背景色
+                        if (holder.layoutPosition %2 != 0){
+                            holder.getView<ConstraintLayout>(R.id.itemLayout).setBackgroundResource(R.color.item_bg)
+                            holder.getView<View>(R.id.partition).setBackgroundResource(R.color.white)
+                        }else{
+                            holder.getView<ConstraintLayout>(R.id.itemLayout).setBackgroundResource(R.color.white)
+                            holder.getView<View>(R.id.partition).setBackgroundResource(R.color.item_bg)
+                        }
+                    }
+                }
+
+
             }
+
+
         }
 
 
+    override fun onResume() {
+        super.onResume()
+        val value = binding.selectEdit.text.toString()
+        if (!TextUtils.isEmpty(value)){
+            mAdapter.setList(selectValue(value))
+        }
+    }
 
     private val iTaskCallback: ITaskCallback.Stub = object : ITaskCallbackAdapter(){
 
@@ -268,14 +367,14 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
         override fun viewFinish() {
             super.viewFinish()
             println("viewFinish---cdsSelect>")
-            activity?.runOnUiThread {
+            requireActivity().runOnUiThread {
                 findNavController().popBackStack()
             }
         }
 
         override fun destroyDialog() :Long{
 
-            activity?.runOnUiThread {
+            requireActivity().runOnUiThread {
                 println("destroyDialog---cdsSelect>")
                 if (mDialogHintBox.isVisible)mDialogHintBox.dismiss()
             }
@@ -291,7 +390,7 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
             color: Long
         ) :Long{
 
-            activity?.runOnUiThread {
+            requireActivity().runOnUiThread {
                 println("showDialog---cdsSelect>")
                 when (tag){
                     CMD.MSG_MB_NOBUTTON,CMD.MSG_MB_OK,CMD.MB_NO,CMD.MSG_MB_YESNO -> {

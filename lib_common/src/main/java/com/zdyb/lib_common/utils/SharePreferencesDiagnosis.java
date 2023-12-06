@@ -8,5 +8,16 @@ public class SharePreferencesDiagnosis {
     public static final String CDS_GROUPING = "cds_grouping_";
 
 
+    /**
+     * 下位机的sn号码
+     */
+    public static final String DEVICE_SN = "device_sn";
+
+    /**
+     * 下位机的版本号
+     */
+    public static final String DEVICE_VERSION = "device_version";
+
+
 
 }

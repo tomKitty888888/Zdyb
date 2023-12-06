@@ -2,14 +2,13 @@ package com.zdyb.module_diagnosis.dialog
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.method.DigitsKeyListener
 import android.view.*
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import com.blankj.utilcode.util.ToastUtils
 import com.qmuiteam.qmui.kotlin.onClick
@@ -18,7 +17,6 @@ import com.zdyb.lib_common.base.BaseDialogFragment
 import com.zdyb.lib_common.base.KLog
 import com.zdyb.module_diagnosis.R
 import com.zdyb.module_diagnosis.bean.BoxActionResult
-import com.zdyb.module_diagnosis.databinding.DialogHintBoxBinding
 import com.zdyb.module_diagnosis.databinding.DialogInputBoxBinding
 import io.reactivex.functions.Consumer
 
@@ -133,6 +131,7 @@ class DialogInputBox:BaseDialogFragment(){
             CMD.INPUT_MODE_VIN,CMD.INPUT_MODE_ALL ->{
                 KLog.i("限制只输入VIN码")
                 binding.edText.keyListener = DigitsKeyListener.getInstance("0123456789ABCDEFGHJKLMNPRSTUVWXYZ")
+                //binding.edText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(17))
             }
             else ->{
                 println("actionType=$actionType")
@@ -166,6 +165,7 @@ class DialogInputBox:BaseDialogFragment(){
     override fun onResume() {
         println("$tag---->onResume()")
         super.onResume()
+        binding.edText.setText("")
     }
 
     override fun onStart() {

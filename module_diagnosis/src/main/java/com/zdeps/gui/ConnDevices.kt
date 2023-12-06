@@ -27,7 +27,7 @@ object ConnDevices {
     fun outTimeReadData(outTime:Long): ByteArray? {
         if (BaseApplication.usbConn == null){
             //showToast(context?.getString(R.string.no_usb_connect))
-            println("usb未连接")
+            println("usb服务未启动")
             return null
         }
         return BaseApplication.usbConn?.readData(outTime)
@@ -36,7 +36,7 @@ object ConnDevices {
     fun readData(retlen:Int): ByteArray? {
         if (BaseApplication.usbConn == null){
             //showToast(context?.getString(R.string.no_usb_connect))
-            println("usb未连接")
+            println("usb服务未启动")
             return null
         }
         return BaseApplication.usbConn?.readData(retlen)
@@ -45,9 +45,18 @@ object ConnDevices {
     fun purge(){
         if (BaseApplication.usbConn == null){
             //showToast(context?.getString(R.string.no_usb_connect))
-            println("usb未连接")
+            println("usb服务未启动")
             return
         }
         BaseApplication.usbConn?.purge()
+    }
+
+    fun anewConnect(){
+        if (BaseApplication.usbConn == null){
+            //showToast(context?.getString(R.string.no_usb_connect))
+            println("usb服务未启动")
+            return
+        }
+        BaseApplication.usbConn?.anewConnect()
     }
 }

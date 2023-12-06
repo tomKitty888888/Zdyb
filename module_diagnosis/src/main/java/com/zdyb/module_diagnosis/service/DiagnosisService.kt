@@ -33,7 +33,7 @@ class DiagnosisService :Service(){
             mITaskCallback = cb
         }
 
-        override fun unregisterCallback(cb: ITaskCallback) {
+        override fun unregisterCallback(cb: ITaskCallback?) {
             mITaskCallback = null
         }
 

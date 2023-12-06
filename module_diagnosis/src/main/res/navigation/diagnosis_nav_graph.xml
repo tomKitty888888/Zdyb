@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/JCHomeFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -91,6 +91,23 @@
         android:label="LocalMenuListFragment" >
         <action
             android:id="@+id/action_localMenuListFragment_to_menuListFragment"
+            app:destination="@id/menuListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/JCHomeFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.JCHomeFragment"
+        android:label="JCHomeFragment"
+        tools:layout="@layout/fragment_jc_home">
+        <action
+            android:id="@+id/action_JCHomeFragment_to_JCHomeChildFragment"
+            app:destination="@id/JCHomeChildFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/JCHomeChildFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.JCHomeChildFragment"
+        android:label="JCHomeChildFragment" >
+        <action
+            android:id="@+id/action_JCHomeChildFragment_to_menuListFragment"
             app:destination="@id/menuListFragment" />
     </fragment>
 </navigation>

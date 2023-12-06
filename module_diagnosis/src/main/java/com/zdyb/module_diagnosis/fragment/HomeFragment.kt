@@ -13,14 +13,15 @@ import com.zdyb.lib_common.utils.PathManager
 import com.zdyb.module_diagnosis.R
 import com.zdyb.module_diagnosis.activity.DiagnosisActivity
 import com.zdyb.module_diagnosis.dialog.*
+import com.zdyb.module_diagnosis.model.HomeModel
 import com.zdyb.module_diagnosis.widget.BottomBarActionButton
 
-class HomeFragment: BaseNavFragment<FragmentHomeBinding, BaseViewModel>()  {
+class HomeFragment: BaseNavFragment<FragmentHomeBinding, HomeModel>()  {
 
 
 
-    override fun initViewModel(): BaseViewModel {
-        return ViewModelProvider(requireActivity())[BaseViewModel::class.java]
+    override fun initViewModel(): HomeModel {
+        return ViewModelProvider(requireActivity())[HomeModel::class.java]
     }
     //
     val mDialogInputFileBox = DialogLockImgBox()
@@ -56,8 +57,6 @@ class HomeFragment: BaseNavFragment<FragmentHomeBinding, BaseViewModel>()  {
             println("6663")
 
             mDialogInputFileBox.setBackResult{
-                //mDialogInputBox.dismiss()
-                visibleDialog(mDialogInputFileBox)
             }
             //mDialogInputFileBox.setActionType(CMD.FORM_INPUT).setTitle("注意：本次操作将改变ECU内部数据,请预先做好备份(使用读取数据功能进行备份)").setInitMsg("")
             //mDialogInputFileBox.setInitMsg("注意：本次操作将改变ECU内部数据,请预先做好备份(使用读取数据功能进行备份)")
@@ -79,16 +78,7 @@ class HomeFragment: BaseNavFragment<FragmentHomeBinding, BaseViewModel>()  {
         println("初始化首页")
     }
 
-    fun visibleDialog(vararg dialogs : BaseDialogFragment){
-        for (d in dialogs){
-            if (d.isVisible)d.dismiss()
-//            when(d){
-//                is DialogHintBox ->{if (d.isVisible){d.dismiss()}}
-//                is DialogInputBox ->{if (d.isVisible){d.dismiss()}}
-//                is DialogInputFileBox ->{if (d.isVisible){d.dismiss()}}
-//            }
-        }
-    }
+
 
     fun addActionButton(){
         if (activity is DiagnosisActivity){

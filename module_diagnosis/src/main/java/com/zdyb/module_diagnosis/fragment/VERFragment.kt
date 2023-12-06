@@ -12,6 +12,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import com.zdeps.gui.CMD
 import com.zdeps.gui.ITaskCallbackAdapter
 import com.zdyb.ITaskCallback
+import com.zdyb.lib_common.base.BaseApplication
 import com.zdyb.lib_common.base.BaseNavFragment
 import com.zdyb.module_diagnosis.R
 import com.zdyb.module_diagnosis.activity.DiagnosisActivity
@@ -19,6 +20,7 @@ import com.zdyb.module_diagnosis.bean.DeviceEntity
 import com.zdyb.module_diagnosis.bean.KVEntity
 import com.zdyb.module_diagnosis.databinding.FragmentVerListBinding
 import com.zdyb.module_diagnosis.dialog.DialogHintBox
+import com.zdyb.module_diagnosis.help.BottomDeviceCmd
 import com.zdyb.module_diagnosis.model.LoadDiagnosisModel
 import com.zdyb.module_diagnosis.widget.BottomBarActionButton
 import io.reactivex.disposables.Disposable
@@ -34,14 +36,23 @@ class VERFragment:BaseNavFragment<FragmentVerListBinding,LoadDiagnosisModel>() {
     lateinit var rxPermission : RxPermissions
     private var dis1: Disposable? = null
     //private var listString = mutableListOf<String>()
-
+    lateinit var mDeviceEntity : DeviceEntity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         rxPermission = RxPermissions(requireActivity())
         mDialogHintBox = DialogHintBox()
+        mDialogHintBox.setHomeBackResult{
+            println("HomeBackResult--执行到")
+            BottomDeviceCmd.closeBottomDevice()
+            BaseApplication.getInstance().outDiagnosisService = true
+            findNavController().popBackStack(R.id.JCHomeFragment,false)
+        }
     }
 
-
+    override fun initParam() {
+        super.initParam()
+        mDeviceEntity = arguments?.getSerializable(DeviceEntity.tag) as DeviceEntity
+    }
 
     override fun initActionButton() {
         super.initActionButton()
@@ -58,6 +69,8 @@ class VERFragment:BaseNavFragment<FragmentVerListBinding,LoadDiagnosisModel>() {
                 BottomBarActionButton(activity).addValue(R.mipmap.icon_d_back,getString(R.string.action_button_back))
                     .setPartitionLineVisibility(ConstraintLayout.LayoutParams.LEFT)
                     .setClick {
+
+                        viewModel.titleLiveData.value = mDeviceEntity.name
                         viewModel.setDigValue(CMD.ID_MENU_BACK.toByte())
                         //mDialogHintBox.show(childFragmentManager,"mDialogHintBox")
                         findNavController().navigateUp()
@@ -79,7 +92,8 @@ class VERFragment:BaseNavFragment<FragmentVerListBinding,LoadDiagnosisModel>() {
         }
 
         mAdapter.setOnItemClickListener { _, _, position ->
-            viewModel.setDigValue(position.toByte())
+
+
         }
         binding.recyclerView.isScrollbarFadingEnabled = false //常驻显示进度条
         binding.recyclerView.scrollBarFadeDuration = 0
@@ -126,14 +140,14 @@ class VERFragment:BaseNavFragment<FragmentVerListBinding,LoadDiagnosisModel>() {
         override fun viewFinish() {
             super.viewFinish()
             println("viewFinish---ver>")
-            activity?.runOnUiThread {
+            requireActivity().runOnUiThread {
                 findNavController().popBackStack()
             }
         }
 
         override fun destroyDialog() :Long{
 
-            activity?.runOnUiThread {
+            requireActivity().runOnUiThread {
                 println("destroyDialog---ver>")
                 if (mDialogHintBox.isVisible)mDialogHintBox.dismiss()
             }
@@ -149,19 +163,19 @@ class VERFragment:BaseNavFragment<FragmentVerListBinding,LoadDiagnosisModel>() {
             color: Long
         ) :Long{
 
-            activity?.runOnUiThread {
-                println("destroyDialog---ver>")
-                when (tag){
-                    CMD.MSG_MB_NOBUTTON,CMD.MSG_MB_OK,CMD.MB_NO,CMD.MSG_MB_YESNO -> {
-                        if (!mDialogHintBox.isVisible && !mDialogHintBox.isShow()){
-                            mDialogHintBox.setActionType(tag).setInitMsg(msg)
-                            mDialogHintBox.show(childFragmentManager,"mDialogHintBox")
-                        }else if(mDialogHintBox.isVisible){
-                            mDialogHintBox.setMsg(msg)
-                        }
-                    }
-                }
-            }
+//            requireActivity().runOnUiThread {
+//                println("destroyDialog---ver>")
+//                when (tag){
+//                    CMD.MSG_MB_NOBUTTON,CMD.MSG_MB_OK,CMD.MB_NO,CMD.MSG_MB_YESNO -> {
+//                        if (!mDialogHintBox.isVisible && !mDialogHintBox.isShow()){
+//                            mDialogHintBox.setActionType(tag).setInitMsg(msg)
+//                            mDialogHintBox.show(childFragmentManager,"mDialogHintBox")
+//                        }else if(mDialogHintBox.isVisible){
+//                            mDialogHintBox.setMsg(msg)
+//                        }
+//                    }
+//                }
+//            }
             return super.showDialog(tag, type, title, msg, imgPath, color)
         }
     }

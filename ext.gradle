@@ -3,8 +3,8 @@ ext {
 
     android = [
 
-            applicationId    : "com.zdyb.app",
-            //applicationId    : "com.module_login",
+            //applicationId    : "com.zdyb.app",
+            applicationId    : "com.module_diagnsois",
             //applicationId    : "com.module_personal",
             //applicationId    : "com.module_home",
             //applicationId    : "com.module_scene",
@@ -13,10 +13,11 @@ ext {
             compileSdkVersion: 31,
             minSdkVersion    : 26,
             targetSdkVersion : 31,
-            versionCode      : 1,
-            versionName      : "1.0.0",
+            versionCode      : 6,
+            versionName      : "1.0.6",
 
     ]
+    //103 增加停止通信功能，标题错乱
 
     appNamespace = "${android["applicationId"]}"
     namespaces =[
@@ -100,6 +101,7 @@ ext {
             "MPAndroidChart"               : "com.github.PhilJay:MPAndroidChart:v3.1.0",
 
             "jetpack"                      : [
+                    //2.4.2
                     "androidx.navigation:navigation-dynamic-features-fragment:2.4.2",
                     "androidx.navigation:navigation-fragment-ktx:2.4.2",
                     "androidx.navigation:navigation-ui-ktx:2.4.2",
@@ -123,6 +125,7 @@ ext {
             //蓝牙
             "bluetooth"                    : "com.inuker.bluetooth:library:1.4.0",
             "gif"                          : 'pl.droidsonroids.gif:android-gif-drawable:1.2.7',
+            "pdf"                          : 'com.github.barteksc:android-pdf-viewer:2.8.2',
 
     ]
 

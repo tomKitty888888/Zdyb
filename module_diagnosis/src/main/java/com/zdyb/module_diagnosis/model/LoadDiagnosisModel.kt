@@ -36,7 +36,7 @@ class LoadDiagnosisModel :BaseViewModel(){
 
     var isScan = true
     val deviceList = MutableLiveData<List<DeviceEntity>>() //识别到的设备
-    var menuListLiveData = MutableLiveData<List<String>>() //菜单数据
+    var menuListLiveData = MutableLiveData<Set<String>>() //菜单数据
     val titleLiveData = MutableLiveData<String>() //记录菜单项 当作标题
     //ver
     val verData = mutableListOf<KVEntity>() //ver数据
@@ -50,17 +50,27 @@ class LoadDiagnosisModel :BaseViewModel(){
     //cds-查询的数据流
     val cdsSelectLiveData = MutableLiveData<MutableList<CDSSelectEntity>>()
     //act
-    val actData = mutableSetOf<ACTEntity>() //act数据
+
     val actLiveData = MutableLiveData<Set<ACTEntity>>() //act数据
     val actButtonData = mutableListOf<String>()
     val actButtonLiveData = MutableLiveData<MutableList<String>>()//act 按钮
     var actHint = StringBuffer()
 
 
-    lateinit var mITaskBinder : ITaskBinder
+    var mITaskBinder : ITaskBinder? = null
+    val disServerConnect = MutableLiveData<Boolean>()//诊断服务是否连接
+
+    var consumer : Consumer<Boolean>? = null
 
     override fun onCreate() {
         super.onCreate()
+        //bingDiagnosisService()
+    }
+
+    //重新绑定服务 先解绑之前的
+    fun anewDiagnosisService(consumer : Consumer<Boolean>){
+        this.consumer = consumer
+        mITaskBinder?.let { android.os.Process.killProcess(it.processPid) }
         bingDiagnosisService()
     }
 
@@ -72,12 +82,15 @@ class LoadDiagnosisModel :BaseViewModel(){
     private val mConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             mITaskBinder = ITaskBinder.Stub.asInterface(service)
-            mITaskBinder.registerTransferCallback(mTransfer)
+            mITaskBinder?.registerTransferCallback(mTransfer)
+            disServerConnect.value = true
             LogUtils.i("诊断服务绑定成功")
+            consumer?.accept(true)
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
             LogUtils.i("诊断服务断开--重新绑定")
+            disServerConnect.value = false
             if (BaseApplication.getInstance().outDiagnosisService){
                 return
             }
@@ -108,15 +121,17 @@ class LoadDiagnosisModel :BaseViewModel(){
         }
 
         override fun setBaudRate(baudRate: Int): Boolean {
-            TODO("Not yet implemented")
+
+            return true
         }
 
         override fun IsWiredOrBluetooth(): Int {
-            TODO("Not yet implemented")
+
+            return 0
         }
 
         override fun readFrame(TimeOut: Int): ByteArray {
-            TODO("Not yet implemented")
+            return ByteArray(0)
         }
 
     }
@@ -307,14 +322,15 @@ class LoadDiagnosisModel :BaseViewModel(){
             KLog.e("配置文件未匹配到此项路径：id=${dev.id},${dev.name},${dev.path}")
             return ""
         }
-        val path = PathManager.getBasePath() + dev.path.replace("\\", "/")
+        val path = PathManager.getBasePath()+dev.path.replace("\\", "/")
         //  /storage/emulated/0/zdeps/Diagnosis\Electronic\01Bosch
         KLog.i("文件路径=${path}")
         //获取所有目录
         val folder = File(path)
         if (!folder.exists()) {
             //后续改为自动下载 自动进行后续操作
-            showToast("文件为空，请先下载文件")
+            KLog.e("文件为空=${folder}")
+            showToast("文件为空，请先下载文件,检查路径")
             return ""
         }
         val files = folder.listFiles { pathname -> pathname.isDirectory }
@@ -382,6 +398,8 @@ class LoadDiagnosisModel :BaseViewModel(){
         val dir: File = context!!.getDir("jniLibs", Context.MODE_PRIVATE)
         val desFile = File(dir.absolutePath + File.separator + "libdiag-lib.so")
 
+
+
         try {
             if (desFile.exists()) {
                 desFile.delete()
@@ -419,16 +437,32 @@ class LoadDiagnosisModel :BaseViewModel(){
      * 启动诊断
      */
     fun startDiagnosis(id:Long,iTaskCallback: ITaskCallback,versionPath: String){
-        println("原本id=${id}")
-        println("versionPath=$versionPath")
-        mITaskBinder.registerCallback(iTaskCallback)
-        mITaskBinder.run(mLoadAbsolutePath,versionPath)
-        SystemClock.sleep(1000)
-        mITaskBinder.setTaskID(id)
+
+        try {
+            mITaskBinder?.let {
+                println("原本id=${id}")
+                println("versionPath=$versionPath")
+                mITaskBinder?.registerCallback(iTaskCallback)
+                mITaskBinder?.run(mLoadAbsolutePath,versionPath)
+                SystemClock.sleep(1000)
+                mITaskBinder?.setTaskID(id)
+            }
+
+        }catch (e :Exception){
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * 删除掉监听防止串数据
+     */
+    fun removeCallback(){
+        mITaskBinder?.unregisterCallback(null)
+
     }
 
     fun registerCallback(iTaskCallback: ITaskCallback){
-        mITaskBinder.registerCallback(iTaskCallback)
+        mITaskBinder?.registerCallback(iTaskCallback)
     }
 
 
@@ -436,13 +470,13 @@ class LoadDiagnosisModel :BaseViewModel(){
      * 偏移量固定为6
      */
     fun setDigValue(data: Byte){
-        mITaskBinder.setMenuValue(data)
+        mITaskBinder?.setMenuValue(data)
     }
     fun setCommonValue(offset: Int,data: Byte){
-        mITaskBinder.setCommonValue(offset,data)
+        mITaskBinder?.setCommonValue(offset,data)
     }
     fun setCommonValueToArray(offset: Int,data: String){
-        mITaskBinder.setCommonValueToArray(offset,data)
+        mITaskBinder?.setCommonValueToArray(offset,data)
     }
 
     override fun onDestroy() {
@@ -450,7 +484,8 @@ class LoadDiagnosisModel :BaseViewModel(){
 
         try {
             closeData()
-            android.os.Process.killProcess(mITaskBinder.processPid)
+            mITaskBinder?.let { android.os.Process.killProcess(it.processPid) }
+            mITaskBinder = null
             BaseApplication.getInstance().unbindService(mConnection)
         }catch (e :Exception){
 
@@ -459,9 +494,10 @@ class LoadDiagnosisModel :BaseViewModel(){
     }
 
 
+
     private fun closeData(){
-        deviceList.value = mutableListOf()
-        menuListLiveData.value = mutableListOf()
+        //deviceList.value = mutableListOf()
+        //menuListLiveData.value = mutableSetOf()
         titleLiveData.value = ""
         verData.clear()
         verLiveData.value = mutableListOf()
@@ -470,7 +506,7 @@ class LoadDiagnosisModel :BaseViewModel(){
         cdsSelectData.clear()
         cdsSelectAllLiveData.value = mutableListOf()
         cdsSelectLiveData.value = mutableListOf()
-        actData.clear()
+
         actLiveData.value = mutableSetOf()
         actButtonData.clear()
         actButtonLiveData.value = mutableListOf()

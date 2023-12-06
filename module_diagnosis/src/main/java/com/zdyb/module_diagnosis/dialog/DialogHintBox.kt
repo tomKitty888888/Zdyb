@@ -8,6 +8,7 @@ import android.view.*
 import androidx.fragment.app.FragmentManager
 import com.qmuiteam.qmui.kotlin.onClick
 import com.zdeps.gui.CMD
+import com.zdyb.lib_common.base.BaseApplication
 import com.zdyb.lib_common.base.BaseDialogFragment
 import com.zdyb.lib_common.base.KLog
 import com.zdyb.module_diagnosis.R
@@ -22,6 +23,8 @@ class DialogHintBox:BaseDialogFragment(){
     private var title = "提示"
     private var hint = ""
     private var consumer: Consumer<Boolean>? = null //按钮
+    private var homeConsumer: Consumer<Boolean>? = null //home按钮
+
     private var isTouchOutside = false //触摸外部是否消失
     private var actionType :Byte = 0 //
 
@@ -46,6 +49,7 @@ class DialogHintBox:BaseDialogFragment(){
             when(actionType){
                 CMD.MSG_MB_NOBUTTON ->{
                     println("返回首页")
+                    homeConsumer?.accept(true)
                     dismiss()
                 }else ->{
                     println("截图")
@@ -94,7 +98,10 @@ class DialogHintBox:BaseDialogFragment(){
         this.consumer = consumer
         return this
     }
-
+    fun setHomeBackResult(consumer: Consumer<Boolean>):DialogHintBox{
+        this.homeConsumer = consumer
+        return this
+    }
     /**
      * 在显示的情况下更新弹窗按钮情况
      */

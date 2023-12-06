@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">module_Diagnosis</string>
+    <string name="app_name">新型车辆检测仪</string>
+    <string name="new_vehicle_detector">新型车辆检测仪</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -64,11 +65,13 @@
     <string name="cds_grouping_add_title_hint">提示：请输入分组名称</string>
     <string name="cds_grouping_add_input_hint">请输入分组名称</string>
     <string name="cds_grouping_delete_hint">确定删除分组吗？</string>
+    <string name="cds_grouping_set_hint">先完成分组设置</string>
     <string name="cds_select">搜索</string>
     <string name="cds_save_data_to_file">保存数据流到文件</string>
     <string name="cds_start_save_data_to_file">开始采样</string>
     <string name="cds_end_save_data_to_file">停止采样</string>
     <string name="cds_end_sampling">采样结束</string>
+    <string name="cds_lock_file">查看文件</string>
     <string name="cds_save_data">
         本次保存将使用实时采样保存,采样保存期间请勿进行其他操作!
         如果需要停止采样，请点击【停止采样】按钮，是否开始采样保存?
@@ -98,8 +101,12 @@
     <string name="ecu_dialog_illustrate4">ECU引脚定义</string>
     <string name="ecu_dialog_illustrate5">功能表说明</string>
 
+    <string name="all_file_permission_title_hint">允许管理所有文件权限申请</string>
+    <string name="all_file_permission_msg_hint">允许权限后才能使用</string>
+
     <!-- 公用 -->
     <string name="confirm">确认</string>
     <string name="cancel">取消</string>
     <string name="hint">提示</string>
+    <string name="back">返回</string>
 </resources>

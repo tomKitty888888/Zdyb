@@ -55,9 +55,9 @@ public class FileUtils {
                             dieseData.setName(line.substring(0, pos).trim());
                             if (pathpos!=-1){
                                 dieseData.setPath(line.substring(pathpos+5,line.length()));
-                                dieseData.setCommend(line.substring(pos + 3, pathpos));
+                                dieseData.setCommend(line.substring(pos + 3, pathpos).trim());
                             }else {
-                                dieseData.setCommend(line.substring(pos + 3, line.length()));
+                                dieseData.setCommend(line.substring(pos + 3, line.length()).trim());
                             }
 
                             Log.v("menutxt","fileRead Commend="+dieseData.getCommend()+" path="+dieseData.getPath());

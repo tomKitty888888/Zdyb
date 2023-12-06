@@ -3,7 +3,6 @@ package com.zdyb.module_diagnosis.fragment
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -13,22 +12,31 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import com.zdeps.gui.CMD
 import com.zdeps.gui.ITaskCallbackAdapter
 import com.zdyb.ITaskCallback
+import com.zdyb.lib_common.base.BaseApplication
 import com.zdyb.lib_common.base.BaseNavFragment
 import com.zdyb.lib_common.base.KLog
+import com.zdyb.lib_common.utils.PathManager
 import com.zdyb.module_diagnosis.R
 import com.zdyb.module_diagnosis.activity.DiagnosisActivity
+import com.zdyb.module_diagnosis.activity.PDFActivity
+import com.zdyb.module_diagnosis.bean.DeviceEntity
 import com.zdyb.module_diagnosis.bean.DtcEntity
 import com.zdyb.module_diagnosis.databinding.FragmentDtcListBinding
 import com.zdyb.module_diagnosis.dialog.DialogHintBox
 import com.zdyb.module_diagnosis.dialog.DialogWebBox
+import com.zdyb.module_diagnosis.help.BottomDeviceCmd
 import com.zdyb.module_diagnosis.model.LoadDiagnosisModel
 import com.zdyb.module_diagnosis.widget.BottomBarActionButton
 import io.reactivex.disposables.Disposable
+import java.io.File
+import java.util.*
 
 class DTCFragment:BaseNavFragment<FragmentDtcListBinding,LoadDiagnosisModel>() {
 
     lateinit var mDialogWebBox: DialogWebBox
     lateinit var mDialogHintBox : DialogHintBox
+
+    lateinit var mDeviceEntity : DeviceEntity
     override fun initViewModel(): LoadDiagnosisModel {
         val model: LoadDiagnosisModel by activityViewModels()
        return model
@@ -41,10 +49,20 @@ class DTCFragment:BaseNavFragment<FragmentDtcListBinding,LoadDiagnosisModel>() {
         super.onCreate(savedInstanceState)
         rxPermission = RxPermissions(requireActivity())
         mDialogHintBox = DialogHintBox()
-        mDialogWebBox = DialogWebBox()
+        mDialogHintBox.setHomeBackResult{
+            println("HomeBackResult--执行到")
+            BottomDeviceCmd.closeBottomDevice()
+            BaseApplication.getInstance().outDiagnosisService = true
+            findNavController().popBackStack(R.id.JCHomeFragment,false)
+        }
+
+        //mDialogWebBox = DialogWebBox()
     }
 
-
+    override fun initParam() {
+        super.initParam()
+        mDeviceEntity = arguments?.getSerializable(DeviceEntity.tag) as DeviceEntity
+    }
 
     override fun initActionButton() {
         super.initActionButton()
@@ -61,6 +79,7 @@ class DTCFragment:BaseNavFragment<FragmentDtcListBinding,LoadDiagnosisModel>() {
                 BottomBarActionButton(activity).addValue(R.mipmap.icon_d_back,getString(R.string.action_button_back))
                     .setPartitionLineVisibility(ConstraintLayout.LayoutParams.LEFT)
                     .setClick {
+                        viewModel.titleLiveData.value = mDeviceEntity.name
                         viewModel.setDigValue(CMD.ID_MENU_BACK.toByte())
                         //mDialogHintBox.show(childFragmentManager,"mDialogHintBox")
                         findNavController().navigateUp()
@@ -91,24 +110,63 @@ class DTCFragment:BaseNavFragment<FragmentDtcListBinding,LoadDiagnosisModel>() {
 
         mAdapter.setOnItemClickListener { adapter, _, position ->
             KLog.i("加载H5页面")
-            if (!mDialogWebBox.isAdded && !mDialogWebBox.isVisible){
+//            if (!mDialogWebBox.isAdded && !mDialogWebBox.isVisible){
+//
+//                val dtcEntity = adapter.data[position] as DtcEntity
+//                val id =  dtcEntity.value1.trim().replace(":","")
+//                mDialogWebBox.setUrl("https://wx.ytobd.com/wx/errcode1018/list?content=${id}&box=1&limit=15&page=1")
+//                // https://wx.ytobd.com/wx/errcode1018/list?content=1117&box=1&limit=15&page=1
+//                mDialogWebBox.show(childFragmentManager,"mDialogWebBox")
+//            }
 
+
+            try {
+                //寻找对应的故障码文件，如果找不到进行提示
+                val numString = String.format("%04x", mDeviceEntity.id).uppercase(Locale.getDefault())
+                val fileName = "0x$numString"
                 val dtcEntity = adapter.data[position] as DtcEntity
                 val id =  dtcEntity.value1.trim().replace(":","")
-                mDialogWebBox.setUrl("https://wx.ytobd.com/wx/errcode1018/list?content=${id}&box=1&limit=15&page=1")
-                // https://wx.ytobd.com/wx/errcode1018/list?content=1117&box=1&limit=15&page=1
-                mDialogWebBox.show(childFragmentManager,"mDialogWebBox")
+
+                val path = PathManager.getBasePath()+"/pdf/"+fileName+"/$id.pdf"
+                println("path=$path")
+                val file = File(path)
+                if (!file.exists()){
+                    viewModel.showToast("未找到该故障码资料")
+                    return@setOnItemClickListener
+                }
+                PDFActivity.startActivity(requireActivity(),path)
+            }catch (e :Exception){
+                viewModel.showToast("未找到该故障码资料")
             }
         }
         mAdapterThree.setOnItemClickListener { adapter, _, position ->
             KLog.i("加载H5页面")
-            if (!mDialogWebBox.isAdded && !mDialogWebBox.isVisible){
+//            if (!mDialogWebBox.isAdded && !mDialogWebBox.isVisible){
+//
+//                val dtcEntity = adapter.data[position] as DtcEntity
+//                val id =  dtcEntity.value1.trim().replace(":","")
+//                mDialogWebBox.setUrl("https://wx.ytobd.com/wx/errcode1018/list?content=${id}&box=1&limit=15&page=1")
+//                // https://wx.ytobd.com/wx/errcode1018/list?content=1117&box=1&limit=15&page=1
+//                mDialogWebBox.show(childFragmentManager,"mDialogWebBox")
+//            }
 
+            try {
+                //寻找对应的故障码文件，如果找不到进行提示
+                val numString = String.format("%04x", mDeviceEntity.id).uppercase(Locale.getDefault())
+                val fileName = "0x$numString"
                 val dtcEntity = adapter.data[position] as DtcEntity
                 val id =  dtcEntity.value1.trim().replace(":","")
-                mDialogWebBox.setUrl("https://wx.ytobd.com/wx/errcode1018/list?content=${id}&box=1&limit=15&page=1")
-                // https://wx.ytobd.com/wx/errcode1018/list?content=1117&box=1&limit=15&page=1
-                mDialogWebBox.show(childFragmentManager,"mDialogWebBox")
+
+                val path = PathManager.getBasePath()+"/pdf/"+fileName+"/$id.pdf"
+                println("path=$path")
+                val file = File(path)
+                if (!file.exists()){
+                    viewModel.showToast("未找到该故障码资料")
+                    return@setOnItemClickListener
+                }
+                PDFActivity.startActivity(requireActivity(),path)
+            }catch (e :Exception){
+                viewModel.showToast("未找到该故障码资料")
             }
         }
 
@@ -179,14 +237,14 @@ class DTCFragment:BaseNavFragment<FragmentDtcListBinding,LoadDiagnosisModel>() {
         override fun viewFinish() {
             super.viewFinish()
             println("viewFinish---ver>")
-            activity?.runOnUiThread {
+            requireActivity().runOnUiThread {
                 findNavController().popBackStack()
             }
         }
 
         override fun destroyDialog() :Long{
 
-            activity?.runOnUiThread {
+            requireActivity().runOnUiThread {
                 println("destroyDialog---ver>")
                 if (mDialogHintBox.isVisible)mDialogHintBox.dismiss()
             }
@@ -202,7 +260,7 @@ class DTCFragment:BaseNavFragment<FragmentDtcListBinding,LoadDiagnosisModel>() {
             color: Long
         ) :Long{
 
-            activity?.runOnUiThread {
+            requireActivity().runOnUiThread {
                 println("destroyDialog---ver>")
                 when (tag){
                     CMD.MSG_MB_NOBUTTON,CMD.MSG_MB_OK,CMD.MB_NO,CMD.MSG_MB_YESNO -> {

@@ -48,8 +48,8 @@ class FileChooseActivity :BaseActivity<ActivityFileChooseBinding, FileChooseMode
     override fun initViewObservable() {
         super.initViewObservable()
         mPath = intent.getStringExtra("path").toString()
-        fileType = intent.getStringExtra("path").toString()
-        mTempPath = PathManager.getBasePathNoSeparator()
+        fileType = intent.getStringExtra("fileType").toString()
+        mTempPath = intent.getStringExtra("path").toString() //记录最初的根目录
 
 
         binding.layoutBack.fileImg.setImageResource(R.mipmap.icon_file_folder)
@@ -59,6 +59,9 @@ class FileChooseActivity :BaseActivity<ActivityFileChooseBinding, FileChooseMode
         }
         binding.layoutBack.item.onClick {
             //返回上一级文件
+            if (mPath == mTempPath){
+                return@onClick
+            }
 
             viewModel.getFileArray(topPath(mPath))
         }

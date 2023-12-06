@@ -31,6 +31,8 @@ object CMD {
     const val ID_DIALOG_VALUE_OFFSET: Int = 6 //传递值的偏移量
     const val ID_DIALOG_VALUE_FILE_NAME: Int = 2000 //传递值的偏移量
 
+    const val ID_ACT_INIT: Int = 0xFF
+
     /**
      * EX菜单
      */
@@ -100,6 +102,8 @@ object CMD {
      */
     const val ID_CDS_VIEW: Long = 0xFD //数据流窗口查看的时候指定的ID
 
+    const val ID_CDS_UP_DATA: Int =  0xFFFF - 2  //通知诊断刷新查看数据流的内容
+    const val ID_CDS_UP_DATA_VALUE = 0xFC
 
     //弹窗
     /**
