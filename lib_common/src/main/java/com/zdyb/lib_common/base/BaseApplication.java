@@ -48,6 +48,9 @@ import kotlin.jvm.internal.Intrinsics;
 public abstract class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks {
     private static BaseApplication sInstance;
 
+    public static String USBPath = "";
+    public static boolean usbConnect = false;
+
     /**
      * 是否退出诊断服务关闭多进程
      */
@@ -129,6 +132,12 @@ public abstract class BaseApplication extends Application implements Application
     }
 
 
+    public void setUSBConnect(Boolean bo){
+        usbConnect = bo;
+    }
+    public Boolean getUSBConnect(){
+        return usbConnect;
+    }
 
 
     public static UsbSerialPortService usbConn;

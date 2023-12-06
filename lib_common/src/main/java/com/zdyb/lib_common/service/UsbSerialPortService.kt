@@ -8,22 +8,27 @@ import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.os.*
+import android.text.method.KeyListener
+import cn.wch.uartlib.WCHUARTManager
+import cn.wch.uartlib.chipImpl.type.ChipType2
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ThreadUtils
-import com.hoho.android.usbserial.driver.UsbSerialDriver
-import com.hoho.android.usbserial.driver.UsbSerialPort
-import com.hoho.android.usbserial.driver.UsbSerialProber
+import com.hoho.android.usbserial.driver.*
 import com.hoho.android.usbserial.util.SerialInputOutputManager
+import com.zdyb.lib_common.base.BaseApplication
+import com.zdyb.lib_common.base.KLog
 import com.zdyb.lib_common.bus.BusEvent
+import com.zdyb.lib_common.bus.EventTypeDiagnosis
+import com.zdyb.lib_common.bus.RxBus
 import com.zdyb.lib_common.receiver.USBReceiver
 import com.zdyb.lib_common.receiver.USBReceiver.CallBack
 import kotlinx.coroutines.*
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.BlockingQueue
-import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.LinkedBlockingQueue
+
 
 class UsbSerialPortService : BaseService(){
 
@@ -50,6 +55,7 @@ class UsbSerialPortService : BaseService(){
                         initSerial()
                     } catch (e: Exception) {
                         e.printStackTrace()
+
                     }
                 }
             }
@@ -146,6 +152,9 @@ class UsbSerialPortService : BaseService(){
 
     override fun eventComing(t: BusEvent?) {}
 
+    //0483 5710
+    val vid = 0x0403
+    val pid = 0x6001
 
     /**
      * 初始化usb串口
@@ -153,16 +162,35 @@ class UsbSerialPortService : BaseService(){
      */
     @Throws(IOException::class)
     fun initSerial() {
+
+        val customTable = ProbeTable()
+        customTable.addProduct(0x0403, 0x6001, FtdiSerialDriver::class.java) //1018
+        //customTable.addProduct(0x1a86, 0x55d8, Ch34xSerialDriver::class.java)
+
+        val prober = UsbSerialProber(customTable)
+
         manager = getSystemService(USB_SERVICE) as UsbManager
-        val availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
+        //val availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
+        var availableDrivers = prober.findAllDrivers(manager)
+        if (availableDrivers.isEmpty()){
+            availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
+        }
         if (availableDrivers.isEmpty()) {
             return
         }
+        driver = availableDrivers[0] //默认取第一个
         for (serialDriver in availableDrivers) {
             val usbDevice = serialDriver.device
             LogUtils.i(usbDevice.toString())
+
+            if (usbDevice.vendorId == 6790 && usbDevice.productId == 21976){
+                WCHUARTManager.getInstance().init(BaseApplication.getInstance())
+                WCHUARTManager.addNewHardwareAndChipType(6790,21976,ChipType2.CHIP_CH9101UH)
+                driver = serialDriver
+                break
+            }
         }
-        driver = availableDrivers[0]
+
         if (!manager!!.hasPermission(driver!!.device)) {
             log("没有权限")
             //usbPermissionReceiver = new UsbPermissionReceiver();
@@ -241,6 +269,8 @@ class UsbSerialPortService : BaseService(){
 
                         ThreadUtils.runOnUiThread { log("usb连接:未连接") }
                         LogUtils.e(e)
+                        RxBus.getDefault().post(BusEvent(EventTypeDiagnosis.PORT_OUT))
+                        BaseApplication.getInstance().usbConnect = false
                         //Queueing USB request failed
                         //usb被删除断开了,原因是线断了-。-
                         //重启设备
@@ -248,6 +278,8 @@ class UsbSerialPortService : BaseService(){
                     }
                 })
             ThreadUtils.getIoPool().execute(usbIoManager)
+            RxBus.getDefault().post(BusEvent(EventTypeDiagnosis.PORT_CONNECT))
+            BaseApplication.getInstance().usbConnect = true
         }
 
     }
@@ -275,7 +307,19 @@ class UsbSerialPortService : BaseService(){
                 log("发送完毕--${ConvertUtils.bytes2HexString(bytes)}")
                 return bytes.size
             }else{
+
+//                if (serialPort !=null && !serialPort!!.isOpen){
+//
+//                    //重新打开一下
+//                    initSerial()
+//                    serialPort!!.write(bytes, 0)
+//                    return bytes.size
+//                }else{
+//                    println("serialPort==null")
+//                    RxBus.getDefault().post(BusEvent(EventTypeDiagnosis.PORT_IS_NULL))
+//                }
                 println("serialPort==null")
+                RxBus.getDefault().post(BusEvent(EventTypeDiagnosis.PORT_IS_NULL))
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -345,6 +389,17 @@ class UsbSerialPortService : BaseService(){
 
     fun purge(){
         loopDatas.clear()
+    }
+
+    fun anewConnect(){
+        try {
+            KLog.d("串口开启状态=${BaseApplication.getInstance().usbConnect}")
+            if (!BaseApplication.getInstance().usbConnect){
+                initSerial()
+            }
+        }catch (e :Exception){
+            e.printStackTrace()
+        }
     }
 
 }

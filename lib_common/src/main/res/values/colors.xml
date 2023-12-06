@@ -8,8 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="color_theme">#31A544</color>
-    <color name="colorAccent">#31A544</color>
+    <color name="color_theme">#FF024A40</color>
+    <color name="colorAccent">#FF33A979</color>
 
     <!-- 背景边框线 灰色 -->
     <color name="line_grey">#DADDDB</color>
