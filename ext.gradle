@@ -13,8 +13,8 @@ ext {
             compileSdkVersion: 31,
             minSdkVersion    : 26,
             targetSdkVersion : 31,
-            versionCode      : 8,
-            versionName      : "1.0.8",
+            versionCode      : 9,
+            versionName      : "1.0.9",
 
     ]
     //103 增加停止通信功能，标题错乱

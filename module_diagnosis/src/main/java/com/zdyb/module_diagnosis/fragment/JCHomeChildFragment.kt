@@ -138,6 +138,7 @@ class JCHomeChildFragment: BaseNavFragment<FragmentJcChildBinding, LoadDiagnosis
                 when(name){
                     "ABS" -> { return "防抱死系统\n(ABS)"}
                     "BCM" -> { return "车身系统\n(BCM)"}
+                    "BCU" -> { return "车身系统\n(BCU)"}
                     "DCU" -> { return "后处理系统\n(DCU)"}
                     "Engine","ECM" -> { return "发动机系统\n(ECM)"}
                 }
