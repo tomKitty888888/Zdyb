@@ -121,7 +121,7 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
             )
 
             viewModel.titleLiveData.observe(this){
-                mActivity.setTitle(it)//多层menu菜单标题
+                //mActivity.setTitle(it)//多层menu菜单标题
             }
             mActivity.setTitle(mDeviceEntity.name)
         }

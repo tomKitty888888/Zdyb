@@ -286,6 +286,9 @@ class HomeModel : BaseViewModel() {
 
                 for (cf in childFiles){
                     println("获取到的文件---->${cf.name}")
+                    if (cf.name == "rm"){
+                        continue
+                    }
                     if (cf.isDirectory){
                         //再下一层取版本文件
                         val childAction = CartEntity.ChildAction()
@@ -308,6 +311,7 @@ class HomeModel : BaseViewModel() {
 
                 }
                 childArray.add(CartEntity.ChildAction("维修保养手册指南","",""))
+                childArray.add(CartEntity.ChildAction("辅助维修帮助系统","",""))
                 cartEntity.childAction.addAll(childArray)
             }
             cartList.add(cartEntity)

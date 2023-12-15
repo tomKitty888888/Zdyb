@@ -94,9 +94,9 @@ class ACTFragment:BaseNavFragment<FragmentActionTestBinding,LoadDiagnosisModel>(
 
             )
 
-            viewModel.titleLiveData.observe(this){
-                mActivity.setTitle(it)
-            }
+//            viewModel.titleLiveData.observe(this){
+//                mActivity.setTitle(it)
+//            }
 
         }
     }

@@ -13,8 +13,8 @@ ext {
             compileSdkVersion: 31,
             minSdkVersion    : 26,
             targetSdkVersion : 31,
-            versionCode      : 6,
-            versionName      : "1.0.6",
+            versionCode      : 8,
+            versionName      : "1.0.8",
 
     ]
     //103 增加停止通信功能，标题错乱
@@ -125,7 +125,8 @@ ext {
             //蓝牙
             "bluetooth"                    : "com.inuker.bluetooth:library:1.4.0",
             "gif"                          : 'pl.droidsonroids.gif:android-gif-drawable:1.2.7',
-            "pdf"                          : 'com.github.barteksc:android-pdf-viewer:2.8.2',
+
+            "pdf"                          : 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1',
 
     ]
 

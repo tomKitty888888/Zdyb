@@ -2,6 +2,7 @@ package com.zdyb.module_diagnosis.activity
 
 import android.app.Activity
 import android.content.Intent
+import com.github.barteksc.pdfviewer.util.FitPolicy
 import com.qmuiteam.qmui.kotlin.onClick
 import com.zdyb.lib_common.base.BaseActivity
 import com.zdyb.lib_common.base.BaseViewModel
@@ -26,11 +27,11 @@ class PDFActivity :BaseActivity<ActivityPdfBinding,BaseViewModel>(){
         val url = intent.getStringExtra("pdfPath").toString()
 
         binding.pdfView.fromFile(File(url))
-            .onRender { nbPages, pageWidth, pageHeight ->   }
             .onPageScroll { page, positionOffset ->  }
             .onPageChange { page, pageCount ->  }
             .spacing(0) //间距
             .enableAntialiasing(true)
+            .pageFitPolicy(FitPolicy.WIDTH)
             .load()
 
         binding.tvBack.onClick { finish() }

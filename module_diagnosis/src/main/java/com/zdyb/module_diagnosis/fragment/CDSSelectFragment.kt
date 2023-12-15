@@ -128,7 +128,7 @@ class CDSSelectFragment:BaseNavFragment<FragmentCdsSelectBinding,LoadDiagnosisMo
 
             )
             viewModel.titleLiveData.observe(this){
-                mActivity.setTitle(it)
+                //mActivity.setTitle(it)
                 groupingListEntity = getGroupIngListData()
             }
 

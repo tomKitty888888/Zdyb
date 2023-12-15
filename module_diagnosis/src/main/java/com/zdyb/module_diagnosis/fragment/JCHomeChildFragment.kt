@@ -25,6 +25,7 @@ import com.zdyb.lib_common.bus.EventTypeDiagnosis
 import com.zdyb.module_diagnosis.R
 import com.zdyb.module_diagnosis.activity.DiagnosisActivity
 import com.zdyb.module_diagnosis.activity.PDFActivity
+import com.zdyb.module_diagnosis.activity.RepairInstActivity
 import com.zdyb.module_diagnosis.bean.CartEntity
 import com.zdyb.module_diagnosis.bean.CartEntity.ChildAction
 import com.zdyb.module_diagnosis.bean.DeviceEntity
@@ -79,6 +80,14 @@ class JCHomeChildFragment: BaseNavFragment<FragmentJcChildBinding, LoadDiagnosis
 
         mAdapter.setOnItemClickListener{adapter,view,psotion ->
             if (psotion == adapter.data.size-1){
+                //辅助维修帮助系统
+                val item = adapter.getItem(psotion) as ChildAction
+                val intent = Intent(requireContext(), RepairInstActivity::class.java)
+                intent.putExtra("CartEntity",mCartEntity)
+                startActivity(intent)
+                return@setOnItemClickListener
+            }
+            if (psotion == adapter.data.size-2){
                 if (TextUtils.isEmpty(mCartEntity.instructionsPath)){
                     viewModel.showToast("pdf说明文件缺失")
                     return@setOnItemClickListener
@@ -128,7 +137,7 @@ class JCHomeChildFragment: BaseNavFragment<FragmentJcChildBinding, LoadDiagnosis
             fun getName(name :String):String{
                 when(name){
                     "ABS" -> { return "防抱死系统\n(ABS)"}
-                    "BCU" -> { return "车身系统\n(BCU)"}
+                    "BCM" -> { return "车身系统\n(BCM)"}
                     "DCU" -> { return "后处理系统\n(DCU)"}
                     "Engine","ECM" -> { return "发动机系统\n(ECM)"}
                 }

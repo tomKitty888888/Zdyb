@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-
+    android:sharedUserId="android.uid.system"
     >
     <!-- android:sharedUserId="android.uid.system"   -->
 
@@ -43,9 +43,10 @@
 
         <activity android:name=".activity.FileChooseActivity" android:screenOrientation="landscape"/>
         <activity android:name=".activity.PDFActivity" android:screenOrientation="landscape"/>
-        <activity android:name=".activity.SetActivity"/>
-        <activity android:name=".activity.CSVFileActivity"/>
-        <activity android:name=".activity.FilePreviewActivity"/>
+        <activity android:name=".activity.SetActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.CSVFileActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.FilePreviewActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.RepairInstActivity" android:screenOrientation="landscape"/>
 
         <service
             android:enabled="true"

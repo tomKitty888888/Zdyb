@@ -11,7 +11,7 @@ class EntranceActivity :AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entrance)
         when(BuildConfig.FLAVOR){
-            AppType.zdyb.name -> {
+            AppType.ldjc.name -> {
                 RouterUtil.build(RouteConstants.Diagnosis.DIAGNOSIS_ACTIVITY).launch()
             }
             AppType.obd.name -> {
@@ -22,7 +22,7 @@ class EntranceActivity :AppCompatActivity(){
     }
 
     enum class AppType{
-        zdyb,obd
+        zdyb,obd,ldjc
     }
 
 }

@@ -52,7 +52,7 @@ android {
     }
 
 
-
+    /*
     //1风味管理 多渠道
     getFlavorDimensionList().add('example_obd')
 
@@ -65,7 +65,7 @@ android {
             storePassword 'zdyb_obd'
         }
 
-        zdyb {
+        ldjc {
             keyAlias 'ldjc'
             keyPassword 'zdyb_ldjc'
             storeFile file('./jks/zdyb_ldjc.jks')
@@ -96,15 +96,15 @@ android {
             manifestPlaceholders = [channel_value: "zdybChannel"]
         }
 
-        zdyb {
+        ldjc {
             // 这里的值与前面flavorDimensions设置的值保持一致
             //dimension 'example_obd'
-            signingConfig signingConfigs.zdyb
+            signingConfig signingConfigs.ldjc
             //包名 版本信息
             applicationId "com.zdyb.ldjc"
             versionCode 1
             versionName "1.0.1-flavor"
-            buildConfigField "String", "ENTRANCE", "\"zdeps\""
+            buildConfigField "String", "ENTRANCE", "\"ldjc\""
             //示例取不同的值 channel_value
             manifestPlaceholders = [channel_value: "exampleFlavor channel"]
         }
@@ -136,6 +136,8 @@ android {
         }
     }
 
+     */
+
     android.applicationVariants.all { variant ->
         variant.outputs.all {
             outputFileName = "${variant.name}_${variant.versionName}_${releaseTime()}.apk"
@@ -155,8 +157,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.1'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.4.2'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

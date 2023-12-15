@@ -87,7 +87,7 @@ class DTCFragment:BaseNavFragment<FragmentDtcListBinding,LoadDiagnosisModel>() {
 
             )
             viewModel.titleLiveData.observe(this){
-                mActivity.setTitle(it)
+                //mActivity.setTitle(it)
             }
 
         }
