@@ -1,20 +1,15 @@
 package com.zdyb.module_diagnosis.fragment
 
 import android.Manifest
-import android.os.Binder
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.tbruyelle.rxpermissions2.RxPermissions
-import com.zdyb.lib_common.base.BaseApplication
 import com.zdyb.lib_common.base.BaseNavFragment
 import com.zdyb.module_diagnosis.R
 import com.zdyb.module_diagnosis.activity.DiagnosisActivity
@@ -25,7 +20,7 @@ import com.zdyb.module_diagnosis.widget.BottomBarActionButton
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 
-class AutoScanDeviceListFragment:BaseNavFragment<FragmentAutoScanDeviceListBinding,LoadDiagnosisModel>() {
+class AutoScanDeviceListFragment:BaseNavFragment<FragmentAutoScanDeviceListBinding, LoadDiagnosisModel>() {
 
 
     override fun initViewModel(): LoadDiagnosisModel {

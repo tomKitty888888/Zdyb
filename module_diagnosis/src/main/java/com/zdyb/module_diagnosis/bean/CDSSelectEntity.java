@@ -10,6 +10,9 @@ public class CDSSelectEntity {
 
     public boolean isAdd;
 
+
+    public boolean select; //选中
+
     public int index;
 
     public CDSSelectEntity(String value1, String value2) {

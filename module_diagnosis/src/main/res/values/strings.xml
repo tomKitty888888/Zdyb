@@ -64,6 +64,7 @@
     <string name="cds_grouping_add_title_hint">提示：请输入分组名称</string>
     <string name="cds_grouping_add_input_hint">请输入分组名称</string>
     <string name="cds_grouping_delete_hint">确定删除分组吗？</string>
+    <string name="cds_grouping_set_hint">先完成分组设置</string>
     <string name="cds_select">搜索</string>
     <string name="cds_save_data_to_file">保存数据流到文件</string>
     <string name="cds_start_save_data_to_file">开始采样</string>

@@ -116,4 +116,6 @@ dependencies {
     //异常处理
     api rootProject.ext.dependencies.crashreport
     api rootProject.ext.dependencies.gif
+    //7z
+    api rootProject.ext.dependencies.commons
 }

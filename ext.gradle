@@ -124,6 +124,12 @@ ext {
             "bluetooth"                    : "com.inuker.bluetooth:library:1.4.0",
             "gif"                          : 'pl.droidsonroids.gif:android-gif-drawable:1.2.7',
 
+            //解压辅助类
+            "commons" :[
+                    "org.apache.commons:commons-compress:1.20",
+                    "org.tukaani:xz:1.8",
+                    "org.apache.commons:commons-collections4:4.1"
+            ]
     ]
 
     //

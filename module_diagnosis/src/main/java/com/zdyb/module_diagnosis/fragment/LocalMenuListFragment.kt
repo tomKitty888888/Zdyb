@@ -20,7 +20,6 @@ import com.zdyb.module_diagnosis.bean.DieseData
 import com.zdyb.module_diagnosis.bean.ProductsEntity
 import com.zdyb.module_diagnosis.bean.Transfer
 import com.zdyb.module_diagnosis.databinding.FragmentLocalMenuListBinding
-import com.zdyb.module_diagnosis.model.FileListModel
 import com.zdyb.module_diagnosis.model.LoadDiagnosisModel
 import com.zdyb.module_diagnosis.utils.FileUtils
 import com.zdyb.module_diagnosis.widget.BottomBarActionButton
@@ -259,10 +258,16 @@ class LocalMenuListFragment:BaseNavFragment<FragmentLocalMenuListBinding, LoadDi
                                viewModel.showToast("诊断文件为空，请先下载")
                                return@subscribe
                            }
-                           viewModel.openDiagnosis(deviceEntity.versionPath, Consumer {
-                               val bundle = bundleOf(DeviceEntity.tag to deviceEntity)
-                               findNavController().navigate(R.id.action_localMenuListFragment_to_menuListFragment,bundle)
+
+                           viewModel.anewDiagnosisService(Consumer {
+                               if (it){
+                                   viewModel.openDiagnosis(deviceEntity.versionPath, Consumer {
+                                       val bundle = bundleOf(DeviceEntity.tag to deviceEntity)
+                                       findNavController().navigate(R.id.action_localMenuListFragment_to_menuListFragment,bundle)
+                                   })
+                               }
                            })
+
 
                            return@subscribe
                        }
