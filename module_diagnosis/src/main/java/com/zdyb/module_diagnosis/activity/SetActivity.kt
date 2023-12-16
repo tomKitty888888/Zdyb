@@ -41,6 +41,9 @@ class SetActivity :BaseActivity<ActivitySetBinding,BaseViewModel>(){
         binding.tvBack.onClick {
             finish()
         }
+        binding.testDevice.onClick {
+            startActivity(Intent(this,TestingActivity::class.java))
+        }
         binding.selectAppFile.onClick {
 
             if (TextUtils.isEmpty(BaseApplication.USBPath)){

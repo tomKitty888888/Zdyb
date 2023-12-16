@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:sharedUserId="android.uid.system"
+
     >
     <!-- android:sharedUserId="android.uid.system"   -->
 
@@ -47,6 +47,7 @@
         <activity android:name=".activity.CSVFileActivity" android:screenOrientation="landscape"/>
         <activity android:name=".activity.FilePreviewActivity" android:screenOrientation="landscape"/>
         <activity android:name=".activity.RepairInstActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.TestingActivity" android:screenOrientation="landscape"/>
 
         <service
             android:enabled="true"
