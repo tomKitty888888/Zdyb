@@ -1,11 +1,13 @@
 package com.zdeps.gui
 
+import android.os.RemoteException
 import android.text.TextUtils
 import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
 import com.zdyb.ITaskCallback
 import com.zdyb.lib_common.base.BaseApplication
 import com.zdyb.lib_common.base.KLog
+import com.zdyb.lib_common.utils.PathManager
 import com.zdyb.module_diagnosis.service.DiagnosisService
 import java.io.UnsupportedEncodingException
 import kotlin.experimental.and
@@ -231,6 +233,15 @@ object ComJni {
         return str.toTypedArray()
     }
 
+    /**
+     * 刷写时的进度 显示对话框
+     */
+    fun MsgReflashProgress(msg: ByteArray) {
+        val pszMsg = bytes2Str(msg)
+        DiagnosisService.mITaskCallback?.showDialog(CMD.FORM_DIALOG_PROGRESS,CMD.FORM_DIALOG_PROGRESS,"", pszMsg,"",0)
+    }
+
+
     fun SendMessage(msg: Long, wParam: Long, lParam: Long): Long{
         KLog.i("-------SendMessage-------wParam=${java.lang.Long.toHexString(wParam)},lParam=${java.lang.Long.toHexString(lParam)}")
 
@@ -314,7 +325,6 @@ object ComJni {
                                 val len = getOC16(data, 4)
                                 val sData = getGUIData(6, len)
                                 val pszMenu = bytes2Str(sData)
-                                KLog.d("GUI 菜单添加--$pszMenu")
                                 DiagnosisService.mITaskCallback?.addItemOne(CMD.FORM_MENU,pszMenu)
                             }
                             CMD.FORM_DATA_SHOW ->{
@@ -605,11 +615,12 @@ object ComJni {
             }
             CMD.PARAM_GUI_ROOT_PATH ->{
                 KLog.d("GUI 获取root的路径")
-                //get root path
-                val dat: ByteArray = soPath
+                //get root path  /storage/emulated/0/zdeps/??
+                val dat: ByteArray = PathManager.getBasePath().toByteArray()
                 val sdat = ByteArray(dat.size + 1)
                 System.arraycopy(dat, 0, sdat, 0, dat.size)
                 sdat[dat.size] = 0
+                KLog.e(String(sdat))
                 setGUIBuf(0, sdat, sdat.size)
             }
         }

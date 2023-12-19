@@ -10,7 +10,7 @@ interface ITaskBinder {
 //    void stopRunningTask();
     void registerCallback(ITaskCallback cb);
 
-    void unregisterCallback(ITaskCallback cb);
+    void unregisterCallback(); //注销
     void run(String soLibsAbsolutePath,String versionPath);
 
     void registerTransferCallback(Transfer cb);

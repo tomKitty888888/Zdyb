@@ -21,10 +21,7 @@ import com.zdyb.module_diagnosis.R
 import com.zdyb.module_diagnosis.activity.DiagnosisActivity
 import com.zdyb.module_diagnosis.bean.*
 import com.zdyb.module_diagnosis.databinding.FragmentMenuListBinding
-import com.zdyb.module_diagnosis.dialog.DialogChooseFileBox
-import com.zdyb.module_diagnosis.dialog.DialogHintBox
-import com.zdyb.module_diagnosis.dialog.DialogInputBox
-import com.zdyb.module_diagnosis.dialog.DialogInputFileBox
+import com.zdyb.module_diagnosis.dialog.*
 import com.zdyb.module_diagnosis.help.BottomDeviceCmd
 import com.zdyb.module_diagnosis.model.LoadDiagnosisModel
 import com.zdyb.module_diagnosis.widget.BottomBarActionButton
@@ -37,6 +34,7 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
     lateinit var mDialogInputBox: DialogInputBox //内容输入
     lateinit var mDialogInputFileBox: DialogInputFileBox //输入文件名称
     lateinit var mDialogChooseFileBox: DialogChooseFileBox //选择文件
+    lateinit var mDialogProgressBox: DialogProgressBox //刷写时的进度动画
 
     lateinit var mDeviceEntity : DeviceEntity
     override fun initViewModel(): LoadDiagnosisModel {
@@ -89,7 +87,14 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
             viewModel.setCommonValueToArray(CMD.ID_DIALOG_VALUE_FILE_NAME, value)
             viewModel.setCommonValue(CMD.ID_DIALOG_OFFSET, action)
         }
-
+        //进度动画
+        mDialogProgressBox = DialogProgressBox()
+        mDialogProgressBox.setHomeBackResult{
+            println("HomeBackResult--执行到")
+            BottomDeviceCmd.closeBottomDevice()
+            BaseApplication.getInstance().outDiagnosisService = true
+            findNavController().popBackStack(R.id.homeFragment,false)
+        }
     }
 
     override fun initParam() {
@@ -354,6 +359,9 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
                 if (mDialogInputFileBox.isVisible){
                     mDialogInputFileBox.dismiss()
                 }
+                if (mDialogProgressBox.isVisible){
+                    mDialogProgressBox.dismiss()
+                }
             }
             return super.destroyDialog()
         }
@@ -405,6 +413,15 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
                                 mDialogInputFileBox.show(childFragmentManager,"mDialogInputFileBox")
                                 visibleDialog(mDialogHintBox,mDialogInputBox)
                             }
+                        }
+                    }
+                    CMD.FORM_DIALOG_PROGRESS -> { //进度弹框
+                        if (!mDialogProgressBox.isVisible && !mDialogProgressBox.isShow()){
+                            mDialogProgressBox.setActionType(type).setInitMsg(msg)
+                            mDialogProgressBox.show(childFragmentManager,"mDialogProgressBox")
+                            visibleDialog(mDialogHintBox)
+                        }else if(mDialogProgressBox.isVisible){
+                            mDialogProgressBox.setMsg(msg)
                         }
                     }
                     else ->{

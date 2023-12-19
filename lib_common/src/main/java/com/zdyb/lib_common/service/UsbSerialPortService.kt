@@ -271,7 +271,7 @@ class UsbSerialPortService : BaseService(){
         try {
             //loopDatas.clear()
             if (serialPort != null && bytes.isNotEmpty()) {
-                serialPort!!.write(bytes, 0)
+                serialPort!!.write(bytes, 1000)
                 log("发送完毕--${ConvertUtils.bytes2HexString(bytes)}")
                 return bytes.size
             }else{

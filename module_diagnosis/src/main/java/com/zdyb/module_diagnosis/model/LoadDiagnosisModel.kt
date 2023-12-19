@@ -62,6 +62,12 @@ class LoadDiagnosisModel :BaseViewModel(){
 
     var consumer : Consumer<Boolean>? = null
 
+    //本地菜单的数据存储
+    val mLocalMenuLiveData = MutableLiveData<MutableList<DieseData>>() //全部的数据
+    val mLocalGradleList = MutableLiveData<HashMap<Int, List<DieseData>>>() //用于返回事件处理的数据存储
+    var mLocalPage = 0 //当前页面
+    var mLocalChildIndex = 0 //当前第几个菜单
+
     override fun onCreate() {
         super.onCreate()
         //bingDiagnosisService()
@@ -457,7 +463,7 @@ class LoadDiagnosisModel :BaseViewModel(){
      * 删除掉监听防止串数据
      */
     fun removeCallback(){
-        mITaskBinder?.unregisterCallback(null)
+        mITaskBinder?.unregisterCallback()
 
     }
 
@@ -496,8 +502,8 @@ class LoadDiagnosisModel :BaseViewModel(){
 
 
     private fun closeData(){
-        //deviceList.value = mutableListOf()
-        //menuListLiveData.value = mutableSetOf()
+        deviceList.value = mutableListOf()
+        menuListLiveData.value = mutableSetOf()
         titleLiveData.value = ""
         verData.clear()
         verLiveData.value = mutableListOf()

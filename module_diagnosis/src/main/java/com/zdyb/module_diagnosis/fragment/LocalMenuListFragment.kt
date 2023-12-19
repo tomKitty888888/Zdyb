@@ -35,9 +35,11 @@ class LocalMenuListFragment:BaseNavFragment<FragmentLocalMenuListBinding, LoadDi
 
     private var dis1: Disposable? = null
     private var dis2: Disposable? = null
-    private val mMenuData = mutableListOf<DieseData>() //全部的数据
 
-    val gradleList : HashMap<Int, List<DieseData>> = HashMap() //用于返回事件处理的数据存储
+    //private val mMenuData = mutableListOf<DieseData>() //全部的数据
+    var gradleList : HashMap<Int, List<DieseData>> = HashMap() //用于返回事件处理的数据存储
+    //var page:Int = 0 //当前页面
+    //var childIndex:Int = 0 //当前第几个菜单
 
     lateinit var mProductsEntity : ProductsEntity
     private var title = MutableLiveData<String>()
@@ -76,12 +78,12 @@ class LocalMenuListFragment:BaseNavFragment<FragmentLocalMenuListBinding, LoadDi
                     .setPartitionLineVisibility(ConstraintLayout.LayoutParams.LEFT)
                     .setClick {
 
-                        if (childIndex <= 0){
+                        if (viewModel.mLocalChildIndex <= 0){
                             findNavController().navigateUp()
                             return@setClick
                         }
-                        childIndex--
-                        mAdapter.setList(gradleList[childIndex])
+                        viewModel.mLocalChildIndex--
+                        mAdapter.setList(gradleList[viewModel.mLocalChildIndex])
                 },
 
             )
@@ -106,7 +108,18 @@ class LocalMenuListFragment:BaseNavFragment<FragmentLocalMenuListBinding, LoadDi
         binding.recyclerView.scrollBarFadeDuration = 0
         binding.recyclerView.adapter = mAdapter
 
-        getAllData(mProductsEntity.menuFilePath)
+        if (null == viewModel.mLocalMenuLiveData.value || null == viewModel.mLocalGradleList.value){
+            getAllData(mProductsEntity.menuFilePath)
+        }
+
+        viewModel.mLocalMenuLiveData.observe(this){
+
+        }
+        viewModel.mLocalGradleList.observe(this){
+            gradleList = it
+        }
+
+        println("回到这个本地菜单页面")
     }
 
 
@@ -134,15 +147,18 @@ class LocalMenuListFragment:BaseNavFragment<FragmentLocalMenuListBinding, LoadDi
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                mMenuData.clear()
-                mMenuData.addAll(it)
-                mAdapter.setList(menuPaging(page,childIndex))
+                //mMenuData.clear()
+                //mMenuData.addAll(it)
+                viewModel.mLocalMenuLiveData.value = it
+
+                val data = menuPaging(viewModel.mLocalPage,viewModel.mLocalChildIndex)
+                println("数据=${data.size}")
+                mAdapter.setList(data)
             },{it.printStackTrace()})
     }
 
 
-    var page:Int = 0 //当前页面
-    var childIndex:Int = 0 //当前第几个菜单
+
 
 
     /**
@@ -150,7 +166,7 @@ class LocalMenuListFragment:BaseNavFragment<FragmentLocalMenuListBinding, LoadDi
      */
     private fun menuPaging(page:Int,childIndex:Int):MutableList<DieseData>{
         val data = mutableListOf<DieseData>()
-        for (item in mMenuData){
+        for (item in viewModel.mLocalMenuLiveData.value!!){
             if (item.id > page){
                 if (childIndex == item.curGrade){
                     data.add(item)
@@ -161,6 +177,7 @@ class LocalMenuListFragment:BaseNavFragment<FragmentLocalMenuListBinding, LoadDi
         }
         //记录数据 返回的时候使用
         gradleList[childIndex] = data
+        viewModel.mLocalGradleList.value = gradleList
         return data
     }
 
@@ -204,8 +221,8 @@ class LocalMenuListFragment:BaseNavFragment<FragmentLocalMenuListBinding, LoadDi
             }else{
                 //翻页
                 title.value = item.name
-                childIndex++
-                mAdapter.setList(menuPaging(item.id,childIndex))
+                viewModel.mLocalChildIndex++
+                mAdapter.setList(menuPaging(item.id,viewModel.mLocalChildIndex))
                 println("继续走这里？？")
             }
         }catch (e :Exception){
@@ -273,7 +290,7 @@ class LocalMenuListFragment:BaseNavFragment<FragmentLocalMenuListBinding, LoadDi
                        }
 
                 //修改选择的背景颜色
-                       println("弹窗查看引脚图等等 -- 待实现")
+                       println("弹窗查看引脚图等等 -- 待实现--") //确认后再进入诊断
             },{it.printStackTrace()})
 
 
@@ -281,7 +298,6 @@ class LocalMenuListFragment:BaseNavFragment<FragmentLocalMenuListBinding, LoadDi
     }
 
     override fun onDestroyView() {
-
         super.onDestroyView()
     }
     override fun onDestroy() {

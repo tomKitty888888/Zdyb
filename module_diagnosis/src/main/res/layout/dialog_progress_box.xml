@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg"
+
+    android:minHeight="@dimen/dp_140"
+    >
+
+    <View
+        android:id="@+id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_25"
+        android:background="@drawable/dialog_bar_bg"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="提示"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_12"
+        android:layout_marginStart="@dimen/dp_10"
+        app:layout_constraintTop_toTopOf="@+id/bar"
+        app:layout_constraintLeft_toLeftOf="@+id/bar"
+        app:layout_constraintBottom_toBottomOf="@+id/bar"
+        />
+
+    <com.zdyb.lib_common.widget.QMUIAlphaImage
+        android:id="@+id/actionButton"
+        android:layout_width="@dimen/dp_15"
+        android:layout_height="@dimen/dp_15"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:layout_constraintTop_toTopOf="@+id/bar"
+        app:layout_constraintRight_toRightOf="@+id/bar"
+        app:layout_constraintBottom_toBottomOf="@+id/bar"
+        />
+
+    <ImageView
+        android:id="@+id/progressImg"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_25"
+
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bar"
+        app:layout_constraintBottom_toTopOf="@+id/placeholder"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_launcher"
+        />
+
+    <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_5"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_10"
+        android:gravity="center_vertical|left"
+        app:layout_constraintTop_toBottomOf="@+id/progressImg"
+        app:layout_constraintBottom_toTopOf="@+id/placeholder"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/confirm"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_25"
+        android:text="@string/confirm"
+        android:textSize="@dimen/sp_12"
+        android:gravity="center"
+        android:visibility="gone"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/cancel"
+        />
+
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_25"
+        android:text="@string/cancel"
+        android:textSize="@dimen/sp_12"
+        android:gravity="center"
+        android:visibility="gone"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/confirm"
+        />
+    <View
+        android:id="@+id/placeholder"
+        android:layout_width="@dimen/dp_0_5"
+        android:layout_height="@dimen/dp_25"
+        android:background="@color/line_grey"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/confirm"
+        />
+    <View
+        android:id="@+id/placeholder2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0_5"
+        android:background="@color/line_grey"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/placeholder"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
