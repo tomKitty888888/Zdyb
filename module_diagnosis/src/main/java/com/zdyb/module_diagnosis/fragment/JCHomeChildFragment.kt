@@ -117,6 +117,7 @@ class JCHomeChildFragment: BaseNavFragment<FragmentJcChildBinding, LoadDiagnosis
 //            }
 
         }
+
         mAdapter.setList(mCartEntity.childAction)
         binding.recyclerView.adapter = mAdapter
 
@@ -169,7 +170,7 @@ class JCHomeChildFragment: BaseNavFragment<FragmentJcChildBinding, LoadDiagnosis
                     //让用户选择
                     val listDialog = AlertDialog.Builder(requireActivity())
                     //listDialog.setCancelable(false)
-                    listDialog.setTitle("车型选择")
+                    listDialog.setTitle("型号选择")
                     listDialog.setItems(stringData.toTypedArray()) { dialog, which ->
                         val item = it[which]
                         // 加载so了

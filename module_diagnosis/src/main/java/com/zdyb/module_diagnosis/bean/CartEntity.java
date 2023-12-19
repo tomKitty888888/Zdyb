@@ -11,10 +11,18 @@ public class CartEntity implements Serializable {
     private String instructionsPath; //维修说明书路径
     private List<ChildAction> childAction; //子类型功能
 
+    private String currChildName; //当前子类型名称
+
     public CartEntity() {
     }
 
+    public String getCurrChildName() {
+        return currChildName;
+    }
 
+    public void setCurrChildName(String currChildName) {
+        this.currChildName = currChildName;
+    }
 
     public String getTypeName() {
         return typeName;
