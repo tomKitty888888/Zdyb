@@ -118,4 +118,6 @@ dependencies {
     api rootProject.ext.dependencies.gif
     //7z
     api rootProject.ext.dependencies.commons
+
+    api rootProject.ext.dependencies.xfetch2rx
 }

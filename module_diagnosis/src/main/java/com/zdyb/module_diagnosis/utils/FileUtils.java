@@ -3,6 +3,7 @@ package com.zdyb.module_diagnosis.utils;
 import android.util.Log;
 
 import com.zdyb.lib_common.utils.PathManager;
+import com.zdyb.module_diagnosis.bean.CheckDir;
 import com.zdyb.module_diagnosis.bean.DieseData;
 import com.zdyb.module_diagnosis.bean.Transfer;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FileUtils {
@@ -129,5 +131,53 @@ public class FileUtils {
     }
 
 
+    /**
+     * @param path
+     * @return
+     */
+    public static List<CheckDir> readItemFolder(String path) {
+
+        List<CheckDir> checkDirList = new ArrayList<>();
+        File folder = new File(path);
+        if (folder.isDirectory()) {//electronic
+            for (File fileName : folder.listFiles()) {//01bosch
+                if (fileName.isDirectory()) {
+                    CheckDir checkDir = new CheckDir();
+                    checkDir.setPath(fileName.getAbsolutePath());
+                    checkDir.setName(fileName.getName());
+                    List<Integer> verNameList = new ArrayList<>();
+                    for (File fileItemName : fileName.listFiles()) {//V1.000
+                        if (fileItemName.isDirectory()) {
+                            //获取目录名称
+
+                            verNameList.add(formatVersionCode(fileItemName.getName()));
+                            checkDir.setVerName(Collections.max(verNameList));
+                            checkDirList.add(checkDir);
+                        }
+                    }
+                }
+            }
+        }
+
+        return checkDirList;
+    }
+
+    /**
+     * 去除版本号英文字符
+     * @param verName
+     * @return
+     */
+    public static int formatVersionCode(String verName) {
+        if (verName.isEmpty()||null == verName||verName.equals("null")) {
+            return 0;
+        }
+        //如果文件名不是int数据类型 处理
+        try {
+            return Integer.parseInt(verName.replace("V", "").replace("v", "").replace(".",""));
+        }catch (Exception e){
+            return 0;
+        }
+
+    }
 
 }

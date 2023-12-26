@@ -99,8 +99,46 @@
     <string name="ecu_dialog_illustrate4">ECU引脚定义</string>
     <string name="ecu_dialog_illustrate5">功能表说明</string>
 
+    <!-- 柴油车系子类型 -->
+    <string name="dvs_ec">电控系统</string>
+    <string name="dvs_abs">发动机系统</string>
+    <string name="dvs_ct">车型系统</string>
+    <string name="dvs_cm">工程机械</string>
+    <string name="dvs_tool">高级工具</string>
+
+    <!-- 数据下载 -->
+    <string name="tab_1">系统数据</string>
+    <string name="tab_2">电控系统</string>
+    <string name="tab_3">后处理诊断</string>
+    <string name="tab_4">ECU刷写</string>
+    <string name="tab_5">车型系统</string>
+    <string name="tab_6">天然气系统</string>
+    <string name="tab_7">OBD诊断</string>
+    <string name="tab_8">发动机系统</string>
+    <string name="tab_9">新能源系统</string>
+    <string name="tab_10">工程机械</string>
+
+
     <!-- 公用 -->
     <string name="confirm">确认</string>
     <string name="cancel">取消</string>
     <string name="hint">提示</string>
+
+    <!-- 公用下载链接，图片rul链接 -->
+    <string name="base_url">https://zdyban.zdeps.com</string>
+    <string name="base_img_url">https://zdyban.zdeps.com/Diagnosis/</string>
+    <string name="download_url">https://zdyban.zdeps.com/NewDiagnosis/</string>
+    <string name="download_state_1">正在下载</string>
+    <string name="download_state_2">正在解压</string>
+    <string name="download_state_3">下载错误</string>
+    <string name="download_state_4">已是最新版本</string>
+    <string name="download_state_5">升级至新版本</string>
+    <string name="download_all_select">全选</string>
+    <string name="download_eta_sec">%1$ds left</string>
+    <string name="download_eta_min">%1$dm %2$ds left</string>
+    <string name="download_eta_hrs">%1$dh %2$dm %3$ds left</string>
+    <string name="download_speed_bytes">%1$d B/s</string>
+    <string name="download_speed_kb">%1$s KB/s</string>
+    <string name="download_speed_mb">%1$s MB/s</string>
+
 </resources>

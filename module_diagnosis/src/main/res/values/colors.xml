@@ -21,4 +21,6 @@
     <!-- 按钮背景色 -->
     <color name="button_bg">#FF36BB4C</color>
 
+    <color name="color_theme">#31A544</color>
+
 </resources>

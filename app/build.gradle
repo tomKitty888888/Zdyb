@@ -104,6 +104,8 @@ android {
             applicationId "com.zdyb.app"
             versionCode 1
             versionName "1.0.1-flavor"
+            buildConfigField "String", "HTTPREALSE", "\"https://zdyban.zdeps.com\""
+            buildConfigField "String", "HTTPDEBUG", "\"https://zdyban.zdeps.com\""
             buildConfigField "String", "ENTRANCE", "\"zdeps\""
             //示例取不同的值 channel_value
             manifestPlaceholders = [channel_value: "exampleFlavor channel"]

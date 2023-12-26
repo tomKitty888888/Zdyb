@@ -16,6 +16,12 @@
         <action
             android:id="@+id/action_homeFragment_to_fileListFragment"
             app:destination="@id/fileListFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_childCarSeriesFragment"
+            app:destination="@id/childCarSeriesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_downloadAllFileFragment"
+            app:destination="@id/downloadAllFileFragment" />
     </fragment>
 
     <fragment
@@ -93,4 +99,16 @@
             android:id="@+id/action_localMenuListFragment_to_menuListFragment"
             app:destination="@id/menuListFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/childCarSeriesFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.ChildCarSeriesFragment"
+        android:label="ChildCarSeriesFragment" >
+        <action
+            android:id="@+id/action_childCarSeriesFragment_to_fileListFragment"
+            app:destination="@id/fileListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/downloadAllFileFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.DownloadAllFileFragment"
+        android:label="DownloadAllFileFragment" />
 </navigation>

@@ -54,24 +54,24 @@ class HomeFragment: BaseNavFragment<FragmentHomeBinding, BaseViewModel>()  {
         }
         binding.actionPpd.onClick {
             println("6663")
-
-            mDialogInputFileBox.setBackResult{
-                //mDialogInputBox.dismiss()
-                visibleDialog(mDialogInputFileBox)
-            }
-            //mDialogInputFileBox.setActionType(CMD.FORM_INPUT).setTitle("注意：本次操作将改变ECU内部数据,请预先做好备份(使用读取数据功能进行备份)").setInitMsg("")
-            //mDialogInputFileBox.setInitMsg("注意：本次操作将改变ECU内部数据,请预先做好备份(使用读取数据功能进行备份)")
-            mDialogInputFileBox.show(childFragmentManager,"mDialogInputFileBox")
+            val bundle = bundleOf(FileListFragment.TAG to PathManager.getATFilePath())
+            findNavController().navigate(R.id.action_homeFragment_to_fileListFragment,bundle)
         }
         binding.actionCartDvs.onClick {
             println("6664")
-
+            findNavController().navigate(R.id.action_homeFragment_to_childCarSeriesFragment)
         }
         binding.actionCartNevs.onClick {
             println("6665")
+            val bundle = bundleOf(FileListFragment.TAG to PathManager.getEvFilePath())
+            findNavController().navigate(R.id.action_homeFragment_to_fileListFragment,bundle)
         }
         binding.actionCartNgvs.onClick {
             println("6666")
+            //val bundle = bundleOf(FileListFragment.TAG to PathManager.getCngFilePath())
+            //findNavController().navigate(R.id.action_homeFragment_to_fileListFragment,bundle)
+
+            findNavController().navigate(R.id.action_homeFragment_to_downloadAllFileFragment)
         }
 
         //addActionButton()

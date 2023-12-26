@@ -129,7 +129,8 @@ ext {
                     "org.apache.commons:commons-compress:1.20",
                     "org.tukaani:xz:1.8",
                     "org.apache.commons:commons-collections4:4.1"
-            ]
+            ],
+            "xfetch2rx" : 'androidx.tonyodev.fetch2:xfetch2:3.1.6',
     ]
 
     //

@@ -24,6 +24,10 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.tencent.bugly.crashreport.BuglyLog;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tonyodev.fetch2.Fetch;
+import com.tonyodev.fetch2.FetchConfiguration;
+import com.tonyodev.fetch2.HttpUrlConnectionDownloader;
+import com.tonyodev.fetch2core.Downloader;
 import com.zdyb.lib_common.BuildConfig;
 import com.zdyb.lib_common.R;
 import com.zdyb.lib_common.cockroach.Cockroach;
@@ -47,6 +51,8 @@ import kotlin.jvm.internal.Intrinsics;
 
 public abstract class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks {
     private static BaseApplication sInstance;
+
+    public static String FLAVOR = "";
 
     /**
      * 是否退出诊断服务关闭多进程
@@ -101,6 +107,7 @@ public abstract class BaseApplication extends Application implements Application
             //odb年检预检是关闭的 未打开usb
             bingUsbService();
             //FileUtil.isARMv7Compatible();
+            initFetch();
 
             KLog.i("初始化了");
             KLog.i("进程ID="+android.os.Process.myPid());
@@ -114,6 +121,18 @@ public abstract class BaseApplication extends Application implements Application
         ToastUtils.getDefaultMaker().setTextColor(ContextCompat.getColor(this, R.color.white));
     }
 
+    private void initFetch(){
+        final FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
+                .enableRetryOnNetworkGain(true)
+                .setDownloadConcurrentLimit(3)
+                .setHttpDownloader(new HttpUrlConnectionDownloader(Downloader.FileDownloaderType.PARALLEL))
+                // OR
+                //.setHttpDownloader(getOkHttpDownloader())
+                .build();
+
+        Fetch.Impl.setDefaultInstanceConfiguration(fetchConfiguration);
+        Fetch.Impl.getDefaultInstance().deleteAll().close();
+    }
 
 
     public void bingUsbService(){

@@ -23,18 +23,10 @@ public class MyClass {
 //        for (ACTEntity a:set) {
 //            System.out.print(a.value1); System.out.print(a.value2); System.out.println(a.value3);
 //        }
+        String a = "Zdeps/Data/V4.003.7z";
 
-        HashSet hashSet = new HashSet();
-        Person p1 = new Person("Jack",25);
-        Person p2 = new Person("Rose",23);
-        Person p3 = new Person("Jack",27);
-        hashSet.add(p1);
-        hashSet.add(p2);
-        hashSet.add(p3);
-        for(Object obj:hashSet) {
-            Person p = (Person) obj;
-            System.out.println(p.name + ":" + p.age);
-        }
+        String b = a.substring(a.indexOf("/"));
+        System.out.println(b);
 
     }
 }

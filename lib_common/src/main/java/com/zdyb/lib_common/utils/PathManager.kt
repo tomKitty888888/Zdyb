@@ -21,6 +21,13 @@ object PathManager {
         return STORAGE  + getPackType() + File.separator
     }
     /**
+     *  诊断文件路径
+     */
+    fun getDiagnosisPath():String{
+        return STORAGE  + getPackType() + File.separator + "Diagnosis" + File.separator
+    }
+
+    /**
      *  sd卡路径风味路径 末尾不带/
      */
     fun getBasePathNoSep():String{
@@ -48,6 +55,67 @@ object PathManager {
     fun getReflashFilePath():String{
         return getBasePath() + "Diagnosis/Reflash"
     }
+
+    /**
+     *后处理诊断文件地址
+     */
+    fun getATFilePath():String{
+        return  getBasePath() + "Diagnosis/AfterTreatment"
+    }
+
+    /**
+     * 新能能源车系
+     */
+    fun getEvFilePath():String{
+        return  getBasePath() + "Diagnosis/NER"
+    }
+
+    /**
+     * 天然气车系
+     */
+    fun getCngFilePath():String{
+        return  getBasePath() + "Diagnosis/Natural"
+    }
+
+
+    //柴油车系下面
+
+
+    /**
+     * 电控系统
+     */
+    fun getElectronicFilePath():String{
+        return  getBasePath() + "Diagnosis/Electronic"
+    }
+
+    /**
+     * 发动机系统
+     */
+    fun getEngineFilePath():String{
+        return  getBasePath() + "Diagnosis/Engine"
+    }
+
+    /**
+     * 车系系统
+     */
+    fun getVehicleFilePath():String{
+        return  getBasePath() + "Diagnosis/Vehicle"
+    }
+
+    /**
+     * 工程机械
+     */
+    fun getMechanicalFilePath():String{
+        return  getBasePath() + "Diagnosis/Mechanical"
+    }
+
+    /**
+     * 高级工具
+     */
+    fun getObdFilePath():String{
+        return  getBasePath() + "Diagnosis/Obd"
+    }
+
 
     /**
      * 引线说明路径
