@@ -14,7 +14,7 @@ public class MotorcycleTypeEntity {
 
 
     private int progress; //下载 解压进度
-    private int state; //状态： 1 正在下载 2下载完毕在解压 3已是最新版本
+    private int state; //状态： 1准备下载，2 正在下载 3正在解压 4下载错误 5已是最新版本 6需要升级至新版本
     private boolean isDownload = false;  //是否需要下载
     private boolean isSelect = false;  //是否选择
     private String imgUrl; //图片链接

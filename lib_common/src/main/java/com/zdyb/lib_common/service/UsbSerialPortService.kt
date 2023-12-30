@@ -8,14 +8,17 @@ import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.os.*
+import cn.wch.uartlib.WCHUARTManager
+import cn.wch.uartlib.chipImpl.type.ChipType2
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ThreadUtils
-import com.hoho.android.usbserial.driver.UsbSerialDriver
-import com.hoho.android.usbserial.driver.UsbSerialPort
-import com.hoho.android.usbserial.driver.UsbSerialProber
+import com.hoho.android.usbserial.driver.*
 import com.hoho.android.usbserial.util.SerialInputOutputManager
+import com.zdyb.lib_common.base.BaseApplication
 import com.zdyb.lib_common.bus.BusEvent
+import com.zdyb.lib_common.bus.EventTypeDiagnosis
+import com.zdyb.lib_common.bus.RxBus
 import com.zdyb.lib_common.receiver.USBReceiver
 import com.zdyb.lib_common.receiver.USBReceiver.CallBack
 import kotlinx.coroutines.*
@@ -153,16 +156,33 @@ class UsbSerialPortService : BaseService(){
      */
     @Throws(IOException::class)
     fun initSerial() {
+        val customTable = ProbeTable()
+        customTable.addProduct(0x0403, 0x6001, FtdiSerialDriver::class.java) //1018
+        //customTable.addProduct(0x1a86, 0x55d8, Ch34xSerialDriver::class.java)
+
+        val prober = UsbSerialProber(customTable)
+
         manager = getSystemService(USB_SERVICE) as UsbManager
-        val availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
+        //val availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
+        var availableDrivers = prober.findAllDrivers(manager)
+        if (availableDrivers.isEmpty()){
+            availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
+        }
         if (availableDrivers.isEmpty()) {
             return
         }
+        driver = availableDrivers[0] //默认取第一个
         for (serialDriver in availableDrivers) {
             val usbDevice = serialDriver.device
             LogUtils.i(usbDevice.toString())
+
+            if (usbDevice.vendorId == 6790 && usbDevice.productId == 21976){
+                WCHUARTManager.getInstance().init(BaseApplication.getInstance())
+                WCHUARTManager.addNewHardwareAndChipType(6790,21976, ChipType2.CHIP_CH9101UH)
+                driver = serialDriver
+                break
+            }
         }
-        driver = availableDrivers[0]
         if (!manager!!.hasPermission(driver!!.device)) {
             log("没有权限")
             //usbPermissionReceiver = new UsbPermissionReceiver();
@@ -245,9 +265,11 @@ class UsbSerialPortService : BaseService(){
                         //usb被删除断开了,原因是线断了-。-
                         //重启设备
                         //DevUtils.normalReboot();
+                        RxBus.getDefault().post(BusEvent(EventTypeDiagnosis.PORT_OUT))
                     }
                 })
             ThreadUtils.getIoPool().execute(usbIoManager)
+            RxBus.getDefault().post(BusEvent(EventTypeDiagnosis.PORT_CONNECT))
         }
 
     }

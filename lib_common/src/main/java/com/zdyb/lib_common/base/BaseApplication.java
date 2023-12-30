@@ -52,6 +52,7 @@ import kotlin.jvm.internal.Intrinsics;
 public abstract class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks {
     private static BaseApplication sInstance;
 
+    public static Boolean usbConnect = false;
     public static String FLAVOR = "";
 
     /**

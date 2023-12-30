@@ -5,6 +5,8 @@ import android.os.Build;
 import android.util.Log;
 
 
+import com.blankj.utilcode.util.ConvertUtils;
+
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
@@ -31,7 +33,7 @@ public class Zip7pUtil {
      * @param outputDir      解压后的文件的存储目录
      * @throws IOException
      */
-    public static void unCompress(File inCompressFile, File outputDir, Consumer<String> consumer) throws Exception {
+    public static void unCompress(File inCompressFile, File outputDir, Consumer<Integer> consumer) throws Exception {
         if (inCompressFile == null || !inCompressFile.exists()) {
             throw new RuntimeException("Invalid outputDir:" + outputDir);
         }
@@ -52,9 +54,9 @@ public class Zip7pUtil {
                 File file = new File(outputDir, entryName);
                 file.mkdirs();
 
-                double progress = (double) (tempCurr * 1.0f / sum * 100);
+                int progress = (int) (tempCurr * 1.0f / sum * 100);
                 //System.out.println("解压进度="+progress);
-                consumer.accept(String.format("%.2f",progress));
+                consumer.accept(progress);
                 continue;
             }
             int index = entryName.lastIndexOf(File.separator);
@@ -79,10 +81,9 @@ public class Zip7pUtil {
                     outputStream.close();
                 }
             }
-            double progress = (double) (tempCurr * 1.0f / sum * 100);
+            int progress = (int) (tempCurr * 1.0f / sum * 100);
             //System.out.println("解压进度="+progress);
-            consumer.accept(String.format("%.2f",progress));
-
+            consumer.accept(progress);
         }
     }
 
@@ -161,31 +162,31 @@ public class Zip7pUtil {
      * 检查文件真实类型
      *  返回值 1 7z文件类型，返回值2 zip文件类型
      */
-//    public static int fileType(File file) throws IOException {
-//        InputStream inputStream = null;
-//        try {
-//            inputStream = new FileInputStream(file);
-//            byte[] tag = new byte[6];
-//            inputStream.read(tag,0,6);
-//            String value = SerialInputOutputManager.byteArrayToHexStr(tag);
-//            if (value.equals("377ABCAF271C")){
-//                Log.v("UpdateModuleActivity","真实类型--7z文件 ");
-//                return 1;
-//            }else if (value.contains("504B0304")){
-//                Log.v("UpdateModuleActivity","真实类型--zip文件 ");
-//                return 2;
-//            }else {
-//                Log.e("Zip7pUtil","未知的压缩文件类型");
-//            }
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }finally {
-//            if (inputStream != null){
-//                inputStream.close();
-//            }
-//        }
-//        return 0;
-//    }
+    public static int fileType(File file) throws IOException {
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(file);
+            byte[] tag = new byte[6];
+            inputStream.read(tag,0,6);
+            String value = ConvertUtils.bytes2HexString(tag);
+            if (value.equals("377ABCAF271C")){
+                Log.v("UpdateModuleActivity","真实类型--7z文件 ");
+                return 1;
+            }else if (value.contains("504B0304")){
+                Log.v("UpdateModuleActivity","真实类型--zip文件 ");
+                return 2;
+            }else {
+                Log.e("Zip7pUtil","未知的压缩文件类型");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (inputStream != null){
+                inputStream.close();
+            }
+        }
+        return 0;
+    }
 
 
 }

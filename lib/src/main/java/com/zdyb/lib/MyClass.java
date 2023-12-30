@@ -1,7 +1,11 @@
 package com.zdyb.lib;
 
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MyClass {
@@ -23,10 +27,23 @@ public class MyClass {
 //        for (ACTEntity a:set) {
 //            System.out.print(a.value1); System.out.print(a.value2); System.out.println(a.value3);
 //        }
-        String a = "Zdeps/Data/V4.003.7z";
 
-        String b = a.substring(a.indexOf("/"));
-        System.out.println(b);
+        List<String> a = new ArrayList<String>();
+        a.add("1");
+        a.add("2");
+        a.add("3");
+        a.add("4");
+
+
+        List<String> b = new ArrayList<String>();
+        b.add("2");
+        b.add("3");
+
+        a.removeAll(b);
+
+        for (String s:a) {
+            System.out.println(s);
+        }
 
     }
 }

@@ -41,12 +41,13 @@ public final class FetchData {
         for (MotorcycleTypeEntity mt :data){
             // /storage/emulated/0/zdeps/Diagnosis/Electronic/75TPMS/V4.000.7z
             //参数 下载链接，本地存放路径
-            if (mt.isDownload() && mt.isSelect()){
+            if (mt.isDownload() && mt.isSelect()){  //
                 final Request request = new Request(mt.getDownloadUrl(), mt.getDownloadSavePath());
                 request.setGroupId(i); //以data的下标位置 为id 对应列表的位置
                 requests.add(request);
-                i++;
+
             }
+            i++;
         }
         return requests;
     }

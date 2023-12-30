@@ -128,17 +128,25 @@
     <string name="base_url">https://zdyban.zdeps.com</string>
     <string name="base_img_url">https://zdyban.zdeps.com/Diagnosis/</string>
     <string name="download_url">https://zdyban.zdeps.com/NewDiagnosis/</string>
-    <string name="download_state_1">正在下载</string>
-    <string name="download_state_2">正在解压</string>
-    <string name="download_state_3">下载错误</string>
-    <string name="download_state_4">已是最新版本</string>
-    <string name="download_state_5">升级至新版本</string>
+    <string name="download_state_1">准备下载</string>
+    <string name="download_state_2">正在下载</string>
+    <string name="download_state_3">正在解压</string>
+    <string name="download_state_4">下载失败</string>
+    <string name="download_state_5">已是最新版本</string>
+    <string name="download_state_6">升级至新版本</string>
+    <string name="download_state_7">是否要下载：</string>
     <string name="download_all_select">全选</string>
     <string name="download_eta_sec">%1$ds left</string>
     <string name="download_eta_min">%1$dm %2$ds left</string>
     <string name="download_eta_hrs">%1$dh %2$dm %3$ds left</string>
+    <string name="percent_progress">%1$d%%</string>
     <string name="download_speed_bytes">%1$d B/s</string>
     <string name="download_speed_kb">%1$s KB/s</string>
     <string name="download_speed_mb">%1$s MB/s</string>
+
+    <string name="version_manager_hint1">删除版本文件</string>
+    <string name="version_manager_hint2">是否要删除：</string>
+
+
 
 </resources>

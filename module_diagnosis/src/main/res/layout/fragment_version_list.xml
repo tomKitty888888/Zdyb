@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
+    android:id="@+id/mainView"
     android:orientation="horizontal"
     android:gravity="center"
     android:layout_width="match_parent"
@@ -40,6 +40,7 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/netLayout"
         android:orientation="vertical"
         android:layout_width="@dimen/dp_300"
         android:layout_height="match_parent"
@@ -61,6 +62,9 @@
 
             android:scrollbars="vertical"
             android:scrollbarSize="@dimen/dp_3"
+
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_net_version"
             />
     </androidx.appcompat.widget.LinearLayoutCompat>
 

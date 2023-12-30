@@ -2,7 +2,10 @@ package com.zdyb.module_diagnosis.model
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
+import com.zdeps.app.utils.ZipUtils
 import com.zdyb.lib_common.base.BaseViewModel
+import com.zdyb.lib_common.base.KLog
 import com.zdyb.lib_common.utils.PathManager
 import com.zdyb.lib_common.utils.PreferencesUtils
 import com.zdyb.lib_common.utils.SharePreferencesDiagnosis
@@ -11,12 +14,17 @@ import com.zdyb.module_diagnosis.bean.DataTabBean
 import com.zdyb.module_diagnosis.bean.MotorcycleTypeEntity
 import com.zdyb.module_diagnosis.netservice.DiagInteractor
 import com.zdyb.module_diagnosis.utils.FileUtils
+import com.zdyb.module_diagnosis.utils.Zip7pUtil
+import io.reactivex.functions.Consumer
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.IOException
+import java.nio.channels.FileChannel
 import java.nio.charset.StandardCharsets
 
 class DownloadAllModel:BaseViewModel() {
@@ -29,10 +37,11 @@ class DownloadAllModel:BaseViewModel() {
 
 
     fun getChildData(dataTabBean: DataTabBean){
-        val vci = PreferencesUtils.getString(context,SharePreferencesDiagnosis.DEVICE_SN,"20221185052T") //这里测试给的默认值
-        DiagInteractor.motorcycleType(dataTabBean.tag,vci).subscribe({
+        val vci = getVCI() //这里测试给的默认值
+        addDisposable(DiagInteractor.motorcycleType(dataTabBean.tag,vci).subscribe({
             collatingData(it,dataTabBean.tag)
-        },{it.printStackTrace()})
+        },{it.printStackTrace()}))
+
     }
 
 
@@ -72,7 +81,7 @@ class DownloadAllModel:BaseViewModel() {
                                 if (FileUtils.formatVersionCode(item.versions) > d.verName) {
                                     //是否需要更新下载
                                     item.isDownload = true
-                                    item.state = 5
+                                    item.state = 6
                                 }
                             }
                         }
@@ -135,5 +144,111 @@ class DownloadAllModel:BaseViewModel() {
             e.printStackTrace()
         }
         return if (value.isEmpty()) "0" else value
+    }
+
+    public interface ZipState{
+        fun progress(progress :Int,isSuccess :Boolean){}
+    }
+
+    fun unzipFile(download: MotorcycleTypeEntity,zipState :ZipState){
+        //1 获取文件
+        //2 判断文件类型 zip 与 7z文件
+        //3 解压
+        val zipFile = File(download.downloadSavePath)
+        val zipType = Zip7pUtil.fileType(zipFile)
+        val endIndex = zipFile.absolutePath.lastIndexOf("/")
+        val outPath = zipFile.absolutePath.substring(0,endIndex) //解压目录
+
+        if (zipType == 1){
+            viewModelScope.launch(Dispatchers.IO){
+                Zip7pUtil.unCompress(zipFile,File(outPath), Consumer {
+                    println("解压进度=$it")
+
+                    if (it >= 100){
+                        viewModelScope.launch(Dispatchers.Main){
+                            zipState.progress(it,true)
+                        }
+                        zipFile.delete() //清理掉压缩文件
+                    }
+
+                })
+            }
+        }else if (zipType == 2){
+
+            unZip(zipFile.absolutePath,outPath, Consumer {
+                if (it){
+                    downLoadImage(download)
+                }
+
+                viewModelScope.launch(Dispatchers.Main){
+                    zipState.progress(100,it)
+                }
+
+            })
+        }
+    }
+
+    /**
+     * 解压文件
+     */
+    private fun unZip(inputFile:String,outFile:String,consumer: Consumer<Boolean>){
+        viewModelScope.launch(CoroutineExceptionHandler { coroutineContext, throwable ->
+            println("${coroutineContext[CoroutineName].toString()} 处理异常：$throwable")
+        }) {
+            launch(Dispatchers.IO){
+                ZipUtils.exactFiles(inputFile,outFile, Consumer {
+                    consumer.accept(it)
+                    File(inputFile).delete() //清理掉压缩文件
+                    if (it){
+                        //showToast("解压完成")
+
+                        KLog.i("解压完成")
+                    }else{
+                        launch(Dispatchers.Main){
+                            showToast("解压失败,请检查服务器升级文件的压缩报格式是否正确")
+                        }
+                        KLog.e("解压失败,请检查服务器升级文件的压缩报格式是否正确")
+                    }
+                })
+            }
+        }
+    }
+
+    /**
+     *  下载图片存储到对应的目录 - 为什么不能放在zip文件中一起解压出来呢
+     */
+    private fun downLoadImage(download: MotorcycleTypeEntity){
+        viewModelScope.launch(CoroutineExceptionHandler { coroutineContext, throwable ->
+            println("${coroutineContext[CoroutineName].toString()} 处理异常：$throwable")
+        }) {
+            launch(Dispatchers.IO){
+                println("下载图片--")
+                val file = Glide.with(context!!).asFile().load(download.imgUrl).submit(200, 100).get()
+                val endIndex = download.downloadSavePath.lastIndexOf("/")
+                val outPath = download.downloadSavePath.substring(0,endIndex)
+                println("图片文件存放路径=$outPath")
+                copyFileUsingFileChannels(file,File("$outPath/car.pngex"))
+            }
+        }
+    }
+
+    /**
+     * 文件拷贝
+     */
+    @Throws(IOException::class)
+    private fun copyFileUsingFileChannels(source: File, dest: File) {
+        KLog.i("-----copyFileUsingFileChannels-----")
+        var inputChannel: FileChannel? = null
+        var outputChannel: FileChannel? = null
+        try {
+            inputChannel = FileInputStream(source).channel
+            outputChannel = FileOutputStream(dest).channel
+            outputChannel.transferFrom(inputChannel, 0, inputChannel.size())
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }finally {
+            inputChannel?.close()
+            outputChannel?.close()
+        }
     }
 }

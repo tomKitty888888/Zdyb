@@ -1,5 +1,7 @@
 package com.zdyb.lib_common.utils
 
+import android.content.Context
+import android.net.Uri
 import android.os.Environment
 import com.zdyb.lib_common.base.BaseApplication
 import java.io.File
@@ -122,6 +124,22 @@ object PathManager {
      */
     fun ecuReportPath():String{
         return getBasePath() + "ECU"
+    }
+
+
+    /**
+     * 版本文件下载后临时存放路径
+     */
+    fun versionFilePath(context: Context,url: String):String{
+        val fileName = getNameFromUrl(url)
+        return  context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/fetch/" + fileName
+    }
+
+    /**
+     * 截取下载的url的文件名
+     */
+    private fun getNameFromUrl(url: String): String {
+        return Uri.parse(url).lastPathSegment
     }
 
     private fun getPackType():String{

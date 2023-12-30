@@ -561,7 +561,9 @@ class ObdFragmentModel:BaseViewModel() {
                         //showToast("解压完成")
                         KLog.i("解压完成")
                     }else{
-                        showToast("解压失败,请检查服务器升级文件的压缩报格式是否正确")
+                        launch(Dispatchers.Main){
+                            showToast("解压失败,请检查服务器升级文件的压缩报格式是否正确")
+                        }
                         KLog.e("解压失败,请检查服务器升级文件的压缩报格式是否正确")
                     }
                 })

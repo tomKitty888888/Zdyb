@@ -86,6 +86,8 @@ class DownloadAllFileFragment : BaseNavFragment<FragmentDownloadAllFileBinding, 
                         //下载
                         for ((i, item) in mAdapter.data.withIndex()){
                             if (item.isDownload && item.isSelect){
+
+                                println("需要下载的=${item.brand_name}")
                                 mFetch.resume(i)
                             }
                         }
@@ -196,6 +198,22 @@ class DownloadAllFileFragment : BaseNavFragment<FragmentDownloadAllFileBinding, 
         override fun onCompleted(download: Download) {
             super.onCompleted(download)
             mAdapter.update(download, UNKNOWN_REMAINING_TIME, UNKNOWN_DOWNLOADED_BYTES_PER_SECOND)
+            if (download.status == Status.COMPLETED){
+                //解压文件
+                viewModel.unzipFile(mAdapter.data[download.group],object :DownloadAllModel.ZipState{
+                    override fun progress(progress: Int, isSuccess: Boolean) {
+                        println("进度aa=$progress")
+                        if (isSuccess){
+                            //刷新状态 已是最新版本
+                            mAdapter.data[download.group].state = 5
+                            mAdapter.data[download.group].isDownload = false
+                            mAdapter.notifyItemChanged(download.group)
+                        }else{
+                            //解压失败
+                        }
+                    }
+                })
+            }
         }
 
         override fun onError(download: Download, error: Error, throwable: Throwable?) {

@@ -8,4 +8,12 @@ public class EventTypeDiagnosis {
      */
     public final static int CMD_SELECT_FILE = 301;
 
+    /**
+     * 串口连接
+     */
+    public final static int PORT_CONNECT = 302;
+    public final static int PORT_OUT = 303;
+
+
+
 }

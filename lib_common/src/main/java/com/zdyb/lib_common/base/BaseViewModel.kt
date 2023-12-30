@@ -15,10 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog
 import com.qmuiteam.qmui.widget.textview.QMUISpanTouchFixTextView
 import com.zdyb.lib_common.R
-import com.zdyb.lib_common.utils.MaterialDialogUtils
-import com.zdyb.lib_common.utils.MyToastUtils
-import com.zdyb.lib_common.utils.PreferencesUtils
-import com.zdyb.lib_common.utils.SharePreferencesConstant
+import com.zdyb.lib_common.utils.*
 import com.zdyb.lib_common.widget.DeviceLoadingDialog
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
@@ -61,6 +58,7 @@ open class BaseViewModel : ViewModel, IBaseViewModel {
     fun userId(): String {
         return PreferencesUtils.getString(context, SharePreferencesConstant.USER_ID)
     }
+
 
     private fun initLoadingDialog() {
         loadingDialog = DeviceLoadingDialog.Builder(context as AppCompatActivity?).build()
@@ -260,7 +258,8 @@ open class BaseViewModel : ViewModel, IBaseViewModel {
     }
 
     fun getVCI():String{
-        return PreferencesUtils.getString(BaseApplication.getInstance(), SharePreferencesConstant.VCI_CODE,"")
+        return PreferencesUtils.getString(BaseApplication.getInstance(), SharePreferencesConstant.VCI_CODE,"20221185052T")//这里测试给的默认值
     }
+
 
 }

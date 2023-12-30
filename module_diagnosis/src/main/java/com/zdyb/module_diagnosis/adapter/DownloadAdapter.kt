@@ -21,6 +21,7 @@ class DownloadAdapter: BaseQuickAdapter<MotorcycleTypeEntity, BaseViewHolder>(R.
         val imageView = holder.getView<ImageView>(R.id.image)
         Glide.with(context)
             .load(item.imgUrl)
+            .override(200, 100)
             //.skipMemoryCache(true)
             //.diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .into(imageView)
@@ -35,7 +36,7 @@ class DownloadAdapter: BaseQuickAdapter<MotorcycleTypeEntity, BaseViewHolder>(R.
             checkBox.isEnabled = false
             checkBox.isChecked = true
             state.setTextColor(ContextCompat.getColor(context, R.color.color_theme))
-            state.text = context.getString(R.string.download_state_4)
+            state.text = context.getString(R.string.download_state_5)
         }else{
             checkBox.isEnabled = true
             checkBox.isChecked = item.isSelect
@@ -52,9 +53,13 @@ class DownloadAdapter: BaseQuickAdapter<MotorcycleTypeEntity, BaseViewHolder>(R.
                 4 -> {
                     state.text = context.getString(R.string.download_state_4)
                 }
+                5 -> {
+                    state.text = context.getString(R.string.download_state_5)
+                    state.setTextColor(ContextCompat.getColor(context, R.color.color_theme))
+                }
                 else ->{
                     state.setTextColor(ContextCompat.getColor(context, R.color.red))
-                    state.text = context.getString(R.string.download_state_5)
+                    state.text = context.getString(R.string.download_state_6)
                 }
             }
 
@@ -71,15 +76,19 @@ class DownloadAdapter: BaseQuickAdapter<MotorcycleTypeEntity, BaseViewHolder>(R.
         data[download.group].progress = download.progress
         println(getStatusString(download.status))
         when (download.status){
-            Status.DOWNLOADING ->{
+            Status.QUEUED ->{
                 data[download.group].state = 1
             }
-            Status.COMPLETED ->{
+            Status.DOWNLOADING ->{
                 data[download.group].state = 2
             }
-            Status.FAILED ->{
+            Status.COMPLETED ->{
                 data[download.group].state = 3
             }
+            Status.FAILED ->{
+                data[download.group].state = 4
+            }
+
             else -> {}
         }
         notifyItemChanged(download.group)

@@ -180,4 +180,18 @@ public class FileUtils {
 
     }
 
+
+    public static void deleteFileAndContents(final File file) {
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                final File[] contents = file.listFiles();
+                if (contents != null) {
+                    for (final File content : contents) {
+                        deleteFileAndContents(content);
+                    }
+                }
+            }
+            file.delete();
+        }
+    }
 }
