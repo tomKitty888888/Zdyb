@@ -36,11 +36,14 @@ class DownloadAllModel:BaseViewModel() {
     }
 
 
-    fun getChildData(dataTabBean: DataTabBean){
+    fun getChildData(dataTabBean: DataTabBean,errConsumer: Consumer<Boolean>){
         val vci = getVCI() //这里测试给的默认值
         addDisposable(DiagInteractor.motorcycleType(dataTabBean.tag,vci).subscribe({
             collatingData(it,dataTabBean.tag)
-        },{it.printStackTrace()}))
+        },{
+            it.printStackTrace()
+            errConsumer.accept(true)
+        }))
 
     }
 

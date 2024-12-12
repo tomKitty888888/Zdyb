@@ -1,28 +1,33 @@
 package com.zdyb.module_diagnosis.activity
 
+import android.app.ProgressDialog
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
-import android.view.WindowManager
-import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.ScreenUtils
-import com.google.android.material.snackbar.Snackbar
+import com.blankj.utilcode.util.ToastUtils
+import com.jakewharton.rxbinding3.view.clicks
 import com.qmuiteam.qmui.kotlin.onClick
-import com.zdeps.diag.DiagJni
+import com.zdeps.comm.CommomNative
+import com.zdeps.gui.CMD
 import com.zdeps.gui.ConnDevices
 import com.zdyb.lib_common.base.BaseApplication
 import com.zdyb.lib_common.base.KLog
@@ -30,32 +35,49 @@ import com.zdyb.lib_common.bus.BusEvent
 import com.zdyb.lib_common.bus.EventTypeDiagnosis
 import com.zdyb.lib_common.bus.RxBus
 import com.zdyb.lib_common.bus.RxSubscriptions
-import com.zdyb.lib_common.utils.PreferencesUtils
+import com.zdyb.lib_common.service.UsbSerialPortService
 import com.zdyb.lib_common.utils.RxHelper
-import com.zdyb.lib_common.utils.SharePreferencesDiagnosis
 import com.zdyb.lib_common.utils.constant.RouteConstants
 import com.zdyb.module_diagnosis.R
+import com.zdyb.module_diagnosis.adapter.PopupMenuAdapter
+import com.zdyb.module_diagnosis.bean.HelpMenuEntity
 import com.zdyb.module_diagnosis.databinding.ActivityDiagnosisBinding
+import com.zdyb.module_diagnosis.dialog.DialogHintBox
+import com.zdyb.module_diagnosis.dialog.DialogProgressBox
+import com.zdyb.module_diagnosis.dialog.HelpDialog
 import com.zdyb.module_diagnosis.dialog.NavigationBarUtil
-import com.zdyb.module_diagnosis.service.DiagnosisService
+import com.zdyb.module_diagnosis.help.CaptureHelp
+import com.zdyb.module_diagnosis.help.InitDeviceInfo
+import com.zdyb.module_diagnosis.model.DiagnosisActivityModel
+import com.zdyb.module_diagnosis.popup.MenuPopupWindow
 import com.zdyb.module_diagnosis.widget.BottomBarActionButton
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import java.nio.charset.StandardCharsets
+import io.reactivex.functions.Consumer
+import io.reactivex.schedulers.Schedulers
+import org.apache.commons.io.FileUtils
+import java.io.File
+import java.net.URL
+import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 @Route(path = RouteConstants.Diagnosis.DIAGNOSIS_ACTIVITY)
 class DiagnosisActivity : AppCompatActivity() {
-
+    var h = Handler(Looper.getMainLooper())
     var mSubscription: Disposable? = null
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityDiagnosisBinding
+    lateinit var mMenuPopupWindow: MenuPopupWindow
+    lateinit var mHelpDialog: HelpDialog
+    lateinit var viewModel : DiagnosisActivityModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
 
         binding = ActivityDiagnosisBinding.inflate(layoutInflater)
-
+        viewModel = DiagnosisActivityModel().init(this)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         NavigationBarUtil.hideNavigationBar(window)
         setContentView(binding.root)
@@ -87,6 +109,10 @@ class DiagnosisActivity : AppCompatActivity() {
         //将订阅者加入管理站
         RxSubscriptions.add(mSubscription)
         println("DiagnosisActivity进来了")
+        //初始化一些view
+        //mMenuPopupWindow = MenuPopupWindow(this)
+        //mHelpDialog = HelpDialog()
+        //
 
         println("获取屏幕的宽度（单位：px）=${ScreenUtils.getScreenWidth()}")
         println("获取屏幕的高度（单位：px）=${ScreenUtils.getScreenHeight()}")
@@ -99,17 +125,33 @@ class DiagnosisActivity : AppCompatActivity() {
         initView()
 
         registerListen() //电量监听
+
+        if (UsbSerialPortService.isNotDevice){
+            KLog.i("首次进入连接蓝牙")
+            viewModel.oneRunConnect()
+        }
     }
 
     private fun initView(){
-
+        initDialog()
+        initHelpView()
         initHomeActionButton()
         binding.includeBarTop.btnSet.onClick {
-
+            startActivity(Intent(this,SettingsActivity::class.java))
         }
-        binding.includeBarTop.imgScreenshot.onClick {
+        viewModel.addDisposable(binding.includeBarTop.imgScreenshot.clicks().throttleFirst(2, TimeUnit.SECONDS).subscribe({
+            CaptureHelp.capture(this@DiagnosisActivity)
+        },{it.printStackTrace()}))
 
+        binding.includeBarTop.imgBleState.onClick {
+            //检查usb是否连接
+            if (!ConnDevices.isUSBConnect()){
+                //打开定位，打开蓝牙权限，查询已经配对的蓝牙 显示列表
+                viewModel.isShowList = true
+                viewModel.showBleList()
+            }
         }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -135,9 +177,45 @@ class DiagnosisActivity : AppCompatActivity() {
     }
 
 
+    private fun initHelpView(){
+        val popupMenuAdapter = PopupMenuAdapter()
+        val data = mutableListOf<HelpMenuEntity>()
+        data.add(HelpMenuEntity(getString(R.string.help_upData),R.mipmap.icon_d_update,R.color.color_theme))
+        data.add(HelpMenuEntity(getString(R.string.help_dataBase),R.mipmap.icon_d_database,R.color.data_base))
+        popupMenuAdapter.setList(data)
+        popupMenuAdapter.setOnItemClickListener{ adapter, view, position ->
+            println(position)
+            val navController = findNavController(R.id.nav_host_fragment_content_diagnosis)
+            when(position){
+                0 ->{navController.navigate(R.id.action_homeFragment_to_downloadAllFileFragment)}
+                1 ->{navController.navigate(R.id.dataBaseFragment)}
+            }
+            binding.helpRecyclerView.visibility = View.GONE
+        }
+        binding.helpRecyclerView.adapter = popupMenuAdapter
+    }
 
+    private fun initDialog(){
+        mDialogHintBox = DialogHintBox()
+        mDialogHintBox.setHomeBackResult{
+            println("HomeBackResult--执行到")
+        }
+        mDialogHintBox.setBackResult {
+            mDialogHintBox.dismiss()
+        }
+        mDialogProgressBox = DialogProgressBox()
+        KLog.d("qq进程id=${android.os.Process.myPid()}")
 
+        demoProgress = ProgressDialog(this@DiagnosisActivity)
+    }
+    lateinit var demoProgress : ProgressDialog
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (binding.helpRecyclerView.visibility == View.VISIBLE){
+            binding.helpRecyclerView.visibility = View.GONE
+        }
+        return super.onTouchEvent(event)
+    }
 
 
     private val mLeftActionButtons =  mutableListOf<BottomBarActionButton>()
@@ -149,9 +227,31 @@ class DiagnosisActivity : AppCompatActivity() {
     private fun initHomeActionButton(){
         mLeftActionButtons.add(BottomBarActionButton(this).addValue(R.mipmap.icon_d_help,getString(R.string.action_button_help)).setClick {
             //帮助
+//            if (mMenuPopupWindow.isShowing){
+//                return@setClick
+//            }
+//            val offsetX = Math.abs(mMenuPopupWindow.getContentView().getMeasuredWidth()-it.getWidth()) / 2
+//            val offsetY = -(mMenuPopupWindow.getContentView().getMeasuredHeight()+it.getHeight());
+//            PopupWindowCompat.showAsDropDown(mMenuPopupWindow, it, offsetX, offsetY, Gravity.START)
+
+
+            if (binding.helpRecyclerView.visibility == View.VISIBLE){
+                binding.helpRecyclerView.visibility = View.GONE
+            }else{
+                binding.helpRecyclerView.visibility = View.VISIBLE
+            }
+
+//            if (!mHelpDialog.isVisible){
+//                mHelpDialog.show(supportFragmentManager,"mHelpDialog")
+//            }
+
+
         })
         mLeftActionButtons.add(BottomBarActionButton(this).addValue(R.mipmap.icon_d_voltage,getString(R.string.action_button_voltage)).setClick {
             //电压
+            val navController = findNavController(R.id.nav_host_fragment_content_diagnosis)
+            navController.navigate(R.id.action_homeFragment_to_voltageFragment)
+
         })
 
         mRightActionButtons.add(BottomBarActionButton(this).addValue(R.mipmap.icon_d_out,getString(R.string.action_button_out))
@@ -212,6 +312,10 @@ class DiagnosisActivity : AppCompatActivity() {
     public fun removeAllActionButton(){
         binding.includeBarBottom.leftMenuLayout.removeAllViews()
         binding.includeBarBottom.rightMenuLayout.removeAllViews()
+
+        if (binding.helpRecyclerView.visibility == View.VISIBLE){
+            binding.helpRecyclerView.visibility = View.GONE
+        }
     }
 
     /**
@@ -259,61 +363,193 @@ class DiagnosisActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        upConnectState()
+    }
+    lateinit var mDialogHintBox : DialogHintBox //文字消息提示
+    lateinit var mDialogProgressBox: DialogProgressBox //刷写时的进度动画
+
+    private val mUpDeviceCallBack = object :CommomNative.CallBack{
+        override fun onSendData(data: ByteArray?): Boolean {
+            //发送数据
+            if (data != null) {
+                val maxsend = 16384
+                val times = data.size / maxsend
+                val leftsize = data.size % maxsend
+                for (i in 0 until times) {
+                    val tempData = ByteArray(maxsend)
+                    System.arraycopy(data, times * i, tempData, 0, maxsend)
+                    ConnDevices.sendData(tempData)
+                }
+                if (leftsize > 0) {
+                    val tempData = ByteArray(leftsize)
+                    System.arraycopy(data, times * maxsend, tempData, 0, leftsize)
+                    ConnDevices.sendData(tempData)
+                }
+                return true
+            }
+            return false
+        }
+
+        override fun onGetData(len: Int, timeout: Int): ByteArray {
+
+            val data = ConnDevices.timedReadsDataLength(timeout.toLong(),len)
+            if (data != null) {
+                if (data.isNotEmpty()){
+                    println("一段时间读取指定长度数据=${ConvertUtils.bytes2HexString(data)}")
+                    return data
+                }
+            }
+            return ByteArray(0)
+        }
+
+        override fun onReadOneFrame(timeout: Int): ByteArray {
+            //读取一帧数据
+            val data = ConnDevices.readFrameData(timeout.toLong())
+
+            if (data != null) {
+                if (data.isNotEmpty()){
+                    println("读取一帧数据=${ConvertUtils.bytes2HexString(data)}")
+                    return data
+                }else{
+                    println("读取一帧数据 为空")
+                }
+            }
+            return ByteArray(0)
+        }
+
+        override fun onUpdateStop(info: String?) {
+            runOnUiThread {
+                if(mDialogProgressBox.isVisible){
+                    mDialogProgressBox.dismiss()
+                }
+            }
+        }
+
+        override fun onUpdateFaild(info: String?) {
+            //弹框提示-有一个确定按钮的
+            runOnUiThread {
+                if (!mDialogHintBox.isVisible && !mDialogHintBox.isShow()){
+                    mDialogHintBox.setActionType(CMD.MSG_MB_OK).setInitMsg(info)
+                    mDialogHintBox.show(supportFragmentManager,"mDialogHintBox")
+                    if(mDialogProgressBox.isVisible){
+                        mDialogProgressBox.dismiss()
+                    }
+                }else if(mDialogHintBox.isVisible){
+                    mDialogHintBox.setMsg(info)
+                }
+            }
+        }
+
+        override fun onUpdateFaild(title: String?, info: String?) {
+            //弹框提示-有一个确定按钮的
+            runOnUiThread {
+                if (!mDialogHintBox.isVisible && !mDialogHintBox.isShow()){
+                    mDialogHintBox.setActionType(CMD.MSG_MB_OK).setTitle(title).setInitMsg(info)
+                    mDialogHintBox.show(supportFragmentManager,"mDialogHintBox")
+                    if(mDialogProgressBox.isVisible){
+                        mDialogProgressBox.dismiss()
+                    }
+                }else if(mDialogHintBox.isVisible){
+                    mDialogHintBox.setMsg(info)
+                }
+            }
+        }
+
+        override fun onUpdateProgressing(info: String?) {
+            //显示进度
+            runOnUiThread {
+                    if (!mDialogProgressBox.isVisible && !mDialogProgressBox.isShow()){
+                        mDialogProgressBox.setActionType(CMD.FORM_DIALOG_PROGRESS).setInitMsg(info)
+                        mDialogProgressBox.show(supportFragmentManager,"mDialogProgressBox")
+                    }else if(mDialogProgressBox.isVisible){
+                        mDialogProgressBox.setMsg(info)
+                    }
+
+            }
+        }
+
+        override fun onUpdateSuccess() {
+            //升级成功 关闭进度框
+            println("onUpdateSuccess")
+            runOnUiThread {
+                if(mDialogProgressBox.isVisible){
+                    mDialogProgressBox.dismiss()
+                }
+            }
+        }
+
+        override fun reConnected() {
+            //关闭串口之后 在重新打开，不明白有何作用-。-
+            try {
+                println("reConnected---关闭串口之后 在重新打开")
+                ConnDevices.closeSerialPort()
+                ConnDevices.openSerialPort()
+            }catch (e :Exception){
+                e.printStackTrace()
+            }
+        }
+
+    }
+
+    /**
+     * 更新连接状态
+     */
+    private fun upConnectState(){
+        if (BaseApplication.connectType == BaseApplication.ConnectType.no){
+            binding.includeBarTop.imgBleState.setImageResource(R.mipmap.icon_d_ble_state_disconnect)
+        }else{
+            binding.includeBarTop.imgBleState.setImageResource(R.mipmap.icon_d_ble_state_connect)
+        }
+    }
+
     private fun eventComing(t: BusEvent?) {
         t?.let {
             runOnUiThread{
                 when(it.what){
                     EventTypeDiagnosis.PORT_CONNECT ->{
-                        BaseApplication.usbConnect = true
-                        binding.includeBarTop.imgBleState.setImageResource(R.mipmap.icon_d_ble_state_connect)
-                        Handler().post { getDeviceInfo() }
+                        upConnectState()
+                        InitDeviceInfo.registrationCallBack(mUpDeviceCallBack)
+                        var mDisposable =
+                        Observable.create<String> {
+                            if (!InitDeviceInfo.isCheckIng){
+                                InitDeviceInfo.getDeviceInfo()
+                            }
+                        }.subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+
+                            },{
+                                it.printStackTrace()
+                                InitDeviceInfo.isCheckIng = false
+                            })
 
                     }
                     EventTypeDiagnosis.PORT_OUT ->{
-                        BaseApplication.usbConnect = false
-                        binding.includeBarTop.imgBleState.setImageResource(R.mipmap.icon_d_ble_state_disconnect)
+                        upConnectState()
+                    }
+
+                    EventTypeDiagnosis.CONNECT_BLE ->{
+                        viewModel.oneRunConnect()
+                    }
+                    EventTypeDiagnosis.BLE_CONNECT ->{
+                        val data = it.data as Int
+                        binding.includeBarTop.imgBleState.setImageResource(data)
+                    }
+                    EventTypeDiagnosis.BlE_OUT ->{
+                        val data = it.data as Int
+                        binding.includeBarTop.imgBleState.setImageResource(data)
                     }
                 }
             }
         }
     }
 
-    /**
-     * 查询下位机的信息 包括sn与版本信息
-     */
-    private fun getDeviceInfo(){
-        //让下位机停止发送数据
-        ConnDevices.sendData(byteArrayOf(0xa5.toByte(), 0xa5.toByte(), 0x00, 0x01,0xd1.toByte(), 0x55))
-        ConnDevices.outTimeReadData(200)
-        ConnDevices.purge()
-        //流控 开关，这里暂时不用
 
-        //查询sn
-        ConnDevices.sendData(byteArrayOf(0xa5.toByte(), 0xa5.toByte(), 0x00, 0x01, 0xf2.toByte(), 0x55))
-        val snResult = ConnDevices.outTimeReadData(200)
-        if (null != snResult && snResult.size >=17){
-            val sn = String(snResult,5,12)
-            KLog.d("sn=$sn")
-            PreferencesUtils.putString(this, SharePreferencesDiagnosis.DEVICE_SN,sn)
-        }
-        ConnDevices.purge()
-        //查询版本号
-        ConnDevices.sendData(byteArrayOf(0xa5.toByte(), 0xa5.toByte(), 0x00, 0x02, 0xf0.toByte(), 0x00, 0x55))
-        val versionResult = ConnDevices.outTimeReadData(200)
-        val resultData = ByteArray(5)
-        if (null != versionResult && versionResult.isNotEmpty()){
-            for (i in versionResult.indices) {
-                if (String(byteArrayOf(versionResult[i]), StandardCharsets.UTF_8) == "V") {
-                    resultData[0] = versionResult[i]
-                    resultData[1] = versionResult[i + 1]
-                    resultData[2] = versionResult[i + 2]
-                    resultData[3] = versionResult[i + 3]
-                    resultData[4] = versionResult[i + 4]
-                }
-            }
-            val versionString = String(resultData, StandardCharsets.UTF_8)
-            KLog.d("version=$versionString")
-            PreferencesUtils.putString(this, SharePreferencesDiagnosis.DEVICE_VERSION,versionString)
-        }
+    override fun onDestroy() {
+        viewModel.onDestroy()
+        super.onDestroy()
     }
+
 }

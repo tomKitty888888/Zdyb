@@ -2,7 +2,9 @@ package com.zdyb.module_diagnosis.bean;
 
 import androidx.annotation.Nullable;
 
-public class ItemVersionEntity {
+import java.io.Serializable;
+
+public class ItemVersionEntity implements Serializable {
 
     private String versions;
     private String patch_url;

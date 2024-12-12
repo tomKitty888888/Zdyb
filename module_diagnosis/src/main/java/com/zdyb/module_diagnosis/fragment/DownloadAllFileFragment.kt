@@ -24,6 +24,7 @@ import com.zdyb.module_diagnosis.databinding.FragmentDownloadAllFileBinding
 import com.zdyb.module_diagnosis.model.DownloadAllModel
 import com.zdyb.module_diagnosis.utils.FetchData
 import com.zdyb.module_diagnosis.widget.BottomBarActionButton
+import io.reactivex.functions.Consumer
 
 
 class DownloadAllFileFragment : BaseNavFragment<FragmentDownloadAllFileBinding, DownloadAllModel>() {
@@ -39,14 +40,15 @@ class DownloadAllFileFragment : BaseNavFragment<FragmentDownloadAllFileBinding, 
         return DownloadAllModel()
     }
 
+    lateinit var mAllCheckBox :CheckBox
     override fun initActionButton() {
         super.initActionButton()
         if (activity is DiagnosisActivity){
             val mActivity = (activity as DiagnosisActivity)
             mActivity.removeAllActionButton()
             val view = LayoutInflater.from(requireContext()).inflate(R.layout.action_button_checkbox,null)
-            val checkBox = view.findViewById<CheckBox>(R.id.checkBox)
-            checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            mAllCheckBox = view.findViewById<CheckBox>(R.id.checkBox)
+            mAllCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked){
                     println("全部选择")
                     for (item in mAdapter.data){
@@ -66,6 +68,7 @@ class DownloadAllFileFragment : BaseNavFragment<FragmentDownloadAllFileBinding, 
                 }
             }
             mActivity.addLeftActionButton(
+                view,
                 BottomBarActionButton(activity).addValue(R.mipmap.icon_d_update,getString(R.string.action_button_update))
                     //.setPartitionLineVisibility(ConstraintLayout.LayoutParams.LEFT)
                     .setClick {
@@ -91,8 +94,8 @@ class DownloadAllFileFragment : BaseNavFragment<FragmentDownloadAllFileBinding, 
                                 mFetch.resume(i)
                             }
                         }
-                    },
-                view
+                    }
+
             )
             mActivity.addRightActionButton(
                 BottomBarActionButton(activity).addValue(R.mipmap.icon_d_back,getString(R.string.action_button_back))
@@ -119,7 +122,17 @@ class DownloadAllFileFragment : BaseNavFragment<FragmentDownloadAllFileBinding, 
             mTabAdapter.selectIndex = position
             mTabAdapter.notifyDataSetChanged()
             //加载子项
-            viewModel.getChildData(item)
+            viewModel.getChildData(item, Consumer {
+                if (it){
+                    mAdapter.data.clear()
+                    mAdapter.notifyDataSetChanged()
+                }else{
+                    println("重置")
+                    mFetch.cancelAll()
+                }
+            })
+            //重置全选按钮
+            mAllCheckBox.isChecked = false
         }
 
         binding.tabRecyclerView.adapter = mTabAdapter

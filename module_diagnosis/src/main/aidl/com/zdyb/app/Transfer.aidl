@@ -15,6 +15,8 @@ interface Transfer {
 
        byte[] recvData(in int retlen);
 
+       byte[] timedReadsData(in long time); //定时读取
+
        void purge();
 
        boolean setBaudRate(int baudRate);

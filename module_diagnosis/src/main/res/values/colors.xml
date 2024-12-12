@@ -3,6 +3,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FFFF0000</color>
+    <!-- <color name="yellow">#FFFFFF00</color> -->
+    <color name="yellow">#FFddd900</color>
+    <color name="blue">#FF0000FF</color>
+    <color name="green">#FF00FF00</color>
 
     <!-- bar的背景色值 -->
     <color name="bar_bg_start">#4D564C</color>
@@ -22,5 +26,8 @@
     <color name="button_bg">#FF36BB4C</color>
 
     <color name="color_theme">#31A544</color>
+
+    <!-- 数据库背景色 -->
+    <color name="data_base">#FF229C8C</color>
 
 </resources>

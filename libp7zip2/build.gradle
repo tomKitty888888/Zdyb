@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
 
     publishNonDefault true
-
+    namespace 'com.zdyb.zip7z'
     defaultConfig {
 
 //        applicationId rootProject.ext.android.applicationId
@@ -18,7 +18,7 @@ android {
 //        versionCode 1
 //        versionName "1.0"
         ndk {
-            abiFilters 'armeabi-v7a'
+            abiFilters 'armeabi-v7a'//, 'arm64-v8a'
         }
         externalNativeBuild {
             cmake {

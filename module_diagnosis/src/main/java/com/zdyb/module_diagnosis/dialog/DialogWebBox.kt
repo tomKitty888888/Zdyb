@@ -115,7 +115,6 @@ class DialogWebBox:BaseDialogFragment(){
                 val downloadFile = File(fileToute)
                 FileUtils.copyURLToFile(URL(url), downloadFile)
                 it.onNext(getString(R.string.load) + fileName +getString(R.string.succeed))
-
             }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

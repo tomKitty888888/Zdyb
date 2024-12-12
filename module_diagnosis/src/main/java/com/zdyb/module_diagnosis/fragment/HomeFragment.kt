@@ -6,6 +6,8 @@ import com.qmuiteam.qmui.kotlin.onClick
 import com.zdyb.lib_common.base.BaseNavFragment
 import com.zdyb.module_diagnosis.databinding.FragmentHomeBinding
 import androidx.navigation.fragment.findNavController
+import com.blankj.utilcode.util.ConvertUtils
+import com.zdeps.gui.ConnDevices
 import com.zdyb.lib_common.base.BaseApplication
 import com.zdyb.lib_common.base.BaseDialogFragment
 import com.zdyb.lib_common.base.BaseViewModel
@@ -13,65 +15,49 @@ import com.zdyb.lib_common.utils.PathManager
 import com.zdyb.module_diagnosis.R
 import com.zdyb.module_diagnosis.activity.DiagnosisActivity
 import com.zdyb.module_diagnosis.dialog.*
+import com.zdyb.module_diagnosis.model.HomeModel
 import com.zdyb.module_diagnosis.widget.BottomBarActionButton
 
-class HomeFragment: BaseNavFragment<FragmentHomeBinding, BaseViewModel>()  {
+class HomeFragment: BaseNavFragment<FragmentHomeBinding, HomeModel>()  {
 
 
 
-    override fun initViewModel(): BaseViewModel {
-        return ViewModelProvider(requireActivity())[BaseViewModel::class.java]
+
+    override fun initViewModel(): HomeModel {
+        return ViewModelProvider(requireActivity())[HomeModel::class.java]
     }
-    //
-    val mDialogInputFileBox = DialogLockImgBox()
 
     override fun initViewObservable() {
         super.initViewObservable()
 
         binding.actionDiagnosis.onClick {
-            println("6661")
+            println("智能诊断")
             findNavController().navigate(R.id.action_homeFragment_to_AutoScanDeviceListFragment)
-
-            //主要用于测试DNOx2.2系统计量喷射的准确性、检查系统是否泄漏、倒抽能力。\n在测试前,最好先读取故障码,排除潜在的后处理故障,以便更快地确定问题部件\n测试条件:钥匙打开,不启动发动机,催化剂上游温度不能高于200℃,尿素温度电压小于3V,尿素液位80%以上,气罐内压力为0
-
-//            val mDialogHintBox = DialogHintBox()
-//            mDialogHintBox.setMsg("进入系统失败\n" +
-//                    "反馈编码：FDFD\n" +
-//                    "通信波特率250000\n" +
-//                    "ECU地址:00\n" +
-//                    "模块ID:5858\n" +
-//                    "处理方案：\\n1.直接使用车辆ECU线束旁边的2PIN诊断接头\\n2.拆下ECU跳线通讯，排除车辆CAN总线干扰")
-//           mDialogHintBox.show(childFragmentManager,"mDialogHintBox")
-
-//            var mDialogWebBox = DialogWebBox()
-//            mDialogWebBox.setUrl("https://wx.ytobd.com/wx/errcode1018/list?content=${1117}&box=1&limit=15&page=1")
-//            mDialogWebBox.show(childFragmentManager,"mDialogWebBox")
         }
         binding.actionEcuRw.onClick {
-            println("6662")
+            println("ECU刷写")
             val bundle = bundleOf(FileListFragment.TAG to PathManager.getReflashFilePath())
             findNavController().navigate(R.id.action_homeFragment_to_fileListFragment,bundle)
         }
         binding.actionPpd.onClick {
-            println("6663")
+            println("后处理诊断")
             val bundle = bundleOf(FileListFragment.TAG to PathManager.getATFilePath())
             findNavController().navigate(R.id.action_homeFragment_to_fileListFragment,bundle)
         }
         binding.actionCartDvs.onClick {
-            println("6664")
+            println("柴油车系")
             findNavController().navigate(R.id.action_homeFragment_to_childCarSeriesFragment)
         }
         binding.actionCartNevs.onClick {
-            println("6665")
+            println("新能源")
             val bundle = bundleOf(FileListFragment.TAG to PathManager.getEvFilePath())
             findNavController().navigate(R.id.action_homeFragment_to_fileListFragment,bundle)
         }
         binding.actionCartNgvs.onClick {
-            println("6666")
-            //val bundle = bundleOf(FileListFragment.TAG to PathManager.getCngFilePath())
-            //findNavController().navigate(R.id.action_homeFragment_to_fileListFragment,bundle)
+            println("天然气")
+            val bundle = bundleOf(FileListFragment.TAG to PathManager.getCngFilePath())
+            findNavController().navigate(R.id.action_homeFragment_to_fileListFragment,bundle)
 
-            findNavController().navigate(R.id.action_homeFragment_to_downloadAllFileFragment)
         }
 
         //addActionButton()

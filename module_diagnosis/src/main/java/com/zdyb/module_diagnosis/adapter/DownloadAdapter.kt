@@ -42,15 +42,19 @@ class DownloadAdapter: BaseQuickAdapter<MotorcycleTypeEntity, BaseViewHolder>(R.
             checkBox.isChecked = item.isSelect
             when (item.state){ //1 正在下载 2下载完毕在解压 3已是最新版本
                 1 -> {
+                    state.setTextColor(ContextCompat.getColor(context, R.color.red))
                     state.text = context.getString(R.string.download_state_1)
                 }
                 2 -> {
+                    state.setTextColor(ContextCompat.getColor(context, R.color.red))
                     state.text = context.getString(R.string.download_state_2)
                 }
                 3 -> {
+                    state.setTextColor(ContextCompat.getColor(context, R.color.red))
                     state.text = context.getString(R.string.download_state_3)
                 }
                 4 -> {
+                    state.setTextColor(ContextCompat.getColor(context, R.color.red))
                     state.text = context.getString(R.string.download_state_4)
                 }
                 5 -> {

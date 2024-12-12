@@ -13,23 +13,30 @@ import cn.wch.uartlib.chipImpl.type.ChipType2
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ThreadUtils
+import com.ftdi.j2xx.D2xxManager
+import com.ftdi.j2xx.FT_Device
 import com.hoho.android.usbserial.driver.*
 import com.hoho.android.usbserial.util.SerialInputOutputManager
 import com.zdyb.lib_common.base.BaseApplication
+import com.zdyb.lib_common.base.KLog
 import com.zdyb.lib_common.bus.BusEvent
 import com.zdyb.lib_common.bus.EventTypeDiagnosis
 import com.zdyb.lib_common.bus.RxBus
 import com.zdyb.lib_common.receiver.USBReceiver
 import com.zdyb.lib_common.receiver.USBReceiver.CallBack
 import kotlinx.coroutines.*
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.BlockingQueue
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue
 
 class UsbSerialPortService : BaseService(){
 
+    companion object{
+        var isNotDevice = false
+    }
     var manager: UsbManager? = null
     var serialPort: UsbSerialPort? = null
     var driver: UsbSerialDriver? = null
@@ -40,6 +47,8 @@ class UsbSerialPortService : BaseService(){
     private var mUsbReceiver: USBReceiver? = null
     //private var loopDatas: Queue<Byte> = ConcurrentLinkedQueue()
     private var loopDatas: BlockingQueue<Byte> = LinkedBlockingQueue<Byte>()
+    private var baudRate = 115200
+
 
     private fun registerReceiver() {
         val filter = IntentFilter()
@@ -98,6 +107,11 @@ class UsbSerialPortService : BaseService(){
             initSerial()
         } catch (e: Exception) {
             e.printStackTrace()
+            if (e is NullPointerException){
+                KLog.i("未插入usb 去连接蓝牙")
+                RxBus.getDefault().post(BusEvent(EventTypeDiagnosis.CONNECT_BLE))
+                isNotDevice = true
+            }
         }
     }
 
@@ -156,33 +170,44 @@ class UsbSerialPortService : BaseService(){
      */
     @Throws(IOException::class)
     fun initSerial() {
-        val customTable = ProbeTable()
-        customTable.addProduct(0x0403, 0x6001, FtdiSerialDriver::class.java) //1018
-        //customTable.addProduct(0x1a86, 0x55d8, Ch34xSerialDriver::class.java)
-
-        val prober = UsbSerialProber(customTable)
+//        val customTable = ProbeTable()
+//        customTable.addProduct(0x0403, 0x6001, FtdiSerialDriver::class.java) //1018
+//        val prober = UsbSerialProber(customTable)
 
         manager = getSystemService(USB_SERVICE) as UsbManager
-        //val availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
-        var availableDrivers = prober.findAllDrivers(manager)
-        if (availableDrivers.isEmpty()){
-            availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
-        }
-        if (availableDrivers.isEmpty()) {
-            return
-        }
-        driver = availableDrivers[0] //默认取第一个
-        for (serialDriver in availableDrivers) {
-            val usbDevice = serialDriver.device
-            LogUtils.i(usbDevice.toString())
+        var availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
+        //var availableDrivers = prober.findAllDrivers(manager)
+        if (availableDrivers.isNotEmpty()){
 
-            if (usbDevice.vendorId == 6790 && usbDevice.productId == 21976){
-                WCHUARTManager.getInstance().init(BaseApplication.getInstance())
-                WCHUARTManager.addNewHardwareAndChipType(6790,21976, ChipType2.CHIP_CH9101UH)
-                driver = serialDriver
-                break
+            for (dev in availableDrivers){
+                val usbSerialPorts = dev.ports
+                val vid = usbSerialPorts[0].driver.device.vendorId
+                val pid = usbSerialPorts[0].driver.device.productId
+                driver = dev
+
+                if (vid == 1027 && pid == 24577){ //1018的板子
+                    //匹配
+                    FtdiCustomSerialPort.instance = D2xxManager.getInstance(BaseApplication.getInstance())
+                    val deviceInfoList = D2xxManager.getInstance(context).createDeviceInfoList(context)
+                    val listDetail = D2xxManager.getInstance(context).getDeviceInfoListDetail(0)
+                    if(deviceInfoList==0){
+                        KLog.e("未匹配到USB设备")
+                        return
+                    }
+                    if (listDetail == null){
+                        KLog.e("未匹配到USB设备")
+                        return
+                    }
+                    val ftd : FT_Device = D2xxManager.getInstance(context).openByIndex(context, 0)
+                    FtdiCustomSerialPort.ftDev = ftd
+                }else if (vid == 6790 && pid == 21976){
+                    WCHUARTManager.getInstance().init(BaseApplication.getInstance())
+                    WCHUARTManager.addNewHardwareAndChipType(6790,21976, ChipType2.CHIP_CH9101UH)
+                }
             }
+
         }
+
         if (!manager!!.hasPermission(driver!!.device)) {
             log("没有权限")
             //usbPermissionReceiver = new UsbPermissionReceiver();
@@ -204,6 +229,42 @@ class UsbSerialPortService : BaseService(){
         } else {
             log("有权限")
             openUsb(driver!!)
+        }
+    }
+
+    /**
+     * 设置波特率
+     */
+    fun setBaudRate(baudRateValue: Int):Boolean{
+        //baudRate = baudRateValue
+        serialPort?.apply {
+            setParameters(
+                baudRateValue,
+                8,
+                UsbSerialPort.STOPBITS_1,
+                UsbSerialPort.PARITY_NONE
+            )
+            rts = true //流控
+            SystemClock.sleep(500)
+        }
+        return true
+    }
+
+    /**
+     * 设置流控
+     */
+    fun setRts(boolean: Boolean){
+        serialPort?.apply {
+            rts = boolean
+        }
+    }
+
+    /**
+     * 关闭串口
+     */
+    fun closeSerialPort(){
+        serialPort?.apply {
+            close(this@UsbSerialPortService)
         }
     }
 
@@ -233,7 +294,7 @@ class UsbSerialPortService : BaseService(){
     }
 
     private val queue: BlockingQueue<*> = LinkedBlockingQueue<Any?>()
-
+    private val mExecutor = Executors.newSingleThreadExecutor()
     @Throws(IOException::class)
     fun openUsb(driver: UsbSerialDriver) {
         val connection = manager!!.openDevice(driver.device)
@@ -250,6 +311,7 @@ class UsbSerialPortService : BaseService(){
                 UsbSerialPort.STOPBITS_1,
                 UsbSerialPort.PARITY_NONE
             )
+
             val usbIoManager = SerialInputOutputManager(
                 this,
                 object : SerialInputOutputManager.Listener {
@@ -265,10 +327,16 @@ class UsbSerialPortService : BaseService(){
                         //usb被删除断开了,原因是线断了-。-
                         //重启设备
                         //DevUtils.normalReboot();
+                        BaseApplication.connectType = BaseApplication.ConnectType.no
                         RxBus.getDefault().post(BusEvent(EventTypeDiagnosis.PORT_OUT))
                     }
                 })
-            ThreadUtils.getIoPool().execute(usbIoManager)
+            //usbIoManager.readBufferSize =  1024*2
+            //usbIoManager.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT)
+            //usbIoManager.readTimeout = 800
+            //ThreadUtils.getIoPool().execute(usbIoManager)
+            mExecutor.submit(usbIoManager)
+            BaseApplication.connectType = BaseApplication.ConnectType.usb
             RxBus.getDefault().post(BusEvent(EventTypeDiagnosis.PORT_CONNECT))
         }
 
@@ -276,12 +344,14 @@ class UsbSerialPortService : BaseService(){
 
     private fun result(data: ByteArray?) {
         try {
-            val string = ConvertUtils.bytes2HexString(data)
-            log("<--串口接收到数据$string")
-            if (data == null) {
-                return
+            synchronized (loopDatas){
+                val string = ConvertUtils.bytes2HexString(data)
+                log("<--串口接收到数据$string")
+                if (data == null) {
+                    return
+                }
+                loopDatas.addAll(data.toTypedArray())
             }
-            loopDatas.addAll(data.toTypedArray())
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -334,10 +404,86 @@ class UsbSerialPortService : BaseService(){
         return data
     }
 
+    fun test(){
+        loopDatas.addAll(ConvertUtils.hexString2Bytes("A5A50011FA3230323231313639303536540000000055").toTypedArray())
+        loopDatas.addAll(ConvertUtils.hexString2Bytes("A5A500010055").toTypedArray())
+    }
+
+
+    /**
+     * 读取一帧的数据,需要自己找到包头，找到数据长度，然后继续读取数据最后55结尾，为一帧数据。
+     * ps:下位机升级时候才使用到
+     */
+    fun readFrameData(outTime: Long): ByteArray{
+
+        try {
+            val startTime = System.currentTimeMillis() //开始时间
+            //做空耗时操作 结束后读取数据
+
+            println("等待读取数据--一共延时${outTime}")
+            //假如开始时间2023年 循环时的时间变成了 1970年那么陷入死循环
+            while (System.currentTimeMillis() - startTime < 200) {
+                //println(Thread.currentThread().name)
+            }
+            val startCom = readData(4)
+
+            if (startCom == null){
+                println("头部的数据都没有读取到")
+            }
+            startCom?.let {
+                if(it[0] == 0xA5.toByte() && it[1] == 0xA5.toByte()){
+                    var len = it[2].toInt() shl 24 ushr 16
+                    len = len or (it[3].toInt() shl 24 ushr 24)
+                    len += 1 //加上结尾字符55的长度
+                    //继续读取剩余的数据
+                    val dataBody = readData(len)
+
+
+                    dataBody?.let {
+                        val allDataStream = ByteArrayOutputStream()
+                        allDataStream.write(startCom,0,startCom.size)
+                        allDataStream.write(dataBody,0,dataBody.size)
+                        val allData = allDataStream.toByteArray()
+                        allDataStream.reset()//关闭数据流
+                        return allData
+                    }
+                }
+            }
+        }catch (e :Exception){
+            e.printStackTrace()
+        }
+        return ByteArray(0)
+    }
+
+    /**
+     *  一段时间内读取指定长度的数据，如果读取到了指定长度就直接返回
+     *  ps:下位机升级时候才使用到
+     */
+    fun timedReadsDataLength(outTime: Long,retlen: Int): ByteArray {
+        val startTime = System.currentTimeMillis() //开始时间
+        val bops = ByteArrayOutputStream()
+        while (System.currentTimeMillis() - startTime < outTime) {
+            if (bops.size() < retlen){ //继续读取
+                val temp: Int = retlen - bops.size()
+                val bytes = readData(temp)
+                if (null != bytes){
+                    bops.write(bytes)
+                }
+            }else{
+                if (bops.size() >= retlen) break
+            }
+            SystemClock.sleep(20)
+        }
+
+        val tempData = bops.toByteArray()
+        bops.reset() //关闭
+        return tempData
+    }
+
     /**
      * 间隔多长时间后 进行读取 不指定长度 。！！！还有一种 读取多长时间并且指定了长度 这个暂时未实现 先记录有这个
      */
-    fun readData(outTime: Long): ByteArray {
+    fun timedReadsData(outTime: Long): ByteArray {
         try {
             val startTime = System.currentTimeMillis() //开始时间
             //做空耗时操作 结束后读取数据
@@ -365,8 +511,50 @@ class UsbSerialPortService : BaseService(){
         return ByteArray(0)
     }
 
+    /**
+     * 一定超时时间内读取 一帧数据 读完后直接返回
+     */
+    fun timedReadsFrameData(outTime: Long): ByteArray{
+
+        try {
+            val startTime = System.currentTimeMillis() //开始时间
+            //做空耗时操作 结束后读取数据
+
+            println("等待读取数据--一共延时${outTime}")
+            //假如开始时间2023年 循环时的时间变成了 1970年那么陷入死循环
+            while (System.currentTimeMillis() - startTime < outTime) {
+                //println(Thread.currentThread().name)
+
+                val startCom = readData(4) ?: continue
+                startCom.let {
+                    if(it[0] == 0xA5.toByte() && it[1] == 0xA5.toByte()){
+                        var len = it[2].toInt() shl 24 ushr 16
+                        len = len or (it[3].toInt() shl 24 ushr 24)
+                        len += 1 //加上结尾字符55的长度
+                        //继续读取剩余的数据
+                        val dataBody = readData(len)
+                        dataBody?.let {
+                            val allDataStream = ByteArrayOutputStream()
+                            allDataStream.write(startCom,0,startCom.size)
+                            allDataStream.write(dataBody,0,dataBody.size)
+                            val allData = allDataStream.toByteArray()
+                            allDataStream.reset()//关闭数据流
+                            return allData
+                        }
+                    }
+                }
+            }
+        }catch (e :Exception){
+            e.printStackTrace()
+        }
+        return ByteArray(0)
+    }
+
+
     fun purge(){
         loopDatas.clear()
     }
+
+
 
 }

@@ -18,7 +18,6 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
-import com.hoho.android.usbserial.util.SerialInputOutputManager;
 import com.zdyb.lib_common.base.BaseApplication;
 import com.zdyb.lib_common.bus.BusEvent;
 import com.zdyb.lib_common.bus.EventType;
@@ -317,6 +316,17 @@ public class Bluetooth {
         return null;
     }
 
+    //读完所有的数据
+    public byte[] recvData() {
+        int len = queue.size();
+        byte[] rdat = new byte[len];
+        for (int i = 0; i < rdat.length; i++) {
+            rdat[i] = (byte) queue.poll();
+        }
+        //Log.v("BT_recv:", SerialInputOutputManager.byteArrayToHexStr(rdat));
+        return rdat;
+    }
+
     public List<BluetoothDevice> getPairedDevices() {
         return new ArrayList<>(bluetoothAdapter.getBondedDevices());
     }
@@ -380,6 +390,7 @@ public class Bluetooth {
             } catch (final Exception e) {
                 connected = false;
                 if (deviceCallback != null) {
+                    deviceCallback.onMessage(e.getMessage());
                 }
             } finally {
                 purgeQuere();

@@ -75,8 +75,10 @@ class DialogHintBox:BaseDialogFragment(){
         return this
     }
 
-    fun setTitle(title:String):DialogHintBox{
-        this.title = title
+    fun setTitle(title:String?):DialogHintBox{
+        if (title != null) {
+            this.title = title
+        }
         return this
     }
     fun setInitMsg(hint:String?){

@@ -22,7 +22,7 @@ import androidx.multidex.MultiDex;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.tencent.bugly.crashreport.BuglyLog;
+import com.blankj.utilcode.util.Utils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tonyodev.fetch2.Fetch;
 import com.tonyodev.fetch2.FetchConfiguration;
@@ -35,15 +35,12 @@ import com.zdyb.lib_common.cockroach.CrashLog;
 import com.zdyb.lib_common.cockroach.ExceptionHandler;
 import com.zdyb.lib_common.http.NetWorkManager;
 import com.zdyb.lib_common.service.UsbSerialPortService;
-import com.zdyb.lib_common.utils.file.FileUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import kotlin.jvm.internal.Intrinsics;
 
 /**
  * Created by goldze on 2017/6/15.
@@ -52,8 +49,16 @@ import kotlin.jvm.internal.Intrinsics;
 public abstract class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks {
     private static BaseApplication sInstance;
 
-    public static Boolean usbConnect = false;
-    public static String FLAVOR = "";
+    public static ConnectType connectType = ConnectType.no;
+
+    public enum ConnectType{
+        no,usb,ble
+    }
+
+    /**
+     * 风味类型 - 默认为 zdeps
+     */
+    public static String ENTRANCE = "zdeps";
 
     /**
      * 是否退出诊断服务关闭多进程
@@ -110,6 +115,7 @@ public abstract class BaseApplication extends Application implements Application
             //FileUtil.isARMv7Compatible();
             initFetch();
 
+            initLog();
             KLog.i("初始化了");
             KLog.i("进程ID="+android.os.Process.myPid());
         }
@@ -302,6 +308,23 @@ public abstract class BaseApplication extends Application implements Application
         }
     }
 
+
+    private void initLog(){
+        try {
+            Utils.init(this);
+            LogUtils.getConfig().setBorderSwitch(false);
+            LogUtils.getConfig().setLogSwitch (true);
+            LogUtils.getConfig().setLog2FileSwitch(true);
+            LogUtils.getConfig().setSaveDays(30);
+            LogUtils.getConfig().setGlobalTag("zdeps");
+            LogUtils.getConfig().setLogHeadSwitch(false);
+
+            String path =  getExternalFilesDir("logs").toString();
+            LogUtils.getConfig().setDir(path);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     /**
      * app运行过程中异常处理

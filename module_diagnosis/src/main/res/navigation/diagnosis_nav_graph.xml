@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_homeFragment_to_downloadAllFileFragment"
             app:destination="@id/downloadAllFileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_voltageFragment"
+            app:destination="@id/voltageFragment" />
     </fragment>
 
     <fragment
@@ -111,4 +114,12 @@
         android:id="@+id/downloadAllFileFragment"
         android:name="com.zdyb.module_diagnosis.fragment.DownloadAllFileFragment"
         android:label="DownloadAllFileFragment" />
+    <fragment
+        android:id="@+id/dataBaseFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.DataBaseFragment"
+        android:label="DataBaseFragment" />
+    <fragment
+        android:id="@+id/voltageFragment"
+        android:name="com.zdyb.module_diagnosis.fragment.VoltageFragment"
+        android:label="VoltageFragment" />
 </navigation>

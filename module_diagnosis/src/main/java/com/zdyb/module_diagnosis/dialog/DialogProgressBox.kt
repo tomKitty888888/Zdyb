@@ -50,8 +50,8 @@ class DialogProgressBox:BaseDialogFragment(){
             when(actionType){
                 CMD.MSG_MB_NOBUTTON ->{
                     println("返回首页")
-                    homeConsumer?.accept(true)
-                    dismiss()
+                    //homeConsumer?.accept(true)
+                    //dismiss()
                 }else ->{
                     println("截图")
                     dismiss()

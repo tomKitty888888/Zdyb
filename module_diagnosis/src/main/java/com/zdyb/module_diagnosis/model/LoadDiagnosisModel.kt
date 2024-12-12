@@ -113,8 +113,17 @@ class LoadDiagnosisModel :BaseViewModel(){
             return 0
         }
 
-        override fun recvData(retlen: Int): ByteArray {
-            val data = ConnDevices.readData(retlen)
+        override fun recvData(retlen: Int): ByteArray? {
+//            val data = ConnDevices.readData(retlen)
+//            if (data != null){
+//                return data
+//            }
+//            return ByteArray(0)
+            return ConnDevices.readData(retlen)
+        }
+
+        override fun timedReadsData(time: Long): ByteArray {
+            val data = ConnDevices.timedReadsData(time)
             if (data != null){
                 return data
             }
@@ -128,7 +137,7 @@ class LoadDiagnosisModel :BaseViewModel(){
 
         override fun setBaudRate(baudRate: Int): Boolean {
 
-            return true
+            return ConnDevices.setUsbBaudRate(baudRate)
         }
 
         override fun IsWiredOrBluetooth(): Int {
@@ -160,41 +169,55 @@ class LoadDiagnosisModel :BaseViewModel(){
 
     //开始扫描
     fun startScan(){
+        viewModelScope.launch(CoroutineExceptionHandler { coroutineContext, throwable ->
+            println("${coroutineContext[CoroutineName].toString()} 处理异常：$throwable")
+        }) {
 
-        if (!ConnDevices.isConnect()){
-            return
-        }
-        //ConnDevices.sendData(byteArrayOf(0xa5.toByte(), 0xa5.toByte(), 0x00, 0x01, 0xD1.toByte(), 0x55))//暂停扫描
-        val closeFlow =
-            byteArrayOf(0xa5.toByte(), 0xa5.toByte(), 0x00, 0x02, 0x64.toByte(), 0x00, 0x55) //关闭流控
-        if (ConnDevices.sendData(closeFlow) > 0){
-            val result = ConnDevices.outTimeReadData(50)//读取掉接收缓存区
-            ConnDevices.purge()
-            isScan = true
-            var scanSum = 0
-            while (isScan){
-                aiScan()
-                scanSum++
-                if (scanSum ==5){
+            launch(Dispatchers.IO) {
 
-                }else if (scanSum >=10){
-                    KLog.e("扫描10次未能成功 停止扫描")
-                    break
+                if (!ConnDevices.isConnect()){
+                    return@launch
                 }
+                //ConnDevices.sendData(byteArrayOf(0xa5.toByte(), 0xa5.toByte(), 0x00, 0x01, 0xD1.toByte(), 0x55))//暂停扫描
+                val closeFlow =
+                    byteArrayOf(0xa5.toByte(), 0xa5.toByte(), 0x00, 0x02, 0x64.toByte(), 0x00, 0x55) //关闭流控
+                if (ConnDevices.sendData(closeFlow) > 0){
+                    val result = ConnDevices.timedReadsData(50)//读取掉接收缓存区
+                    ConnDevices.purge()
+                    isScan = true
+                    var scanSum = 0
+                    while (isScan){
+                        aiScan()
+                        scanSum++
+                        if (scanSum ==5){
+
+                        }else if (scanSum >=10){
+                            KLog.e("扫描10次未能成功 停止扫描")
+                            launch(Dispatchers.Main) {
+                                showToast("多次扫描未能成功，请检查设备连接")
+                            }
+                            break
+                        }
+                    }
+                    println("扫描任务结束")
+                }
+
             }
-            println("扫描任务结束")
         }
+
+
 
     }
 
     private fun aiScan(){
         val setVciBaudRate = byteArrayOf(0xA5.toByte(), 0xA5.toByte(), 0x00, 0x02, 0x70.toByte(), 0x00, 0x55) //扫描指令
         ConnDevices.sendData(setVciBaudRate)
-        val result = ConnDevices.outTimeReadData(50)
+        val result = ConnDevices.timedReadsData(50)
 
-        if (result == null){
+        if (result == null || result.isEmpty()){
             println("未读取到数据")
-            showToast("未读取到数据")
+            //showToast("未读取到数据")
+            KLog.e("未读取到数据")
             return
         }
         println("读取数据长度:${result.size}")
@@ -225,7 +248,7 @@ class LoadDiagnosisModel :BaseViewModel(){
                     KLog.e("识别失败,继续识别... 发送扫描复位指令")
                     val setVciBaudRate = byteArrayOf(0xA5.toByte(), 0xA5.toByte(), 0x00, 0x02, 0x72.toByte(), 0x00, 0x55) //重新扫描指令
                     ConnDevices.sendData(setVciBaudRate)
-                    val result = ConnDevices.outTimeReadData(3000)//读取掉接收缓存区
+                    val result = ConnDevices.timedReadsData(3000)//读取掉接收缓存区
                 }
                 "7002" -> {
                     println("识别成功")

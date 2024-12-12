@@ -81,10 +81,15 @@ class AutoScanDeviceListFragment:BaseNavFragment<FragmentAutoScanDeviceListBindi
                         viewModel.showToast("诊断文件为空，请先下载")
                         return@subscribe
                     }
-                    viewModel.openDiagnosis(item.versionPath, Consumer {
-                        val bundle = bundleOf(DeviceEntity.tag to item)
-                        findNavController().navigate(R.id.action_AutoScanDeviceListFragment_to_menuListFragment,bundle)
+                    viewModel.anewDiagnosisService(Consumer {
+                      if (it){
+                          viewModel.openDiagnosis(item.versionPath, Consumer {
+                              val bundle = bundleOf(DeviceEntity.tag to item)
+                              findNavController().navigate(R.id.action_AutoScanDeviceListFragment_to_menuListFragment,bundle)
+                          })
+                      }
                     })
+
                 }else{
                     viewModel.showToast(getString(R.string.allow_permission_is_required))
                 }

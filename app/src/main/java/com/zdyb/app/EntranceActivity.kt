@@ -11,7 +11,7 @@ class EntranceActivity :AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entrance)
-        BaseApplication.FLAVOR = BuildConfig.FLAVOR
+        BaseApplication.ENTRANCE = BuildConfig.ENTRANCE
         when(BuildConfig.FLAVOR){
             AppType.zdyb.name -> {
                 RouterUtil.build(RouteConstants.Diagnosis.DIAGNOSIS_ACTIVITY).launch()

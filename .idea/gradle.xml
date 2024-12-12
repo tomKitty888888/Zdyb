@@ -11,13 +11,12 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/digNativelib" />
-            <option value="$PROJECT_DIR$/guiNativelib" />
+            <option value="$PROJECT_DIR$/instacapture" />
             <option value="$PROJECT_DIR$/lib" />
             <option value="$PROJECT_DIR$/lib_common" />
             <option value="$PROJECT_DIR$/libp7zip2" />
             <option value="$PROJECT_DIR$/module_diagnosis" />
-            <option value="$PROJECT_DIR$/module_obd" />
+            <option value="$PROJECT_DIR$/usbSerialForAndroid" />
           </set>
         </option>
       </GradleProjectSettings>

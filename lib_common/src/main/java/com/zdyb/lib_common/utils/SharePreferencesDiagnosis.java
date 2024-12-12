@@ -17,4 +17,15 @@ public class SharePreferencesDiagnosis {
      */
     public static final String DEVICE_VERSION = "device_version";
 
+
+    /**
+     * 登录的结果 存储
+     */
+    public static final String LOGIN_RESULT = "login_result";
+
+    /**
+     * 记录登录的手机号
+     */
+    public static final String LOGIN_PHONE = "login_phone";
+
 }

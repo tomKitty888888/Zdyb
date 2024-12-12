@@ -35,6 +35,7 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
     lateinit var mDialogInputFileBox: DialogInputFileBox //输入文件名称
     lateinit var mDialogChooseFileBox: DialogChooseFileBox //选择文件
     lateinit var mDialogProgressBox: DialogProgressBox //刷写时的进度动画
+    lateinit var mDialogImgBox: DialogImgBox //图片显示
 
     lateinit var mDeviceEntity : DeviceEntity
     override fun initViewModel(): LoadDiagnosisModel {
@@ -95,6 +96,13 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
             BaseApplication.getInstance().outDiagnosisService = true
             findNavController().popBackStack(R.id.homeFragment,false)
         }
+        //图片提示
+        mDialogImgBox = DialogImgBox()
+        mDialogImgBox.setBackResult{
+            val action = if (it) CMD.MB_YES else CMD.MB_NO
+            viewModel.setCommonValue(CMD.ID_DIALOG_OFFSET, action)
+        }
+
     }
 
     override fun initParam() {
@@ -362,6 +370,9 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
                 if (mDialogProgressBox.isVisible){
                     mDialogProgressBox.dismiss()
                 }
+                if (mDialogImgBox.isVisible){
+                    mDialogImgBox.dismiss()
+                }
             }
             return super.destroyDialog()
         }
@@ -381,7 +392,7 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
                         if (!mDialogHintBox.isVisible && !mDialogHintBox.isShow()){
                             mDialogHintBox.setActionType(tag).setInitMsg(msg)
                             mDialogHintBox.show(childFragmentManager,"mDialogHintBox")
-                            visibleDialog(mDialogInputBox,mDialogInputFileBox,mDialogChooseFileBox)
+                            visibleDialog(mDialogInputBox,mDialogInputFileBox,mDialogChooseFileBox,mDialogProgressBox,mDialogImgBox)
                         }else if(mDialogHintBox.isVisible){
                             mDialogHintBox.upActionType(tag)
                             mDialogHintBox.setMsg(msg)
@@ -413,6 +424,13 @@ class MenuListFragment:BaseNavFragment<FragmentMenuListBinding,LoadDiagnosisMode
                                 mDialogInputFileBox.show(childFragmentManager,"mDialogInputFileBox")
                                 visibleDialog(mDialogHintBox,mDialogInputBox)
                             }
+                        }
+                    }
+                    CMD.MSG_MB_IMAGE ->{ //提示图片的弹窗
+                        if (!mDialogImgBox.isVisible && !mDialogImgBox.isShow()){
+                            mDialogImgBox.setTitle(title).setImagePath(imgPath)
+                            mDialogImgBox.show(childFragmentManager,"mDialogImgBox")
+                            visibleDialog(mDialogHintBox)
                         }
                     }
                     CMD.FORM_DIALOG_PROGRESS -> { //进度弹框

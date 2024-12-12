@@ -15,5 +15,19 @@ public class EventTypeDiagnosis {
     public final static int PORT_OUT = 303;
 
 
+    /**
+     * 蓝牙连接与断开
+     */
+    public final static int BLE_CONNECT = 304;
+    public final static int BlE_OUT = 305;
+
+    /**
+     *  usb串口没插，去连接蓝牙
+     */
+    public final static int CONNECT_BLE = 306;
+
+
+
+
 
 }

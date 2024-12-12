@@ -123,6 +123,8 @@
     <string name="confirm">确认</string>
     <string name="cancel">取消</string>
     <string name="hint">提示</string>
+    <string name="save">保存</string>
+    <string name="login">登录</string>
 
     <!-- 公用下载链接，图片rul链接 -->
     <string name="base_url">https://zdyban.zdeps.com</string>
@@ -143,10 +145,62 @@
     <string name="download_speed_bytes">%1$d B/s</string>
     <string name="download_speed_kb">%1$s KB/s</string>
     <string name="download_speed_mb">%1$s MB/s</string>
-
     <string name="version_manager_hint1">删除版本文件</string>
     <string name="version_manager_hint2">是否要删除：</string>
 
+    <!-- 帮助 -->
+    <string name="help_upData">功能升级</string>
+    <string name="help_dataBase">数据库</string>
+    <string name="help_dataBase_hint">暂无此系统下载文件</string>
+    <string name="help_dataBase_load_hint">正在下载文件请稍后</string>
 
+    <!-- 设置 -->
+    <string name="setting_company_information">公司信息</string>
+    <string name="setting_app_information">产品信息</string>
+    <string name="setting_user_information">用户信息</string>
+    <string name="setting_user_login">登录账号</string>
+    <string name="setting_user_out_login">退出登录</string>
+    <string name="setting_lock_screenshot_img">查看截图</string>
 
+    <!-- 设置 公司信息-->
+    <string name="setting_company_information_name">公司名称</string>
+    <string name="setting_company_information_address">通讯地址</string>
+    <string name="setting_company_information_phone">联系电话</string>
+    <string name="setting_company_information_website">官方网站</string>
+
+    <string name="setting_company_value1">深圳市正德友邦科技有限公司</string>
+    <string name="setting_company_value2">广东省深圳市宝安区创业二路西侧宝安新一代信息技术产业园F座3层</string>
+    <string name="setting_company_value3">400-930-8887</string>
+    <string name="setting_company_value4">https://www.zdeps.com/</string>
+
+    <!-- 设置 产品信息-->
+    <string name="setting_app_information_device_id">产品序列号</string>
+    <string name="setting_app_information_phone_number">当前手机号</string>
+    <string name="setting_app_information_device_state">设备状态</string>
+    <string name="setting_app_information_device_version">硬件版本号</string>
+    <string name="setting_app_information_version">软件版本号</string>
+
+    <!-- 设置 用户信息-->
+    <string name="setting_user_information_companyName">公司名称</string>
+    <string name="setting_user_information_contact">联系人</string>
+    <string name="setting_user_information_contactNumber">联系电话</string>
+    <string name="setting_user_information_contactQQ">联系QQ</string>
+    <string name="setting_user_information_contactEmail">邮箱</string>
+
+    <!-- 设置 登录账号-->
+    <string name="setting_user_login_inputPhone">输入手机号</string>
+    <string name="setting_user_login_deviceId">当前设备号</string>
+    <string name="setting_user_login_inputVerCode">输入验证码</string>
+    <string name="setting_user_login_getVerCode">获取验证码</string>
+    <string name="setting_sign_back_in">确定要退出当前账号，重新登录吗？</string>
+    <string name="setting_login_hint">请输入正确的手机号码</string>
+    <string name="setting_login_no_sn_hint">请插入下位机设备</string>
+    <string name="setting_login_no_phone_hint">请输入手机号</string>
+    <string name="setting_login_no_code_hint">请输入验证码</string>
+    <string name="setting_login_success">登录成功</string>
+
+    <!-- 蓝牙-->
+    <string name="ble_location_IsOpen">扫描蓝牙需要您开启定位</string>
+    <string name="permissions_hint">请允许权限后重试</string>
+    <string name="ble_device_list">设备列表</string>
 </resources>

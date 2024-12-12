@@ -142,6 +142,14 @@ object PathManager {
         return Uri.parse(url).lastPathSegment
     }
 
+
+    /**
+     * 屏幕截图存放路径
+     */
+    fun getScreenshots():String{
+        return getBasePath() +"Captures"+File.separator
+    }
+
     private fun getPackType():String{
         println("packageName="+BaseApplication.getInstance().packageName)
         when(BaseApplication.getInstance().packageName){

@@ -177,6 +177,7 @@ public class OKHttpManager {
                             }
                             fops.close();
                             inputStream.close();
+                            responseBody.close();
                             emitter.onNext(filePath);
                         }catch (Exception e){
                             e.printStackTrace();

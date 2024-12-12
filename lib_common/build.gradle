@@ -65,8 +65,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    api 'com.github.mik3y:usb-serial-for-android:3.7.0'
-    implementation files('libs/CH34XUARTDriver2.jar')
+    //api 'com.github.mik3y:usb-serial-for-android:3.7.0'
+    api project(':usbSerialForAndroid')
     //协程
     api rootProject.ext.dependencies.scope
     

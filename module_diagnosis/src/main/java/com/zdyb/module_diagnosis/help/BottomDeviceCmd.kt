@@ -21,7 +21,7 @@ object BottomDeviceCmd {
             0xE6.toByte(),0x0F ,0x12 ,0x55)
 
         ConnDevices.sendData(data1)
-        ConnDevices.outTimeReadData(200)
+        ConnDevices.timedReadsData(200)
         ConnDevices.purge()
 
         val data2 = byteArrayOf(
@@ -33,7 +33,7 @@ object BottomDeviceCmd {
             0x00, 0x00, 0x09, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x0B, 0x00, 0x00, 0x0C,
             0xE6.toByte(), 0x0F, 0x12, 0x55)
         ConnDevices.sendData(data2)
-        ConnDevices.outTimeReadData(200)
+        ConnDevices.timedReadsData(200)
         ConnDevices.purge()
     }
 }

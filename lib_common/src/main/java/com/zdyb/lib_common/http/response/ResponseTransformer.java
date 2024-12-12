@@ -3,6 +3,7 @@ package com.zdyb.lib_common.http.response;
 import com.google.gson.reflect.TypeToken;
 import com.zdyb.lib_common.base.AppManager;
 import com.zdyb.lib_common.base.BaseApplication;
+import com.zdyb.lib_common.bean.NoValueBean;
 import com.zdyb.lib_common.http.exception.CustomException;
 import com.zdyb.lib_common.utils.PreferencesUtils;
 import com.zdyb.lib_common.utils.RouterUtil;
@@ -65,7 +66,10 @@ public class ResponseTransformer {
 
             String message = tResponse.getMessage();
             if (tResponse.getCode() ==  CustomException.SUCCESS) {
-
+                if (tResponse.getData() == null){
+                    //兼容后台，接口成功的情况下 data 还是给的null 这种情况统一使用NoValueBean对象接收
+                    tResponse.setData((T) new NoValueBean());
+                }
                 return createData(tResponse.getData());
             }else if (tResponse.getCode() ==  CustomException.NO_LOGIN ||
                     tResponse.getCode() ==  CustomException.NO_Permissions ||

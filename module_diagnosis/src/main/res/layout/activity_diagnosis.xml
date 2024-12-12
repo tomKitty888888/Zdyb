@@ -24,6 +24,20 @@
         android:layout_height="@dimen/dp_35"
         app:layout_constraintBottom_toBottomOf="parent"
         />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/helpRecyclerView"
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="@dimen/dp_90"
+        app:layout_constraintBottom_toTopOf="@+id/include_bar_bottom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="#FF202721"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:listitem="@layout/item_help_menu"
+        app:spanCount="2"
+        android:visibility="gone"
+        />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

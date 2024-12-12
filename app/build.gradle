@@ -19,7 +19,7 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
-            abiFilters 'armeabi-v7a'
+            abiFilters 'armeabi-v7a'//, 'arm64-v8a'
         }
     }
 
@@ -107,6 +107,7 @@ android {
             buildConfigField "String", "HTTPREALSE", "\"https://zdyban.zdeps.com\""
             buildConfigField "String", "HTTPDEBUG", "\"https://zdyban.zdeps.com\""
             buildConfigField "String", "ENTRANCE", "\"zdeps\""
+            buildConfigField "String", "PLATFORM", "\"zdeps\""
             //示例取不同的值 channel_value
             manifestPlaceholders = [channel_value: "exampleFlavor channel"]
         }
@@ -152,7 +153,7 @@ def releaseTime() {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar','*.arr'], dir: 'libs')
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'

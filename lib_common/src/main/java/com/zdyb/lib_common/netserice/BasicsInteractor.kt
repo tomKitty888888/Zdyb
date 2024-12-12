@@ -11,7 +11,7 @@ object BasicsInteractor {
     private val mService = NetWorkManager.getInstance().getService(BaseService::class.java)
 
     /**
-     * 	获取APK最新版本接口
+     * 	上传错误信息
      */
     fun loadErrLog(title:String,msg:String,vci:String) : Observable<Any> {
         val paramsMap = HashMap<String,Any>()

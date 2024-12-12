@@ -1,6 +1,6 @@
 package com.zdeps.gui
 
-import android.os.RemoteException
+import android.os.SystemClock
 import android.text.TextUtils
 import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
@@ -10,6 +10,8 @@ import com.zdyb.lib_common.base.KLog
 import com.zdyb.lib_common.utils.PathManager
 import com.zdyb.module_diagnosis.service.DiagnosisService
 import java.io.UnsupportedEncodingException
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import kotlin.experimental.and
 
 object ComJni {
@@ -117,6 +119,14 @@ object ComJni {
     }
 
     /**
+     * 定时读取
+     */
+    private fun timedReadsData(time:Long):ByteArray?{
+        println("----ComJni----->timedReadsData")
+        return DiagnosisService.mTransfer?.timedReadsData(time)
+    }
+
+    /**
      * jni
      */
     @Synchronized
@@ -129,7 +139,7 @@ object ComJni {
     /**
      * jni
      */
-    fun recvData(retlen : Int):ByteArray {
+    fun recvData(retlen : Int):ByteArray? {
         println("读数据长度 int=$retlen")
 
         val data = read(retlen)
@@ -141,7 +151,8 @@ object ComJni {
             println("值为null??")
         }
 
-        return ByteArray(0)
+        //return ByteArray(0)
+        return null
         //return read(temp) ?: return ByteArray(0)
     }
 
@@ -238,6 +249,7 @@ object ComJni {
      */
     fun MsgReflashProgress(msg: ByteArray) {
         val pszMsg = bytes2Str(msg)
+        KLog.d("显示进度-->$pszMsg")
         DiagnosisService.mITaskCallback?.showDialog(CMD.FORM_DIALOG_PROGRESS,CMD.FORM_DIALOG_PROGRESS,"", pszMsg,"",0)
     }
 
@@ -569,6 +581,59 @@ object ComJni {
                     CMD.FORM_BAUD_RATE_CHANGE ->{
                         KLog.d("GUI 诊断系统设置波特率相关")
 
+                        PurgeComm()
+                        val sdat = getGUIData(7, 4)
+                        val baudRate = ByteBuffer.wrap(sdat).order(ByteOrder.BIG_ENDIAN).int
+                        val setVciBaudRate = byteArrayOf(
+                            0xA5.toByte(), 0xA5.toByte(), 0x00, 0x06, 0xF1.toByte(), 0x01,
+                            sdat[0],
+                            sdat[1],
+                            sdat[2],
+                            sdat[3], 0x55
+                        )
+                        sendData(setVciBaudRate, setVciBaudRate.size)
+                        val setVciBaudRateResult = timedReadsData(2000)
+
+                        val setVciBaudRateResultString = ConvertUtils.bytes2HexString(setVciBaudRateResult)
+                        if (setVciBaudRateResult == null || setVciBaudRateResult.isEmpty() || setVciBaudRateResultString != "A5A50002F10055") {
+                            if (setVciBaudRateResult == null || setVciBaudRateResult.isEmpty()) {
+                                KLog.d("设置下位机波特率失败 null")
+                            } else {
+                                KLog.d("设置下位机波特率失败 $setVciBaudRateResultString")
+                            }
+                            setGUIBuf(6, byteArrayOf(0x7d), 1)
+                            return 1
+                        }
+                        PurgeComm()
+                        KLog.d("vci设置波特率值 $setVciBaudRateResultString")
+
+                        KLog.d("app设置波特率 ${DiagnosisService.mTransfer?.setBaudRate(baudRate)}")
+                        PurgeComm()
+                        val newBaudRateTest = byteArrayOf(
+                            0xA5.toByte(),
+                            0xA5.toByte(),
+                            0x00,
+                            0x02,
+                            0xf1.toByte(),
+                            0x01,
+                            0x55
+                        )
+                        sendData(newBaudRateTest, newBaudRateTest.size)
+                        val newBaudRateTestResult = timedReadsData(1000) //A5 A5 00 02 F1 00 55
+                        val newBaudRateTestResultString = ConvertUtils.bytes2HexString(newBaudRateTestResult)
+                        if (newBaudRateTestResult == null || setVciBaudRateResult.isEmpty() || newBaudRateTestResultString != "A5A50002F10055") {
+                            if (newBaudRateTestResult == null || newBaudRateTestResult.isEmpty()) {
+                                KLog.d("等待vci设置波特率结束 null")
+                            } else {
+                                KLog.d("等待vci设置波特率结束 $newBaudRateTestResultString")
+                            }
+                            setGUIBuf(6, byteArrayOf(0x7d), 1)
+                            return 1
+                        }
+                        KLog.d("新特率返回 $newBaudRateTestResultString")
+                        setGUIBuf(6, byteArrayOf(0x7f), 1)
+                        KLog.d("$baudRate 波特率通信成功 ")
+                        SystemClock.sleep(1000)
                     }
                     CMD.FORM_DTC_MULTI ->{
                         KLog.d("GUI DTC-多重-菜单相关")
@@ -660,6 +725,7 @@ object ComJni {
                             val imagePath = bytes2Str(imgByte)
                             println("pszMessage=$pszMessage")
                             println("imagePath=$imagePath")
+                            DiagnosisService.mITaskCallback?.showDialog(bMode,bMode,pszMessage,"",imagePath,0)
                         }else{
                             KLog.d("GUI FORM_MSG-文字对话框")
                             val len = getOC16(data, 4)

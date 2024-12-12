@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="1.7" />
+    <bytecodeTargetLevel target="1.7">
+      <module name="Zdyb.digNativelib" target="11" />
+      <module name="Zdyb.guiNativelib" target="11" />
+      <module name="Zdyb.module_dataDetect" target="11" />
+      <module name="Zdyb.module_obd" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
