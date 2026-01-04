@@ -142,6 +142,12 @@ class JCHomeChildFragment: BaseNavFragment<FragmentJcChildBinding, LoadDiagnosis
                     "BCU" -> { return "车身系统\n(BCU)"}
                     "DCU" -> { return "后处理系统\n(DCU)"}
                     "Engine","ECM" -> { return "发动机系统\n(ECM)"}
+
+                    "TCU" -> { return "变速箱控制器\n(TCU)"}
+                    "GW" -> { return "网关控制器\n(GW)"}
+                    "ICM" -> { return "仪表控制器\n(ICM)"}
+                    "CTIS" -> { return "中央充放气系统控制器\n(CTIS)"}
+                    "CFS" -> { return "舒适系统控制器\n(CFS)"}
                 }
                 return name
             }

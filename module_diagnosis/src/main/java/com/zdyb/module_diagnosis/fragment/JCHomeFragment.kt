@@ -170,6 +170,10 @@ class JCHomeFragment: BaseNavFragment<FragmentJcHomeBinding, HomeModel>()  {
                 array.add("CTL162")
                 array.add("CTL163")
             }
+            "CTM131系列" -> {
+                array.add("MV3")
+            }
+
         }
 
         return array.toTypedArray()

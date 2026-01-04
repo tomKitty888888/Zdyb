@@ -176,6 +176,7 @@ class UsbSerialPortService : BaseService(){
             availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
         }
         if (availableDrivers.isEmpty()) {
+            KLog.e("未识别到串口")
             return
         }
         driver = availableDrivers[0] //默认取第一个

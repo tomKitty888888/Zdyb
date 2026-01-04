@@ -1,6 +1,5 @@
 package com.zdyb.module_obd.model
 
-import androidx.lifecycle.MutableLiveData
 import com.zdeps.bean.OBDBean
 
 object OBDResultData {
